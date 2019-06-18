@@ -1,0 +1,2011 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>linux_command</title>
+    <link href='/css/base.dark.css' rel='stylesheet' type='text/css' />
+    <link href='/css/github.dark.css' rel='stylesheet' type='text/css' />
+    <script src="/js/change_zhuti.js"></script>
+    <script src="/js/click_start.js"></script>
+</head>
+
+<body class='typora-export os-windows'>
+    <div id='write' class='is-node'>
+        <p>&nbsp;</p>
+        <div class='md-toc' mdtype='toc'>
+            <p class="md-toc-content"><span class="md-toc-item md-toc-h2" data-ref="n4"><a class="md-toc-inner" href="#header-n4">打印某些系统信息</a></span><span class="md-toc-item md-toc-h2" data-ref="n10"><a class="md-toc-inner" href="#header-n10">Linux ulimit</a></span><span class="md-toc-item md-toc-h2"
+                    data-ref="n44"><a class="md-toc-inner" href="#header-n44">管道符</a></span><span class="md-toc-item md-toc-h2" data-ref="n57"><a class="md-toc-inner" href="#header-n57">xargs </a></span><span class="md-toc-item md-toc-h2" data-ref="n90"><a class="md-toc-inner" href="#header-n90">Linux free</a></span>
+                <span
+                    class="md-toc-item md-toc-h2" data-ref="n112"><a class="md-toc-inner" href="#header-n112">Linux ps</a></span><span class="md-toc-item md-toc-h2" data-ref="n209"><a class="md-toc-inner" href="#header-n209">Linux top</a></span><span class="md-toc-item md-toc-h2" data-ref="n230"><a class="md-toc-inner" href="#header-n230">Linux nice</a></span>
+                    <span
+                        class="md-toc-item md-toc-h2" data-ref="n244"><a class="md-toc-inner" href="#header-n244">Linux kill</a></span><span class="md-toc-item md-toc-h2" data-ref="n257"><a class="md-toc-inner" href="#header-n257">Linux pstree</a></span><span class="md-toc-item md-toc-h2" data-ref="n270"><a class="md-toc-inner" href="#header-n270">tee命令</a></span>
+                        <span
+                            class="md-toc-item md-toc-h2" data-ref="n276"><a class="md-toc-inner" href="#header-n276">Linux whois</a></span><span class="md-toc-item md-toc-h2" data-ref="n287"><a class="md-toc-inner" href="#header-n287">less命令</a></span><span class="md-toc-item md-toc-h2" data-ref="n351"><a class="md-toc-inner" href="#header-n351">Linux split</a></span>
+                            <span
+                                class="md-toc-item md-toc-h2" data-ref="n374"><a class="md-toc-inner" href="#header-n374">Linux whereis</a></span><span class="md-toc-item md-toc-h2" data-ref="n392"><a class="md-toc-inner" href="#header-n392">Linux which</a></span><span class="md-toc-item md-toc-h2" data-ref="n407"><a class="md-toc-inner" href="#header-n407">Linux read</a></span>
+                                <span
+                                    class="md-toc-item md-toc-h2" data-ref="n433"><a class="md-toc-inner" href="#header-n433">Linux tee</a></span><span class="md-toc-item md-toc-h2" data-ref="n452"><a class="md-toc-inner" href="#header-n452">Linux ln</a></span><span class="md-toc-item md-toc-h2" data-ref="n499"><a class="md-toc-inner" href="#header-n499">Linux sort</a></span>
+                                    <span
+                                        class="md-toc-item md-toc-h2" data-ref="n534"><a class="md-toc-inner" href="#header-n534">Linux cmp</a></span><span class="md-toc-item md-toc-h2" data-ref="n554"><a class="md-toc-inner" href="#header-n554">Linux diff</a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n641"><a class="md-toc-inner" href="#header-n641">Linux sed</a></span><span class="md-toc-item md-toc-h2" data-ref="n680"><a class="md-toc-inner" href="#header-n680">let </a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n691"><a class="md-toc-inner" href="#header-n691">Linux tr</a></span><span class="md-toc-item md-toc-h2" data-ref="n768"><a class="md-toc-inner" href="#header-n768">Linux uniq</a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n795"><a class="md-toc-inner" href="#header-n795">Linux wc</a></span><span class="md-toc-item md-toc-h2" data-ref="n816"><a class="md-toc-inner" href="#header-n816">tail </a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n849"><a class="md-toc-inner" href="#header-n849">expr</a></span><span class="md-toc-item md-toc-h2" data-ref="n871"><a class="md-toc-inner" href="#header-n871">Linux tree</a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n877"><a class="md-toc-inner" href="#header-n877">Linux quota</a></span><span class="md-toc-item md-toc-h2" data-ref="n895"><a class="md-toc-inner" href="#header-n895">Linux ifconfig</a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n899"><a class="md-toc-inner" href="#header-n899">Linux traceroute</a></span><span class="md-toc-item md-toc-h2" data-ref="n905"><a class="md-toc-inner" href="#header-n905">Linux date</a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n980"><a class="md-toc-inner" href="#header-n980">用户管理</a></span><span class="md-toc-item md-toc-h2" data-ref="n982"><a class="md-toc-inner" href="#header-n982">useradd</a></span><span class="md-toc-item md-toc-h2"
+                                            data-ref="n1039"><a class="md-toc-inner" href="#header-n1039">Linux usermod</a></span><span class="md-toc-item md-toc-h2" data-ref="n1074"><a class="md-toc-inner" href="#header-n1074">Linux userdel</a></span>
+                                        <span
+                                            class="md-toc-item md-toc-h2" data-ref="n1087"><a class="md-toc-inner" href="#header-n1087">Linux  id</a></span><span class="md-toc-item md-toc-h2" data-ref="n1112"><a class="md-toc-inner" href="#header-n1112">Linux passwd</a></span><span class="md-toc-item md-toc-h2"
+                                                data-ref="n1157"><a class="md-toc-inner" href="#header-n1157">Linux w</a></span><span class="md-toc-item md-toc-h2" data-ref="n1177"><a class="md-toc-inner" href="#header-n1177">Linux su</a></span><span class="md-toc-item md-toc-h2"
+                                                data-ref="n1202"><a class="md-toc-inner" href="#header-n1202">Linux finger</a></span><span class="md-toc-item md-toc-h2" data-ref="n1235"><a class="md-toc-inner" href="#header-n1235">用户组管理</a></span><span class="md-toc-item md-toc-h2"
+                                                data-ref="n1238"><a class="md-toc-inner" href="#header-n1238">groupadd</a></span><span class="md-toc-item md-toc-h2" data-ref="n1254"><a class="md-toc-inner" href="#header-n1254">Linux groupmod</a></span>
+                                            <span
+                                                class="md-toc-item md-toc-h2" data-ref="n1271"><a class="md-toc-inner" href="#header-n1271">Linux groupdel</a></span><span class="md-toc-item md-toc-h2" data-ref="n1277"><a class="md-toc-inner" href="#header-n1277">groups查看当前用户所在全部组。</a></span><span class="md-toc-item md-toc-h2"
+                                                    data-ref="n1279"><a class="md-toc-inner" href="#header-n1279">切换用户组</a></span><span class="md-toc-item md-toc-h2" data-ref="n1285"><a class="md-toc-inner" href="#header-n1285">用户账号的系统文件</a></span><span class="md-toc-item md-toc-h3"
+                                                    data-ref="n1289"><a class="md-toc-inner" href="#header-n1289">1、/etc/passwd文件是用户管理工作涉及的最重要的一个文件。</a></span><span class="md-toc-item md-toc-h4" data-ref="n1295"><a class="md-toc-inner" href="#header-n1295">1）"用户名"是代表用户账号的字符串。</a></span>
+                                                <span
+                                                    class="md-toc-item md-toc-h4" data-ref="n1298"><a class="md-toc-inner" href="#header-n1298">2）“口令”一些系统中，存放着加密后的用户口令字。</a></span><span class="md-toc-item md-toc-h4" data-ref="n1300"><a class="md-toc-inner" href="#header-n1300">3）“用户标识号”是一个整数，系统内部用它来标识用户。</a></span>
+                                                    <span
+                                                        class="md-toc-item md-toc-h4" data-ref="n1303"><a class="md-toc-inner" href="#header-n1303">4）“组标识号”字段记录的是用户所属的用户组。</a></span><span class="md-toc-item md-toc-h4" data-ref="n1305"><a class="md-toc-inner" href="#header-n1305">5)“注释性描述”字段记录着用户的一些个人情况。</a></span>
+                                                        <span
+                                                            class="md-toc-item md-toc-h4" data-ref="n1307"><a class="md-toc-inner" href="#header-n1307">6)“主目录”，也就是用户的起始工作目录。</a></span><span class="md-toc-item md-toc-h4" data-ref="n1309"><a class="md-toc-inner" href="#header-n1309">7)用户登录后，要启动一个进程，负责将用户的操作传给内核，这个进程是用户登录到系统后运行的命令解释器或某个特定的程序，即Shell。</a></span>
+                                                            <span
+                                                                class="md-toc-item md-toc-h4" data-ref="n1315"><a class="md-toc-inner" href="#header-n1315">系统中有一类用户称为伪用户（psuedo users）。</a></span><span class="md-toc-item md-toc-h3" data-ref="n1323"><a class="md-toc-inner" href="#header-n1323">2、/etc/shadow中的记录行与/etc/passwd中的一一对应，它由pwconv命令根据/etc/passwd中的数据自动产生</a></span>
+                                                                <span
+                                                                    class="md-toc-item md-toc-h3" data-ref="n1346"><a class="md-toc-inner" href="#header-n1346">用户组的所有信息都存放在/etc/group文件中。</a></span><span class="md-toc-item md-toc-h2" data-ref="n1365"><a class="md-toc-inner" href="#header-n1365">添加批量用户</a></span>
+                                                                    <span
+                                                                        class="md-toc-item md-toc-h3" data-ref="n1367"><a class="md-toc-inner" href="#header-n1367">（1）先编辑一个文本用户文件。</a></span><span class="md-toc-item md-toc-h3" data-ref="n1370"><a class="md-toc-inner" href="#header-n1370">（2）以root身份执行命令 <code>/usr/sbin/newusers</code>，从刚创建的用户文件<code>user.txt</code>中导入数据，创建用户：</a></span>
+                                                                        <span
+                                                                            class="md-toc-item md-toc-h3" data-ref="n1373"><a class="md-toc-inner" href="#header-n1373">（3）执行命令/usr/sbin/pwunconv。</a></span><span class="md-toc-item md-toc-h3" data-ref="n1376"><a class="md-toc-inner" href="#header-n1376">（4）编辑每个用户的密码对照文件。</a></span>
+                                                                            <span
+                                                                                class="md-toc-item md-toc-h3" data-ref="n1379"><a class="md-toc-inner" href="#header-n1379">（5）以root身份执行命令 <code>/usr/sbin/chpasswd</code>。</a></span><span class="md-toc-item md-toc-h3" data-ref="n1382"><a class="md-toc-inner" href="#header-n1382">（6）确定密码经编码写入/etc/passwd的密码栏后。</a></span>
+                                                                                <span
+                                                                                    class="md-toc-item md-toc-h2" data-ref="n1386"><a class="md-toc-inner" href="#header-n1386">用户及用户组</a></span><span class="md-toc-item md-toc-h3" data-ref="n1387"><a class="md-toc-inner" href="#header-n1387">用户UID</a></span>
+                                                                                    <span
+                                                                                        class="md-toc-item md-toc-h3" data-ref="n1398"><a class="md-toc-inner" href="#header-n1398">用户组GID</a></span><span class="md-toc-item md-toc-h3" data-ref="n1409"><a class="md-toc-inner" href="#header-n1409">Linux安全上下文：</a></span>
+                                                                                        <span
+                                                                                            class="md-toc-item md-toc-h3" data-ref="n1417"><a class="md-toc-inner" href="#header-n1417">Linux组的类别：</a></span><span class="md-toc-item md-toc-h3" data-ref="n1423"><a class="md-toc-inner" href="#header-n1423">Linux用户和组相关的配置文件：</a></span>
+                                                                                            <span
+                                                                                                class="md-toc-item md-toc-h2" data-ref="n1434"><a class="md-toc-inner" href="#header-n1434">Linux login</a></span><span class="md-toc-item md-toc-h2" data-ref="n1443"><a class="md-toc-inner" href="#header-n1443">Linux logname</a></span>
+                                                                                                <span
+                                                                                                    class="md-toc-item md-toc-h2" data-ref="n1458"><a class="md-toc-inner" href="#header-n1458">logout</a></span><span class="md-toc-item md-toc-h2" data-ref="n1464"><a class="md-toc-inner" href="#header-n1464">Linux last</a></span>
+                                                                                                    <span
+                                                                                                        class="md-toc-item md-toc-h2" data-ref="n1479"><a class="md-toc-inner" href="#header-n1479">Linux lastb</a></span><span class="md-toc-item md-toc-h2" data-ref="n1500"><a class="md-toc-inner" href="#header-n1500">Linux shutdown</a></span>
+                                                                                                        <span
+                                                                                                            class="md-toc-item md-toc-h2" data-ref="n1533"><a class="md-toc-inner" href="#header-n1533">Linux reboot</a></span><span class="md-toc-item md-toc-h2" data-ref="n1550"><a class="md-toc-inner" href="#header-n1550">Linux sleep</a></span>
+                                                                                                            <span
+                                                                                                                class="md-toc-item md-toc-h2" data-ref="n1571"><a class="md-toc-inner" href="#header-n1571">Linux screen</a></span><span class="md-toc-item md-toc-h2" data-ref="n1612"><a class="md-toc-inner" href="#header-n1612">Linux find</a></span>
+                                                                                                                <span
+                                                                                                                    class="md-toc-item md-toc-h2" data-ref="n1660"><a class="md-toc-inner" href="#header-n1660">netstat</a></span><span class="md-toc-item md-toc-h2" data-ref="n1662"><a class="md-toc-inner" href="#header-n1662">kill</a></span>
+                                                                                                                    <span
+                                                                                                                        class="md-toc-item md-toc-h2" data-ref="n1665"><a class="md-toc-inner" href="#header-n1665">重启网络服务</a></span><span class="md-toc-item md-toc-h2" data-ref="n1668"><a class="md-toc-inner" href="#header-n1668">Ubuntu中防火墙(ufw)基本操作</a></span>
+                                                                                                                        <span
+                                                                                                                            class="md-toc-item md-toc-h2" data-ref="n1672"><a class="md-toc-inner" href="#header-n1672">ifconfig </a></span><span class="md-toc-item md-toc-h2" data-ref="n1676"><a class="md-toc-inner" href="#header-n1676">ping</a></span>
+                                                                                                                            <span
+                                                                                                                                class="md-toc-item md-toc-h2" data-ref="n1680"><a class="md-toc-inner" href="#header-n1680">nslookup</a></span><span class="md-toc-item md-toc-h2" data-ref="n1683"><a class="md-toc-inner" href="#header-n1683">df -h</a></span>
+                                                                                                                                <span
+                                                                                                                                    class="md-toc-item md-toc-h2" data-ref="n1685"><a class="md-toc-inner" href="#header-n1685">ls -lh</a></span><span class="md-toc-item md-toc-h2" data-ref="n1687"><a class="md-toc-inner" href="#header-n1687">chmod</a></span>
+                                                                                                                                    <span
+                                                                                                                                        class="md-toc-item md-toc-h2" data-ref="n1690"><a class="md-toc-inner" href="#header-n1690">whereis 程序名 </a></span><span class="md-toc-item md-toc-h2" data-ref="n1693"><a class="md-toc-inner" href="#header-n1693">wc -l</a></span>
+                                                                                                                                        <span
+                                                                                                                                            class="md-toc-item md-toc-h2" data-ref="n1695"><a class="md-toc-inner" href="#header-n1695">sort</a></span><span class="md-toc-item md-toc-h2" data-ref="n1698"><a class="md-toc-inner" href="#header-n1698">uniq -c </a></span>
+                                                                                                                                            <span
+                                                                                                                                                class="md-toc-item md-toc-h2" data-ref="n1709"><a class="md-toc-inner" href="#header-n1709">ssh </a></span><span class="md-toc-item md-toc-h2" data-ref="n1711"><a class="md-toc-inner" href="#header-n1711">scp</a></span>
+                                                                                                                                                <span
+                                                                                                                                                    class="md-toc-item md-toc-h2" data-ref="n1713"><a class="md-toc-inner" href="#header-n1713">程序名 -v</a></span><span class="md-toc-item md-toc-h2" data-ref="n1716"><a class="md-toc-inner" href="#header-n1716">查看指定的端口号的进程</a></span>
+                                                                                                                                                    <span
+                                                                                                                                                        class="md-toc-item md-toc-h2" data-ref="n1719"><a class="md-toc-inner" href="#header-n1719">运维工具(XShell)</a></span><span class="md-toc-item md-toc-h2"
+                                                                                                                                                            data-ref="n1742"><a class="md-toc-inner" href="#header-n1742">周期性计划任务</a></span></p>
+        </div>
+        <p>&nbsp;</p>
+        <h2>
+            <a name='header-n4' class='md-header-anchor '></a>打印某些系统信息</h2><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+    <div
+        class="CodeMirror-measure"></div>
+        <div style="position: relative; z-index: 1;"></div>
+        <div class="CodeMirror-code" role="presentation">
+            <div class="CodeMirror-activeline" style="position: relative;">
+                <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">uname </span></pre></div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 25px;"></div>
+        <div class="CodeMirror-gutters" style="display: none; height: 25px;"></div>
+        </div>
+        </div>
+        </pre>
+        <p>DESCRIPTION</p>
+        <p> 打印某些系统信息。没有选项，与-s相同。</p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang="" style="break-inside: unset;"><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+        <div
+            class="CodeMirror-measure"></div>
+            <div style="position: relative; z-index: 1;"></div>
+            <div class="CodeMirror-code" role="presentation" style="">
+                <div class="CodeMirror-activeline" style="position: relative;">
+                    <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                    <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -a, --all</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  按以下顺序打印所有信息，如果未知，则省略-p和-i:</span></pre>
+                <pre
+                    class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                    </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -s, --kernel-name</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印内核名</span></pre>
+                    <pre
+                        class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                        </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -n, --nodename</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印网络节点主机名</span></pre>
+                        <pre
+                            class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                            </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -r, --kernel-release</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印内核发行版</span></pre>
+                            <pre
+                                class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -v, --kernel-version</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印内核版本</span></pre>
+                                <pre
+                                    class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                    </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -m, --machine</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印机器硬件名称</span></pre>
+                                    <pre
+                                        class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                        </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -p, --processor</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印处理器类型(不可移植)</span></pre>
+                                        <pre
+                                            class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                            </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -i, --hardware-platform</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  打印硬件平台(不可移植)</span></pre>
+                                            <pre
+                                                class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                                </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; -o, --operating-system</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; 打印操作系统</span></pre>
+                                                <pre
+                                                    class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                                    </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; --help </span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; <span class="cm-tab" role="presentation" cm-text="	"> </span><span class="cm-tab" role="presentation" cm-text="	">    </span>显示此帮助并退出</span></pre>
+                                                    <pre
+                                                        class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span>
+                                                        </pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; --version</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;  输出版本信息并退出</span></pre></div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 808px;"></div>
+            <div class="CodeMirror-gutters" style="display: none; height: 808px;"></div>
+            </div>
+            </div>
+            </pre>
+            <p>&nbsp;</p>
+            <h2>
+                <a name='header-n10' class='md-header-anchor '></a>Linux ulimit</h2>
+            <p>命令用于控制shell程序的资源。</p>
+            <p>ulimit为shell内建指令，可用来控制shell执行程序的资源。</p>
+            <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+            <div
+                class="CodeMirror-measure"></div>
+                <div style="position: relative; z-index: 1;"></div>
+                <div class="CodeMirror-code" role="presentation">
+                    <div class="CodeMirror-activeline" style="position: relative;">
+                        <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                        <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">ulimit [-aHS][-c &lt;core文件上限&gt;][-d &lt;数据节区大小&gt;][-f &lt;文件大小&gt;][-m &lt;内存大小&gt;][-n &lt;文件数目&gt;][-p &lt;缓冲区大小&gt;][-s &lt;堆叠大小&gt;][-t &lt;CPU时间&gt;][-u &lt;程序数目&gt;][-v &lt;虚拟内存大小&gt;]</span></pre></div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 50px;"></div>
+                <div class="CodeMirror-gutters" style="display: none; height: 50px;"></div>
+                </div>
+                </div>
+                </pre>
+                <p><strong>参数</strong>：</p>
+                <ul>
+                    <li>-a 　显示目前资源限制的设定。</li>
+                    <li>-c &lt;core文件上限&gt; 　设定core文件的最大值，单位为区块。</li>
+                    <li>-d &lt;数据节区大小&gt; 　程序数据节区的最大值，单位为KB。</li>
+                    <li>-f &lt;文件大小&gt; 　shell所能建立的最大文件，单位为区块。</li>
+                    <li>-H 　设定资源的硬性限制，也就是管理员所设下的限制。</li>
+                    <li>-m &lt;内存大小&gt; 　指定可使用内存的上限，单位为KB。</li>
+                    <li>-n &lt;文件数目&gt; 　指定同一时间最多可开启的文件数。</li>
+                    <li>-p &lt;缓冲区大小&gt; 　指定管道缓冲区的大小，单位512字节。</li>
+                    <li>-s &lt;堆叠大小&gt; 　指定堆叠的上限，单位为KB。</li>
+                    <li>-S 　设定资源的弹性限制。</li>
+                    <li>-t &lt;CPU时间&gt; 　指定CPU使用时间的上限，单位为秒。</li>
+                    <li>-u &lt;程序数目&gt; 　用户最多可开启的程序数目。</li>
+                    <li>-v &lt;虚拟内存大小&gt; 　指定可使用的虚拟内存上限，单位为KB。</li>
+                </ul>
+                <p>&nbsp;</p>
+                <h2>
+                    <a name='header-n44' class='md-header-anchor '></a>管道符</h2>
+                <p><strong>这里只提管道符，关于管道有专门创建管道的函数，以及有名管道和无名管道，以及管道之间的通信，我放在IPC通信中阐述。</strong></p>
+                <p><strong>管道符，可以把两条命令连起来，前面一条命令的输出当成后面一条命令的输入。</strong></p>
+                <p>查看nginx的进程</p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+                <div
+                    class="CodeMirror-measure"></div>
+                    <div style="position: relative; z-index: 1;"></div>
+                    <div class="CodeMirror-code" role="presentation">
+                        <div class="CodeMirror-activeline" style="position: relative;">
+                            <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                            <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">**ps -aux | grep nginx** </span></pre></div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 25px;"></div>
+                    <div class="CodeMirror-gutters" style="display: none; height: 25px;"></div>
+                    </div>
+                    </div>
+                    </pre>
+                    <p>xargs 是给命令传递参数的一个过滤器，也是组合多个命令的一个工具。</p>
+                    <p>xargs 可以将管道或标准输入（stdin）数据转换成命令行参数，也能够从文件的输出中读取数据。</p>
+                    <p>xargs 也可以将单行或多行文本输入转换为其他格式，例如多行变单行，单行变多行。</p>
+                    <p>xargs 默认的命令是 echo，这意味着通过管道传递给 xargs 的输入将会包含换行和空白，不过通过 xargs 的处理，换行和空白将被空格取代。</p>
+                    <p>xargs 是一个强有力的命令，它能够捕获一个命令的输出，然后传递给另外一个命令。</p>
+                    <p>之所以能用到这个命令，关键是由于很多命令不支持|管道来传递参数，而日常工作中有有这个必要，所以就有了 xargs 命令，例如：</p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+                    <div
+                        class="CodeMirror-measure"></div>
+                        <div style="position: relative; z-index: 1;"></div>
+                        <div class="CodeMirror-code" role="presentation">
+                            <div class="CodeMirror-activeline" style="position: relative;">
+                                <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                                <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">find /sbin -perm +700 |ls -l &nbsp; &nbsp; &nbsp; #这个命令是错误的</span></pre></div><pre class=" CodeMirror-line "
+                                role="presentation"><span role="presentation" style="padding-right: 0.1px;">find /sbin -perm +700 |xargs ls -l &nbsp; #这样才是正确的</span></pre></div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 50px;"></div>
+                        <div class="CodeMirror-gutters" style="display: none; height: 50px;"></div>
+                        </div>
+                        </div>
+                        </pre>
+                        <p>&nbsp;</p>
+                        <h2>
+                            <a name='header-n57' class='md-header-anchor '></a>xargs </h2>
+                        <p>一般是和管道一起使用。</p>
+                        <p><strong>命令格式：</strong></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+                        <div
+                            class="CodeMirror-measure"></div>
+                            <div style="position: relative; z-index: 1;"></div>
+                            <div class="CodeMirror-code" role="presentation">
+                                <div class="CodeMirror-activeline" style="position: relative;">
+                                    <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                                    <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">somecommand |xargs -item  command</span></pre></div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 25px;"></div>
+                            <div class="CodeMirror-gutters" style="display: none; height: 25px;"></div>
+                            </div>
+                            </div>
+                            </pre>
+                            <p><strong>参数：</strong></p>
+                            <ul>
+                                <li>-a file 从文件中读入作为sdtin</li>
+                                <li>-e flag ，注意有的时候可能会是-E，flag必须是一个以空格分隔的标志，当xargs分析到含有flag这个标志的时候就停止。</li>
+                                <li>-p 当每次执行一个argument的时候询问一次用户。</li>
+                                <li>-n num 后面加次数，表示命令在执行的时候一次用的argument的个数，默认是用所有的。</li>
+                                <li>-t 表示先打印命令，然后再执行。</li>
+                                <li>-i 或者是-I，这得看linux支持了，将xargs的每项名称，一般是一行一行赋值给 {}，可以用 {} 代替。</li>
+                                <li>-r no-run-if-empty 当xargs的输入为空的时候则停止xargs，不用再去执行了。</li>
+                                <li>-s num 命令行的最大字符数，指的是 xargs 后面那个命令的最大命令行字符数。</li>
+                                <li>-L num 从标准输入一次读取 num 行送给 command 命令。</li>
+                                <li>-l 同 -L。</li>
+                                <li>-d delim 分隔符，默认的xargs分隔符是回车，argument的分隔符是空格，这里修改的是xargs的分隔符。</li>
+                                <li>-x exit的意思，主要是配合-s使用。。</li>
+                                <li>-P 修改最大的进程数，默认是1，为0时候为as many as it can ，这个例子我没有想到，应该平时都用不到的吧。</li>
+                            </ul>
+                            <p>&nbsp;</p>
+                            <h2>
+                                <a name='header-n90' class='md-header-anchor '></a>Linux free</h2>
+                            <p>命令用于显示内存状态。</p>
+                            <p>free指令会显示内存的使用情况，包括实体内存，虚拟的交换文件内存，共享内存区段，以及系统核心使用的缓冲区等。</p>
+                            <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+                            <div
+                                class="CodeMirror-measure"></div>
+                                <div style="position: relative; z-index: 1;"></div>
+                                <div class="CodeMirror-code" role="presentation">
+                                    <div class="CodeMirror-activeline" style="position: relative;">
+                                        <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                                        <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">free [-bkmotV][-s &lt;间隔秒数&gt;]</span></pre></div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 25px;"></div>
+                                <div class="CodeMirror-gutters" style="display: none; height: 25px;"></div>
+                                </div>
+                                </div>
+                                </pre>
+                                <p><strong>参数说明</strong>：</p>
+                                <ul>
+                                    <li>-b 　以Byte为单位显示内存使用情况。</li>
+                                    <li>-k 　以KB为单位显示内存使用情况。</li>
+                                    <li>-m 　以MB为单位显示内存使用情况。</li>
+                                    <li>-o 　不显示缓冲区调节列。</li>
+                                    <li>-s&lt;间隔秒数&gt; 　持续观察内存使用状况。</li>
+                                    <li>-t 　显示内存总和列。</li>
+                                    <li>-V 　显示版本信息。</li>
+                                </ul>
+                                <p>&nbsp;</p>
+                                <h2>
+                                    <a name='header-n112' class='md-header-anchor '></a>Linux ps</h2>
+                                <p>命令用于显示当前进程 (process) 的状态。</p>
+                                <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences md-end-block ty-contain-cm modeLoaded" lang=""><div class="CodeMirror cm-s-inner CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 0px; left: 3.60004px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div>
+                                <div
+                                    class="CodeMirror-measure"></div>
+                                    <div style="position: relative; z-index: 1;"></div>
+                                    <div class="CodeMirror-code" role="presentation">
+                                        <div class="CodeMirror-activeline" style="position: relative;">
+                                            <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
+                                            <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">ps [options] [--help]</span></pre></div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    <div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 25px;"></div>
+                                    <div class="CodeMirror-gutters" style="display: none; height: 25px;"></div>
+                                    </div>
+                                    </div>
+                                    </pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>ps 的参数非常多, 在此仅列出几个常用的参数并大略介绍含义</li>
+                                        <li>-A 列出所有的进程</li>
+                                        <li>-w 显示加宽可以显示较多的资讯</li>
+                                        <li>a 显示所有进程</li>
+                                        <li>-a 显示同一终端下的所有程序</li>
+                                        <li>-A 显示所有进程</li>
+                                        <li>c 显示进程的真实名称</li>
+                                        <li>-N 反向选择</li>
+                                        <li>-e 等于“-A”</li>
+                                        <li>e 显示环境变量</li>
+                                        <li>f 显示程序间的关系</li>
+                                        <li>-H 显示树状结构</li>
+                                        <li>r 显示当前终端的进程</li>
+                                        <li>T 显示当前终端的所有程序</li>
+                                        <li>u 指定用户的所有进程</li>
+                                        <li>-au 显示较详细的资讯</li>
+                                        <li>-aux 显示所有包含其他使用者的行程 </li>
+                                        <li>-C&lt;命令&gt; 列出指定命令的状况</li>
+                                        <li>--lines&lt;行数&gt; 每页显示的行数</li>
+                                        <li>--width&lt;字符数&gt; 每页显示的字符数</li>
+                                        <li>--help 显示帮助信息</li>
+                                        <li>--version 显示版本显示</li>
+                                    </ul>
+                                    <p>结果字段 USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND</p>
+                                    <ul>
+                                        <li>
+                                            <p>UID是用户ID</p>
+                                        </li>
+                                        <li>
+                                            <p>PID是进程ID</p>
+                                        </li>
+                                        <li>
+                                            <p>PPID是父进程ID</p>
+                                        </li>
+                                        <li>
+                                            <p>%CPU: 占用的 CPU 使用率</p>
+                                        </li>
+                                        <li>
+                                            <p>%MEM: 占用的记忆体使用率</p>
+                                        </li>
+                                        <li>
+                                            <p>VSZ: 占用的虚拟记忆体大小</p>
+                                        </li>
+                                        <li>
+                                            <p>RSS: 占用的记忆体大小</p>
+                                        </li>
+                                        <li>
+                                            <p>TTY: 终端的次要装置号码 (minor device number of tty)</p>
+                                        </li>
+                                        <li>
+                                            <p>STAT: 该行程的状态:</p>
+                                            <ul>
+                                                <li>D: 无法中断的休眠状态 (通常 IO 的进程)</li>
+                                                <li>R: 正在执行中</li>
+                                                <li>S: 静止状态</li>
+                                                <li>T: 暂停执行</li>
+                                                <li>Z: 不存在但暂时无法消除</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <p>W: 没有足够的记忆体分页可分配</p>
+                                        </li>
+                                        <li>
+                                            <p>&lt;: 高优先序的行程</p>
+                                        </li>
+                                        <li>
+                                            <p>N: 低优先序的行程</p>
+                                        </li>
+                                        <li>
+                                            <p>L: 有记忆体分页分配并锁在记忆体内 (实时系统或捱A I/O)</p>
+                                        </li>
+                                        <li>
+                                            <p>START: 行程开始时间</p>
+                                        </li>
+                                        <li>
+                                            <p>TIME: 执行的时间</p>
+                                        </li>
+                                        <li>
+                                            <p>COMMAND:所执行的指令</p>
+                                        </li>
+                                    </ul><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n207" mdtype="fences"># ps -ef //显示进程信息，连带命令行 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n209' class='md-header-anchor '></a>Linux top</h2>
+                                    <p>命令用于实时显示 process 的动态。Linux下任务管理器，动态显示当前进程CPU及内存使用率</p>
+                                    <p>按 sheift + &gt; 或者 &lt; 进行翻页 按 q 退出</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n213" mdtype="fences">top [-] [d delay] [q] [c] [S] [s] [i] [n] [b]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>d : 改变显示的更新速度，或是在交谈式指令列( interactive command)按 s</li>
+                                        <li>q : 没有任何延迟的显示速度，如果使用者是有 superuser 的权限，则 top 将会以最高的优先序执行</li>
+                                        <li>c : 切换显示模式，共有两种模式，一是只显示执行档的名称，另一种是显示完整的路径与名称S : 累积模式，会将己完成或消失的子行程 ( dead child process ) 的 CPU time 累积起来</li>
+                                        <li>s : 安全模式，将交谈式指令取消, 避免潜在的危机</li>
+                                        <li>i : 不显示任何闲置 (idle) 或无用 (zombie) 的行程</li>
+                                        <li>n : 更新的次数，完成后将会退出 top</li>
+                                        <li>b : 批次档模式，搭配 &quot;n&quot; 参数一起使用，可以用来将 top 的结果输出到档案内</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n230' class='md-header-anchor '></a>Linux nice</h2>
+                                    <p>命令以更改过的优先序来执行程序，如果未指定程序，则会印出目前的排程优先序，内定的 adjustment 为 10，范围为 -20（最高优先序）到 19（最低优先序）。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n234" mdtype="fences">nice [-n adjustment] [-adjustment] [--adjustment=adjustment] [--help] [--version] [command [arg...]]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-n adjustment, -adjustment, --adjustment=adjustment 皆为将该原有优先序的增加 adjustment</li>
+                                        <li>--help 显示求助讯息</li>
+                                        <li>--version 显示版本资讯</li>
+                                    </ul>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n244' class='md-header-anchor '></a>Linux kill</h2>
+                                    <p>命令用于删除执行中的程序或工作。</p>
+                                    <p>kill可将指定的信息送至程序。预设的信息为SIGTERM(15)，可将指定程序终止。若仍无法终止该程序，可使用SIGKILL(9)信息尝试强制删除程序。程序或工作的编号可利用ps指令或jobs指令查看。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n248" mdtype="fences">kill [-s &lt;信息名称或编号&gt;][程序]　或　kill [-l &lt;信息编号&gt;]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-l &lt;信息编号&gt; 　若不加&lt;信息编号&gt;选项，则-l参数会列出全部的信息名称。</li>
+                                        <li>-s &lt;信息名称或编号&gt; 　指定要送出的信息。</li>
+                                        <li>[程序] 　[程序]可以是程序的PID或是PGID，也可以是工作编号。</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n257' class='md-header-anchor '></a>Linux pstree</h2>
+                                    <p>命令将所有行程以树状图显示，树状图将会以 pid (如果有指定) 或是以 init 这个基本行程为根 (root)，如果有指定使用者 id，则树状图会只显示该使用者所拥有的行程。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n261" mdtype="fences">pstree [-a] [-c] [-h|-Hpid] [-l] [-n] [-p] [-u] [-G|-U] [pid|user]
+</pre>
+                                    <p>或</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n263" mdtype="fences">pstree -V
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-a 显示该行程的完整指令及参数, 如果是被记忆体置换出去的行程则会加上括号</li>
+                                        <li>-c 如果有重覆的行程名, 则分开列出（预设值是会在前面加上 *）</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n270' class='md-header-anchor '></a>tee命令</h2>
+                                    <p><strong>功能：读取标准输入的数据，并将其内容输出成文件。语法：tee [-a][--help][--version][文件...]tee指令会从标准输入设备读取数据，将其内容输出到标准输出设备，同时保存成文件。参　　数：　-a或  --append 　追加 　--help 　在线帮助。　--version 　显示版本信息</strong></p>
+                                    <p><strong>要注意的是：在使用管道线时，前一个命令的标准错误输出不会被tee读取。</strong></p>
+                                    <p><strong>把标准错误也被tee读取</strong></p>
+                                    <p><strong>[root@xiaolyu ~]# ls -l yyy   2&gt;&amp;1 | tee -a who.out</strong></p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n276' class='md-header-anchor '></a>Linux whois</h2>
+                                    <p>命令用于查找并显示用户信息。</p>
+                                    <p>whois指令会去查找并显示指定帐号的用户相关信息，因为它是到Network Solutions的WHOIS数据库去查找，所以该帐号名称必须在上面注册方能寻获，且名称没有大小写的差别。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n280" mdtype="fences">whois [帐号名称]
+
+</pre>
+                                    <p><strong>实例</strong></p>
+                                    <p>显示指定用户信息</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n283" mdtype="fences"># whois root
+
+//查找root用户信息
+</pre>
+                                    <p>指定端口查询</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n285" mdtype="fences"># whois -p 80 Lx138.COm
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n287' class='md-header-anchor '></a>less命令</h2><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n288" mdtype="fences">less [参数] 文件 
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-b &lt;缓冲区大小&gt; 设置缓冲区的大小</li>
+                                        <li>-e 当文件显示结束后，自动离开</li>
+                                        <li>-f 强迫打开特殊文件，例如外围设备代号、目录和二进制文件</li>
+                                        <li>-g 只标志最后搜索的关键词</li>
+                                        <li>-i 忽略搜索时的大小写</li>
+                                        <li>-m 显示类似more命令的百分比</li>
+                                        <li>-N 显示每行的行号</li>
+                                        <li>-o &lt;文件名&gt; 将less 输出的内容在指定文件中保存起来</li>
+                                        <li>-Q 不使用警告音</li>
+                                        <li>-s 显示连续空行为一行</li>
+                                        <li>-S 行过长时间将超出部分舍弃</li>
+                                        <li>-x &lt;数字&gt; 将&quot;tab&quot;键显示为规定的数字空格</li>
+                                        <li>/字符串：向下搜索&quot;字符串&quot;的功能</li>
+                                        <li>?字符串：向上搜索&quot;字符串&quot;的功能</li>
+                                        <li>n：重复前一个搜索（与 / 或 ? 有关）</li>
+                                        <li>N：反向重复前一个搜索（与 / 或 ? 有关）</li>
+                                        <li>b 向后翻一页</li>
+                                        <li>d 向后翻半页</li>
+                                        <li>h 显示帮助界面</li>
+                                        <li>Q 退出less 命令</li>
+                                        <li>u 向前滚动半页</li>
+                                        <li>y 向前滚动一行</li>
+                                        <li>空格键 滚动一页</li>
+                                        <li>回车键 滚动一行</li>
+                                        <li>[pagedown]： 向下翻动一页</li>
+                                        <li>[pageup]： 向上翻动一页</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>1、查看文件</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n345" mdtype="fences">less log2013.log
+</pre>
+                                    <p>2、ps查看进程信息并通过less分页显示</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n347" mdtype="fences">ps -ef |less
+</pre>
+                                    <p>3、查看命令历史使用记录并通过less分页显示</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n349" mdtype="fences">[root@localhost test]# history | less
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n351' class='md-header-anchor '></a>Linux split</h2>
+                                    <p>命令用于将一个文件分割成数个。</p>
+                                    <p>该指令将大文件分割成较小的文件，在默认情况下将按照每1000行切割成一个小文件。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n355" mdtype="fences">split [--help][--version][-&lt;行数&gt;][-b &lt;字节&gt;][-C &lt;字节&gt;][-l &lt;行数&gt;][要切割的文件][输出文件名]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-&lt;行数&gt; : 指定每多少行切成一个小文件</li>
+                                        <li>-b&lt;字节&gt; : 指定每多少字节切成一个小文件</li>
+                                        <li>--help : 在线帮助</li>
+                                        <li>--version : 显示版本信息</li>
+                                        <li>-C&lt;字节&gt; : 与参数&quot;-b&quot;相似，但是在切 割时将尽量维持每行的完整性</li>
+                                        <li>[输出文件名] : 设置切割后文件的前置文件名， split会自动在前置文件名后再加上编号</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>使用指令&quot;split&quot;将文件&quot;README&quot;每6行切割成一个文件，输入如下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n372" mdtype="fences">$ split -6 README       #将README文件每六行分割成一个文件 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n374' class='md-header-anchor '></a>Linux whereis</h2>
+                                    <p>命令用于查找文件。</p>
+                                    <p>该指令会在特定目录中查找符合条件的文件。这些文件应属于原始代码、二进制文件，或是帮助文件。</p>
+                                    <p>该指令只能用于查找二进制文件、源代码文件和man手册页，一般文件的定位需使用locate命令。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n379" mdtype="fences">whereis [-bfmsu][-B &lt;目录&gt;...][-M &lt;目录&gt;...][-S &lt;目录&gt;...][文件...]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <p>-b 　只查找二进制文件。</p>
+                                    <p>-B&lt;目录&gt; 　只在设置的目录下查找二进制文件。</p>
+                                    <p>-f 　不显示文件名前的路径名称。</p>
+                                    <p>-m 　只查找说明文件。</p>
+                                    <p>-M&lt;目录&gt; 　只在设置的目录下查找说明文件。</p>
+                                    <p>-s 　只查找原始代码文件。</p>
+                                    <p>-S&lt;目录&gt; 　只在设置的目录下查找原始代码文件。</p>
+                                    <p>-u 　查找不包含指定类型的文件。</p>
+                                    <p>使用指令&quot;whereis&quot;查看指令&quot;bash&quot;的位置，输入如下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n390" mdtype="fences">$ whereis bash 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n392' class='md-header-anchor '></a>Linux which</h2>
+                                    <p>命令用于查找文件。</p>
+                                    <p>which指令会在环境变量$PATH设置的目录里查找符合条件的文件。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n396" mdtype="fences">which [文件...]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-n&lt;文件名长度&gt; 　指定文件名长度，指定的长度必须大于或等于所有文件中最长的文件名。</li>
+                                        <li>-p&lt;文件名长度&gt; 　与-n参数相同，但此处的&lt;文件名长度&gt;包括了文件的路径。</li>
+                                        <li>-w 　指定输出时栏位的宽度。</li>
+                                        <li>-V 　显示版本信息。</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n407' class='md-header-anchor '></a>Linux read</h2>
+                                    <p>命令用于从标准输入读取数值。</p>
+                                    <p>read 内部命令被用来从标准输入读取单行数据。这个命令可以用来读取键盘输入，当使用重定向的时候，可以读取文件中的一行数据。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n411" mdtype="fences">read [-ers] [-a aname] [-d delim] [-i text] [-n nchars] [-N nchars] [-p prompt] [-t timeout] [-u fd] [name ...]
+</pre>
+                                    <p><strong>参数说明:</strong></p>
+                                    <ul>
+                                        <li>-a 后跟一个变量，该变量会被认为是个数组，然后给其赋值，默认是以空格为分割符。</li>
+                                        <li>-d 后面跟一个标志符，其实只有其后的第一个字符有用，作为结束的标志。</li>
+                                        <li>-p 后面跟提示信息，即在输入前打印提示信息。</li>
+                                        <li>-e 在输入的时候可以使用命令补全功能。</li>
+                                        <li>-n 后跟一个数字，定义输入文本的长度，很实用。</li>
+                                        <li>-r 屏蔽\，如果没有该选项，则\作为一个转义字符，有的话 \就是个正常的字符了。</li>
+                                        <li>-s 安静模式，在输入字符时不再屏幕上显示，例如login时输入密码。</li>
+                                        <li>-t 后面跟秒数，定义输入字符的等待时间。</li>
+                                        <li>-u 后面跟fd，从文件描述符中读入，该文件描述符可以是exec新开启的。</li>
+                                    </ul>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n433' class='md-header-anchor '></a>Linux tee</h2>
+                                    <p>命令用于读取标准输入的数据，并将其内容输出成文件。</p>
+                                    <p>tee指令会从标准输入设备读取数据，将其内容输出到标准输出设备，同时保存成文件。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n437" mdtype="fences">tee [-ai][--help][--version][文件...]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-a或--append 　附加到既有文件的后面，而非覆盖它．</li>
+                                        <li>-i或--ignore-interrupts 　忽略中断信号。</li>
+                                        <li>--help 　在线帮助。</li>
+                                        <li>--version 　显示版本信息。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>使用指令&quot;tee&quot;将用户输入的数据同时保存到文件&quot;file1&quot;和&quot;file2&quot;中，输入如下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n450" mdtype="fences">$ tee file1 file2                   #在两个文件中复制内容 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n452' class='md-header-anchor '></a>Linux ln</h2>
+                                    <p>命令是一个非常重要命令，它的功能是为某一个文件在另外一个位置建立一个同步的链接。</p>
+                                    <p>当我们需要在不同的目录，用到相同的文件时，我们不需要在每一个需要的目录下都放一个必须相同的文件，我们只要在某个固定的目录，放上该文件，然后在 其它的目录下用ln命令链接（link）它就可以，不必重复的占用磁盘空间。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n456" mdtype="fences"> ln [参数][源文件或目录][目标文件或目录]
+</pre>
+                                    <p><strong>命令功能</strong> : Linux文件系统中，有所谓的链接(link)，我们可以将其视为档案的别名，而链接又可分为两种 : 硬链接(hard link)与软链接(symbolic link)，硬链接的意思是一个档案可以有多个名称，而软链接的方式则是产生一个特殊的档案，该档案的内容是指向另一个档案的位置。硬链接是存在同一个文件系统中，而软链接却可以跨越不同的文件系统。</p>
+                                    <p>不论是硬链接或软链接都不会将原本的档案复制一份，只会占用非常少量的磁碟空间。</p>
+                                    <p><strong>软链接</strong>：</p>
+                                    <ul>
+                                        <li>1.软链接，以路径的形式存在。类似于Windows操作系统中的快捷方式</li>
+                                        <li>2.软链接可以 跨文件系统 ，硬链接不可以</li>
+                                        <li>3.软链接可以对一个不存在的文件名进行链接</li>
+                                        <li>4.软链接可以对目录进行链接</li>
+                                    </ul>
+                                    <p><strong>硬链接</strong>：</p>
+                                    <ul>
+                                        <li>1.硬链接，以文件副本的形式存在。但不占用实际空间。</li>
+                                        <li>2.不允许给目录创建硬链接</li>
+                                        <li>3.硬链接只有在同一个文件系统中才能创建</li>
+                                    </ul>
+                                    <p><strong>命令参数</strong></p>
+                                    <p><strong>必要参数</strong>：</p>
+                                    <ul>
+                                        <li>-b 删除，覆盖以前建立的链接</li>
+                                        <li>-d 允许超级用户制作目录的硬链接</li>
+                                        <li>-f 强制执行</li>
+                                        <li>-i 交互模式，文件存在则提示用户是否覆盖</li>
+                                        <li>-n 把符号链接视为一般目录</li>
+                                        <li>-s 软链接(符号链接)</li>
+                                        <li>-v 显示详细的处理过程</li>
+                                    </ul>
+                                    <p>给文件创建硬链接，为log2013.log创建硬链接ln2013，log2013.log与ln2013的各项属性相同</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n495" mdtype="fences">ln log2013.log ln2013
+</pre>
+                                    <p>给文件创建软链接，为log2013.log文件创建软链接link2013，如果log2013.log丢失，link2013将失效：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n497" mdtype="fences">ln -s log2013.log link2013
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n499' class='md-header-anchor '></a>Linux sort</h2>
+                                    <p>命令用于将文本文件内容加以排序。</p>
+                                    <p>sort可针对文本文件的内容，以行为单位来排序。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n503" mdtype="fences">sort [-bcdfimMnr][-o&lt;输出文件&gt;][-t&lt;分隔字符&gt;][+&lt;起始栏位&gt;-&lt;结束栏位&gt;][--help][--verison][文件]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-b 忽略每行前面开始出的空格字符。</li>
+                                        <li>-c 检查文件是否已经按照顺序排序。</li>
+                                        <li>-d 排序时，处理英文字母、数字及空格字符外，忽略其他的字符。</li>
+                                        <li>-f 排序时，将小写字母视为大写字母。</li>
+                                        <li>-i 排序时，除了040至176之间的ASCII字符外，忽略其他的字符。</li>
+                                        <li>-m 将几个排序好的文件进行合并。</li>
+                                        <li>-M 将前面3个字母依照月份的缩写进行排序。</li>
+                                        <li>-n 依照数值的大小排序。</li>
+                                        <li>-o&lt;输出文件&gt; 将排序后的结果存入指定的文件。</li>
+                                        <li>-r 以相反的顺序来排序。</li>
+                                        <li>-t&lt;分隔字符&gt; 指定排序时所用的栏位分隔字符。</li>
+                                        <li>+&lt;起始栏位&gt;-&lt;结束栏位&gt; 以指定的栏位来排序，范围由起始栏位到结束栏位的前一栏位。</li>
+                                        <li>--help 显示帮助。</li>
+                                        <li>--version 显示版本信息。</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n534' class='md-header-anchor '></a>Linux cmp</h2>
+                                    <p>命令用于比较两个文件是否有差异。</p>
+                                    <p>当相互比较的两个文件完全一样时，则该指令不会显示任何信息。若发现有所差异，预设会标示出第一个不同之处的字符和列数编号。若不指定任何文件名称或是所给予的文件名为&quot;-&quot;，则cmp指令会从标准输入设备读取数据。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n538" mdtype="fences">cmp [-clsv][-i &lt;字符数目&gt;][--help][第一个文件][第二个文件]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-c或--print-chars 　除了标明差异处的十进制字码之外，一并显示该字符所对应字符。</li>
+                                        <li>-i&lt;字符数目&gt;或--ignore-initial=&lt;字符数目&gt; 　指定一个数目。</li>
+                                        <li>-l或--verbose 　标示出所有不一样的地方。</li>
+                                        <li>-s或--quiet或--silent 　不显示错误信息。</li>
+                                        <li>-v或--version 　显示版本信息。</li>
+                                        <li>--help 　在线帮助。</li>
+                                    </ul>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n554' class='md-header-anchor '></a>Linux diff</h2>
+                                    <p>命令用于比较文件的差异。</p>
+                                    <p>diff以逐行的方式，比较文本文件的异同处。如果指定要比较目录，则diff会比较目录中相同文件名的文件，但不会比较其中子目录。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n558" mdtype="fences">diff [-abBcdefHilnNpPqrstTuvwy][-&lt;行数&gt;][-C &lt;行数&gt;][-D &lt;巨集名称&gt;][-I &lt;字符或字符串&gt;][-S &lt;文件&gt;][-W &lt;宽度&gt;][-x &lt;文件或目录&gt;][-X &lt;文件&gt;][--help][--left-column][--suppress-common-line][文件或目录1][文件或目录2]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <p>-&lt;行数&gt; 　指定要显示多少行的文本。此参数必须与-c或-u参数一并使用。</p>
+                                    <p>-a或--text 　diff预设只会逐行比较文本文件。</p>
+                                    <p>-b或--ignore-space-change 　不检查空格字符的不同。</p>
+                                    <ul>
+                                        <li>-B或--ignore-blank-lines 　不检查空白行。</li>
+                                        <li>-c 　显示全部内文，并标出不同之处。</li>
+                                        <li>-C&lt;行数&gt;或--context&lt;行数&gt; 　与执行&quot;-c-&lt;行数&gt;&quot;指令相同。</li>
+                                        <li>-d或--minimal 　使用不同的演算法，以较小的单位来做比较。</li>
+                                        <li>-D&lt;巨集名称&gt;或ifdef&lt;巨集名称&gt; 　此参数的输出格式可用于前置处理器巨集。</li>
+                                        <li>-e或--ed 　此参数的输出格式可用于ed的script文件。</li>
+                                        <li>-f或-forward-ed 　输出的格式类似ed的script文件，但按照原来文件的顺序来显示不同处。</li>
+                                        <li>-H或--speed-large-files 　比较大文件时，可加快速度。</li>
+                                        <li>-l&lt;字符或字符串&gt;或--ignore-matching-lines&lt;字符或字符串&gt; 　若两个文件在某几行有所不同，而这几行同时都包含了选项中指定的字符或字符串，则不显示这两个文件的差异。</li>
+                                        <li>-i或--ignore-case 　不检查大小写的不同。</li>
+                                        <li>-l或--paginate 　将结果交由pr程序来分页。</li>
+                                        <li>-n或--rcs 　将比较结果以RCS的格式来显示。</li>
+                                        <li>-N或--new-file 　在比较目录时，若文件A仅出现在某个目录中，预设会显示：</li>
+                                        <li>Only in目录：文件A若使用-N参数，则diff会将文件A与一个空白的文件比较。</li>
+                                        <li>-p 　若比较的文件为C语言的程序码文件时，显示差异所在的函数名称。</li>
+                                        <li>-P或--unidirectional-new-file 　与-N类似，但只有当第二个目录包含了一个第一个目录所没有的文件时，才会将这个文件与空白的文件做比较。</li>
+                                        <li>-q或--brief 　仅显示有无差异，不显示详细的信息。</li>
+                                        <li>-r或--recursive 　比较子目录中的文件。</li>
+                                        <li>-s或--report-identical-files 　若没有发现任何差异，仍然显示信息。</li>
+                                        <li>-S&lt;文件&gt;或--starting-file&lt;文件&gt; 　在比较目录时，从指定的文件开始比较。</li>
+                                        <li>-t或--expand-tabs 　在输出时，将tab字符展开。</li>
+                                        <li>-T或--initial-tab 　在每行前面加上tab字符以便对齐。</li>
+                                        <li>-u,-U&lt;列数&gt;或--unified=&lt;列数&gt; 　以合并的方式来显示文件内容的不同。</li>
+                                        <li>-v或--version 　显示版本信息。</li>
+                                        <li>-w或--ignore-all-space 　忽略全部的空格字符。</li>
+                                        <li>-W&lt;宽度&gt;或--width&lt;宽度&gt; 　在使用-y参数时，指定栏宽。</li>
+                                        <li>-x&lt;文件名或目录&gt;或--exclude&lt;文件名或目录&gt; 　不比较选项中所指定的文件或目录。</li>
+                                        <li>-X&lt;文件&gt;或--exclude-from&lt;文件&gt; 　您可以将文件或目录类型存成文本文件，然后在=&lt;文件&gt;中指定此文本文件。</li>
+                                        <li>-y或--side-by-side 　以并列的方式显示文件的异同之处。</li>
+                                        <li>--help 　显示帮助。</li>
+                                        <li>--left-column 　在使用-y参数时，若两个文件某一行内容相同，则仅在左侧的栏位显示该行内容。</li>
+                                        <li>--suppress-common-lines 　在使用-y参数时，仅显示不同之处。</li>
+                                    </ul>
+                                    <p><strong>实例1：比较两个文件</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n629" mdtype="fences">[root@localhost test3]# diff log2014.log log2013.log 
+3c3
+&lt; 2014-03
+---
+&gt; 2013-03
+8c8
+&lt; 2013-07
+---
+&gt; 2013-08
+11,12d10
+&lt; 2013-11
+&lt; 2013-12
+</pre>
+                                    <p>上面的&quot;3c3&quot;和&quot;8c8&quot;表示log2014.log和log20143log文件在3行和第8行内容有所不同；&quot;11,12d10&quot;表示第一个文件比第二个文件多了第11和12行。</p>
+                                    <p><strong>实例2：并排格式输出</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n632" mdtype="fences" style="break-inside: unset;">[root@localhost test3]# diff log2014.log log2013.log  -y -W 50
+2013-01                 2013-01
+2013-02                 2013-02
+2014-03               | 2013-03
+2013-04                 2013-04
+2013-05                 2013-05
+2013-06                 2013-06
+2013-07                 2013-07
+2013-07               | 2013-08
+2013-09                 2013-09
+2013-10                 2013-10
+2013-11               &lt;
+2013-12               &lt;
+[root@localhost test3]# diff log2013.log log2014.log  -y -W 50
+2013-01                 2013-01
+2013-02                 2013-02
+2013-03               | 2014-03
+2013-04                 2013-04
+2013-05                 2013-05
+2013-06                 2013-06
+2013-07                 2013-07
+2013-08               | 2013-07
+2013-09                 2013-09
+2013-10                 2013-10
+                      &gt; 2013-11
+                      &gt; 2013-12
+</pre>
+                                    <p><strong>说明：</strong></p>
+                                    <ul>
+                                        <li>&quot;|&quot;表示前后2个文件内容有不同</li>
+                                        <li>&quot;&lt;&quot;表示后面文件比前面文件少了1行内容</li>
+                                        <li>&quot;&gt;&quot;表示后面文件比前面文件多了1行内容</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n641' class='md-header-anchor '></a>Linux sed</h2>
+                                    <p>命令是利用script来处理文本文件。</p>
+                                    <p>sed可依照script的指令，来处理、编辑文本文件。</p>
+                                    <p>Sed主要用来自动编辑一个或多个文件；简化对文件的反复操作；编写转换程序等。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n646" mdtype="fences">sed [-hnV][-e&lt;script&gt;][-f&lt;script文件&gt;][文本文件]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-e&lt;script&gt;或--expression=&lt;script&gt; 以选项中指定的script来处理输入的文本文件。</li>
+                                        <li>-f&lt;script文件&gt;或--file=&lt;script文件&gt; 以选项中指定的script文件来处理输入的文本文件。</li>
+                                        <li>-h或--help 显示帮助。</li>
+                                        <li>-n或--quiet或--silent 仅显示script处理后的结果。</li>
+                                        <li>-V或--version 显示版本信息。</li>
+                                    </ul>
+                                    <p><strong>动作说明</strong>：</p>
+                                    <ul>
+                                        <li>a ：新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～</li>
+                                        <li>c ：取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！</li>
+                                        <li>d ：删除，因为是删除啊，所以 d 后面通常不接任何咚咚；</li>
+                                        <li>i ：插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；</li>
+                                        <li>p ：打印，亦即将某个选择的数据印出。通常 p 会与参数 sed -n 一起运行～</li>
+                                        <li>s ：取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g 就是啦！</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>在testfile文件的第四行后添加一行，并将结果输出到标准输出，在命令行提示符下输入如下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n675" mdtype="fences">sed -e 4a\newLine testfile 
+</pre>
+                                    <p><strong>以行为单位的新增/删除</strong></p>
+                                    <p>将 /etc/passwd 的内容列出并且列印行号，同时，请将第 2~5 行删除！</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n678" mdtype="fences">[root@www ~]# nl /etc/passwd | sed '2,5d'
+1 root:x:0:0:root:/root:/bin/bash
+6 sync:x:5:0:sync:/sbin:/bin/sync
+7 shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n680' class='md-header-anchor '></a>let </h2>
+                                    <p>命令是 BASH 中用于计算的工具，用于执行一个或多个表达式，变量计算中不需要加上 $ 来表示变量。如果表达式中包含了空格或其他特殊字符，则必须引起来。</p>
+                                    <p><strong>语法格式</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n683" mdtype="fences">let arg [arg ...]
+</pre>
+                                    <p><strong>参数说明：</strong></p>
+                                    <p>arg：要执行的表达式</p>
+                                    <p><strong>实例：</strong></p>
+                                    <p>自加操作：<strong>let no++</strong></p>
+                                    <p>自减操作：<strong>let no--</strong></p>
+                                    <p>简写形式 <strong>let no+=10，let no-=20</strong>，分别等同于 <strong>let no=no+10，let no=no-20</strong>。</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n691' class='md-header-anchor '></a>Linux tr</h2>
+                                    <p>命令用于转换或删除文件中的字符。</p>
+                                    <p>tr 指令从标准输入设备读取数据，经过字符串转译后，将结果输出到标准输出设备。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n695" mdtype="fences">tr [-cdst][--help][--version][第一字符集][第二字符集]  
+tr [OPTION]…SET1[SET2] 
+</pre>
+                                    <p><strong>参数说明：</strong></p>
+                                    <ul>
+                                        <li>-c, --complement：反选设定字符。也就是符合 SET1 的部份不做处理，不符合的剩余部份才进行转换</li>
+                                        <li>-d, --delete：删除指令字符</li>
+                                        <li>-s, --squeeze-repeats：缩减连续重复的字符成指定的单个字符</li>
+                                        <li>-t, --truncate-set1：削减 SET1 指定范围，使之与 SET2 设定长度相等</li>
+                                        <li>--help：显示程序用法信息</li>
+                                        <li>--version：显示程序本身的版本信息</li>
+                                    </ul>
+                                    <p>字符集合的范围：</p>
+                                    <ul>
+                                        <li>\NNN 八进制值的字符 NNN (1 to 3 为八进制值的字符)</li>
+                                        <li>\ 反斜杠</li>
+                                        <li>\a Ctrl-G 铃声</li>
+                                        <li>\b Ctrl-H 退格符</li>
+                                        <li>\f Ctrl-L 走行换页</li>
+                                        <li>\n Ctrl-J 新行</li>
+                                        <li>\r Ctrl-M 回车</li>
+                                        <li>\t Ctrl-I tab键</li>
+                                        <li>\v Ctrl-X 水平制表符</li>
+                                        <li>CHAR1-CHAR2 ：字符范围从 CHAR1 到 CHAR2 的指定，范围的指定以 ASCII 码的次序为基础，只能由小到大，不能由大到小。</li>
+                                        <li>[CHAR*] ：这是 SET2 专用的设定，功能是重复指定的字符到与 SET1 相同长度为止</li>
+                                        <li>[CHAR*REPEAT] ：这也是 SET2 专用的设定，功能是重复指定的字符到设定的 REPEAT 次数为止(REPEAT 的数字采 8 进位制计算，以 0 为开始)</li>
+                                        <li>[:alnum:] ：所有字母字符与数字</li>
+                                        <li>[:alpha:] ：所有字母字符</li>
+                                        <li>[:blank:] ：所有水平空格</li>
+                                        <li>[:cntrl:] ：所有控制字符</li>
+                                        <li>[:digit:] ：所有数字</li>
+                                        <li>[:graph:] ：所有可打印的字符(不包含空格符)</li>
+                                        <li>[:lower:] ：所有小写字母</li>
+                                        <li>[:print:] ：所有可打印的字符(包含空格符)</li>
+                                        <li>[:punct:] ：所有标点字符</li>
+                                        <li>[:space:] ：所有水平与垂直空格符</li>
+                                        <li>[:upper:] ：所有大写字母</li>
+                                        <li>[:xdigit:] ：所有 16 进位制的数字</li>
+                                        <li>[=CHAR=] ：所有符合指定的字符(等号里的 CHAR，代表你可自订的字符)</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>将文件testfile中的小写字母全部转换成大写字母，此时，可使用如下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n764" mdtype="fences">cat testfile |tr a-z A-Z 
+</pre>
+                                    <p>大小写转换，也可以通过[:lower][:upper]参数来实现。例如使用如下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n766" mdtype="fences">cat testfile |tr [:lower:] [:upper:] 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n768' class='md-header-anchor '></a>Linux uniq</h2>
+                                    <p>命令用于检查及删除文本文件中重复出现的行列，一般与 sort 命令结合使用。</p>
+                                    <p>uniq 可检查文本文件中重复出现的行列。</p>
+                                    <p>**语法**</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n772" mdtype="fences">uniq [-cdu][-f&lt;栏位&gt;][-s&lt;字符位置&gt;][-w&lt;字符位置&gt;][--help][--version][输入文件][输出文件]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-c或--count 在每列旁边显示该行重复出现的次数。</li>
+                                        <li>-d或--repeated 仅显示重复出现的行列。</li>
+                                        <li>-f&lt;栏位&gt;或--skip-fields=&lt;栏位&gt; 忽略比较指定的栏位。</li>
+                                        <li>-s&lt;字符位置&gt;或--skip-chars=&lt;字符位置&gt; 忽略比较指定的字符。</li>
+                                        <li>-u或--unique 仅显示出一次的行列。</li>
+                                        <li>-w&lt;字符位置&gt;或--check-chars=&lt;字符位置&gt; 指定要比较的字符。</li>
+                                        <li>--help 显示帮助。</li>
+                                        <li>--version 显示版本信息。</li>
+                                        <li>[输入文件] 指定已排序好的文本文件。如果不指定此项，则从标准读取数据；</li>
+                                        <li>[输出文件] 指定输出的文件。如果不指定此选项，则将内容显示到标准输出设备（显示终端）。</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n795' class='md-header-anchor '></a>Linux wc</h2>
+                                    <p>命令用于计算字数。</p>
+                                    <p>利用wc指令我们可以计算文件的Byte数、字数、或是列数，若不指定文件名称、或是所给予的文件名为&quot;-&quot;，则wc指令会从标准输入设备读取数据。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n799" mdtype="fences">wc [-clw][--help][--version][文件...]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-c或--bytes或--chars 只显示Bytes数。</li>
+                                        <li>-l或--lines 只显示行数。</li>
+                                        <li>-w或--words 只显示字数。</li>
+                                        <li>--help 在线帮助。</li>
+                                        <li>--version 显示版本信息。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>在默认的情况下，wc将计算指定文件的行数、字数，以及字节数。使用的命令为：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n814" mdtype="fences">wc testfile 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n816' class='md-header-anchor '></a>tail </h2>
+                                    <p>命令可用于查看文件的内容，有一个常用的参数 -f 常用于查阅正在改变的日志文件。</p>
+                                    <p>tail -f filename 会把 filename 文件里的最尾部的内容显示在屏幕上，并且不断刷新，只要 filename 更新就可以看到最新的文件内容。</p>
+                                    <p><strong>命令格式：</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n820" mdtype="fences">tail [参数] [文件]  
+</pre>
+                                    <p><strong>参数：</strong></p>
+                                    <ul>
+                                        <li>-f 循环读取</li>
+                                        <li>-q 不显示处理信息</li>
+                                        <li>-v 显示详细的处理信息</li>
+                                        <li>-c&lt;数目&gt; 显示的字节数</li>
+                                        <li>-n&lt;行数&gt; 显示文件的尾部 n 行内容</li>
+                                        <li>--pid=PID 与-f合用,表示在进程ID,PID死掉之后结束</li>
+                                        <li>-q, --quiet, --silent 从不输出给出文件名的首部</li>
+                                        <li>-s, --sleep-interval=S 与-f合用,表示在每次反复的间隔休眠S秒</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>要显示 notes.log 文件的最后 10 行，请输入以下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n841" mdtype="fences">tail notes.log
+</pre>
+                                    <p>要跟踪名为 notes.log 的文件的增长情况，请输入以下命令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n843" mdtype="fences">tail -f notes.log
+</pre>
+                                    <p>此命令显示 notes.log 文件的最后 10 行。当将某些行添加至 notes.log 文件时，tail 命令会继续显示这些行。 显示一直继续，直到您按下（Ctrl-C）组合键停止显示。</p>
+                                    <p>显示文件 notes.log 的内容，从第 20 行至文件末尾:</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n846" mdtype="fences">tail +20 notes.log
+</pre>
+                                    <p>显示文件 notes.log 的最后 10 个字符:</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n848" mdtype="fences">tail -c 10 notes.log
+</pre>
+                                    <h2>
+                                        <a name='header-n849' class='md-header-anchor '></a>expr</h2>
+                                    <p>命令是一个手工命令行计数器，用于在UNIX/LINUX下求表达式变量的值，一般用于整数值，也可用于字符串。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n852" mdtype="fences">expr 表达式
+</pre>
+                                    <p><strong>表达式说明:</strong></p>
+                                    <ul>
+                                        <li>用空格隔开每个项；</li>
+                                        <li>用 / (反斜杠) 放在 shell 特定的字符前面；</li>
+                                        <li>对包含空格和其他特殊字符的字符串要用引号括起来</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>1、计算字串长度</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n863" mdtype="fences">&gt; expr length “this is a test”
+ 14
+</pre>
+                                    <p>2、抓取字串</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n865" mdtype="fences">&gt; expr substr “this is a test” 3 5
+is is
+</pre>
+                                    <p>3、抓取第一个字符数字串出现的位置</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n867" mdtype="fences">&gt; expr index "sarasara"  a
+ 2
+</pre>
+                                    <p>4、整数运算</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n869" mdtype="fences"> &gt; expr 14 % 9
+ 5
+ &gt; expr 10 + 10
+ 20
+ &gt; expr 1000 + 900
+ 1900
+ &gt; expr 30 / 3 / 2
+ 5
+ &gt; expr 30 \* 3 (使用乘号时，必须用反斜线屏蔽其特定含义。因为shell可能会误解显示星号的意义)
+ 90
+ &gt; expr 30 * 3
+ expr: Syntax error
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n871' class='md-header-anchor '></a>Linux tree</h2>
+                                    <p>命令用于以树状图列出目录的内容。</p>
+                                    <p>执行tree指令，它会列出指定目录下的所有文件，包括子目录里的文件。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n875" mdtype="fences">tree [-aACdDfFgilnNpqstux][-I &lt;范本样式&gt;][-P &lt;范本样式&gt;][目录...]
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n877' class='md-header-anchor '></a>Linux quota</h2>
+                                    <p>命令用于显示磁盘已使用的空间与限制。</p>
+                                    <p>执行quota指令，可查询磁盘空间的限制，并得知已使用多少空间。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n881" mdtype="fences">quota [-quvV][用户名称...] 或 quota [-gqvV][群组名称...]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-g 列出群组的磁盘空间限制。</li>
+                                        <li>-q 简明列表，只列出超过限制的部分。</li>
+                                        <li>-u 列出用户的磁盘空间限制。</li>
+                                        <li>-v 显示该用户或群组，在所有挂入系统的存储设备的空间限制。</li>
+                                        <li>-V 显示版本信息。</li>
+                                    </ul>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n895' class='md-header-anchor '></a>Linux ifconfig</h2>
+                                    <p>命令用于显示或设置网络设备。</p>
+                                    <p>ifconfig可设置网络设备的状态，或是显示目前的设置。</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n899' class='md-header-anchor '></a>Linux traceroute</h2>
+                                    <p>命令用于显示数据包到主机间的路径。</p>
+                                    <p>traceroute指令让你追踪网络数据包的路由途径，预设数据包大小是40Bytes，用户可另行设置。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n903" mdtype="fences">traceroute [-dFlnrvx][-f&lt;存活数值&gt;][-g&lt;网关&gt;...][-i&lt;网络界面&gt;][-m&lt;存活数值&gt;][-p&lt;通信端口&gt;][-s&lt;来源地址&gt;][-t&lt;服务类型&gt;][-w&lt;超时秒数&gt;][主机名称或IP地址][数据包大小]
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n905' class='md-header-anchor '></a>Linux date</h2>
+                                    <p>命令可以用来显示或设定系统的日期与时间，在显示方面，使用者可以设定欲显示的格式，格式设定为一个加号后接数个标记，其中可用的标记列表如下：</p>
+                                    <p>时间方面：</p>
+                                    <ul>
+                                        <li>% : 印出 %</li>
+                                        <li>%n : 下一行</li>
+                                        <li>%t : 跳格</li>
+                                        <li>%H : 小时(00..23)</li>
+                                        <li>%I : 小时(01..12)</li>
+                                        <li>%k : 小时(0..23)</li>
+                                        <li>%l : 小时(1..12)</li>
+                                        <li>%M : 分钟(00..59)</li>
+                                        <li>%p : 显示本地 AM 或 PM</li>
+                                        <li>%r : 直接显示时间 (12 小时制，格式为 hh:mm:ss [AP]M)</li>
+                                        <li>%s : 从 1970 年 1 月 1 日 00:00:00 UTC 到目前为止的秒数</li>
+                                        <li>%S : 秒(00..61)</li>
+                                        <li>%T : 直接显示时间 (24 小时制)</li>
+                                        <li>%X : 相当于 %H:%M:%S</li>
+                                        <li>%Z : 显示时区</li>
+                                    </ul>
+                                    <p>日期方面：</p>
+                                    <ul>
+                                        <li>%a : 星期几 (Sun..Sat)</li>
+                                        <li>%A : 星期几 (Sunday..Saturday)</li>
+                                        <li>%b : 月份 (Jan..Dec)</li>
+                                        <li>%B : 月份 (January..December)</li>
+                                        <li>%c : 直接显示日期与时间</li>
+                                        <li>%d : 日 (01..31)</li>
+                                        <li>%D : 直接显示日期 (mm/dd/yy)</li>
+                                        <li>%h : 同 %b</li>
+                                        <li>%j : 一年中的第几天 (001..366)</li>
+                                        <li>%m : 月份 (01..12)</li>
+                                        <li>%U : 一年中的第几周 (00..53) (以 Sunday 为一周的第一天的情形)</li>
+                                        <li>%w : 一周中的第几天 (0..6)</li>
+                                        <li>%W : 一年中的第几周 (00..53) (以 Monday 为一周的第一天的情形)</li>
+                                        <li>%x : 直接显示日期 (mm/dd/yy)</li>
+                                        <li>%y : 年份的最后两位数字 (00.99)</li>
+                                        <li>%Y : 完整年份 (0000..9999)</li>
+                                    </ul>
+                                    <p>若是不以加号作为开头，则表示要设定时间，而时间格式为 MMDDhhmm[[CC]YY][.ss]，其中 MM 为月份，DD 为日，hh 为小时，mm 为分钟，CC 为年份前两位数字，YY 为年份后两位数字，ss 为秒数。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p>当您不希望出现无意义的 0 时(比如说 1999/03/07)，则可以在标记中插入 - 符号，比如说 date &#39;+%-H:%-M:%-S&#39; 会把时分秒中无意义的 0 给去掉，像是原本的 08:09:04 会变为 8:9:4。另外，只有取得权限者(比如说 root)才能设定系统时间。</p>
+                                    <p>当您以 root 身分更改了系统时间之后，请记得以 clock -w 来将系统时间写入 CMOS 中，这样下次重新开机时系统时间才会持续抱持最新的正确值。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n978" mdtype="fences">date [-u] [-d datestr] [-s datestr] [--utc] [--universal] [--date=datestr] [--set=datestr] [--help] [--version] [+FORMAT] [MMDDhhmm[[CC]YY][.ss]]
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n980' class='md-header-anchor '></a>用户管理</h2>
+                                    <p>useradd可用来建立用户帐号。再用passwd设定帐号的密码．而可用userdel删除帐号。使用useradd指令所建立的帐号，实际上是保存在<strong>/etc/passwd</strong>文本文件中。</p>
+                                    <h2>
+                                        <a name='header-n982' class='md-header-anchor '></a>useradd</h2>
+                                    <p>添加用户</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n985" mdtype="fences">useradd 选项 用户名
+useradd -D [-b][-e &lt;有效期限&gt;][-f &lt;缓冲天数&gt;][-g &lt;群组&gt;][-G &lt;群组&gt;][-s &lt;shell&gt;]
+</pre>
+                                    <p>参数说明：</p>
+                                    <ul>
+                                        <li>
+                                            <p>选项:</p>
+                                            <ul>
+                                                <li>-c comment 指定一段注释性描述。备注文字会保存在passwd的备注栏位中。</li>
+                                                <li>-d 目录 指定用户主目录，如果此目录不存在，则同时使用-m选项，可以创建主目录。</li>
+                                                <li>-g 用户组 指定用户所属的用户组。</li>
+                                                <li>-G 用户组，用户组 指定用户所属的附加组。</li>
+                                                <li>-s Shell文件 指定用户的登录Shell。</li>
+                                                <li>-u 用户号 指定用户的用户号，如果同时有-o选项，则可以重复使用其他用户的标识号。</li>
+                                                <li>-D 　变更预设值．</li>
+                                                <li>-e&lt;有效期限&gt; 　指定帐号的有效期限。</li>
+                                                <li>-f&lt;缓冲天数&gt; 　指定在密码过期后多少天即关闭该帐号。</li>
+                                                <li>-g&lt;群组&gt; 　指定用户所属的群组。</li>
+                                                <li>-G&lt;群组&gt; 　指定用户所属的附加群组。</li>
+                                                <li>-m 　自动建立用户的登入目录。</li>
+                                                <li>-M 　不要自动建立用户的登入目录。</li>
+                                                <li>-n 　取消建立以用户名称为名的群组．</li>
+                                                <li>-r 　建立系统帐号。</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <p>用户名:</p>
+                                            <p>指定新账号的登录名。</p>
+                                        </li>
+                                    </ul>
+                                    <p><strong>实例1</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1025" mdtype="fences"># useradd –d /usr/sam -m sam
+</pre>
+                                    <p>此命令创建了一个用户sam，其中-d和-m选项用来为登录名sam产生一个主目录/usr/sam（/usr为默认的用户主目录所在的父目录）</p>
+                                    <p><strong>实例2</strong></p>
+                                    <p>添加一般用户</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1029" mdtype="fences"># useradd tt
+</pre>
+                                    <p>为添加的用户指定相应的用户组</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1031" mdtype="fences"># useradd -g root tt
+</pre>
+                                    <p>创建一个系统用户</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1033" mdtype="fences"># useradd -r tt
+</pre>
+                                    <p>为新添加的用户指定home目录</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1035" mdtype="fences"># useradd -d /home/myd tt
+</pre>
+                                    <p>建立用户且制定ID</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1037" mdtype="fences"># useradd caojh -u 544
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1039' class='md-header-anchor '></a>Linux usermod</h2>
+                                    <p>命令用于修改用户帐号。</p>
+                                    <p>usermod可用来修改用户帐号的各项设定。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1043" mdtype="fences">usermod [-LU][-c &lt;备注&gt;][-d &lt;登入目录&gt;][-e &lt;有效期限&gt;][-f &lt;缓冲天数&gt;][-g &lt;群组&gt;][-G &lt;群组&gt;][-l &lt;帐号名称&gt;][-s &lt;shell&gt;][-u &lt;uid&gt;][用户帐号]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-c&lt;备注&gt; 　修改用户帐号的备注文字。</li>
+                                        <li>-d登入目录&gt; 　修改用户登入时的目录。</li>
+                                        <li>-e&lt;有效期限&gt; 　修改帐号的有效期限。</li>
+                                        <li>-f&lt;缓冲天数&gt; 　修改在密码过期后多少天即关闭该帐号。</li>
+                                        <li>-g&lt;群组&gt; 　修改用户所属的群组。</li>
+                                        <li>-G&lt;群组&gt; 　修改用户所属的附加群组。</li>
+                                        <li>-l&lt;帐号名称&gt; 　修改用户帐号名称。</li>
+                                        <li>-L 　锁定用户密码，使密码无效。</li>
+                                        <li>-s
+                                            <shell> 　修改用户登入后所使用的shell。</li>
+                                        <li>-u
+                                            <uid> 　修改用户ID。</li>
+                                        <li>-U 　解除密码锁定。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>更改登录目录</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1070" mdtype="fences"># usermod -d /home/hnlinux root
+</pre>
+                                    <p>改变用户的uid</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1072" mdtype="fences"># usermod -u 777 root
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1074' class='md-header-anchor '></a>Linux userdel</h2>
+                                    <p>命令用于删除用户帐号。</p>
+                                    <p>userdel可删除用户帐号与相关的文件。若不加参数，则仅删除用户帐号，而不删除相关文件。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1078" mdtype="fences">userdel [-r][用户帐号]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-r 　删除用户登入目录以及目录中所有文件。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>删除用户账号</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1085" mdtype="fences"># userdel hnlinux
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1087' class='md-header-anchor '></a>Linux id</h2>
+                                    <p>命令用于显示用户的ID，以及所属群组的ID。</p>
+                                    <p>id会显示用户以及所属群组的实际与有效ID。若两个ID相同，则仅显示实际ID。若仅指定用户名称，则显示目前用户的ID。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1091" mdtype="fences">id [-gGnru][--help][--version][用户名称]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-g或--group 　显示用户所属群组的ID。</li>
+                                        <li>-G或--groups 　显示用户所属附加群组的ID。</li>
+                                        <li>-n或--name 　显示用户，所属群组或附加群组的名称。</li>
+                                        <li>-r或--real 　显示实际ID。</li>
+                                        <li>-u或--user 　显示用户ID。</li>
+                                        <li>-help 　显示帮助。</li>
+                                        <li>-version 　显示版本信息。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>显示当前用户信息</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1110" mdtype="fences"># id //显示当前用户ID
+uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel) context=root:system_r:unconfined_t
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1112' class='md-header-anchor '></a>Linux passwd</h2>
+                                    <p><strong>用户口令的管理</strong></p>
+                                    <p>用户管理的一项重要内容是用户口令的管理。用户账号刚创建时没有口令，但是被系统锁定，无法使用，必须为其指定口令后才可以使用，即使是指定空口令。</p>
+                                    <p>指定和修改用户口令的Shell命令是<code>passwd</code>。超级用户可以为自己和其他用户指定口令，普通用户只能用它修改自己的口令。命令的格式为：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1116" mdtype="fences">passwd 选项 用户名
+passwd [-k] [-l] [-u [-f]] [-d] [-S] [username]
+</pre>
+                                    <p><strong>必要参数</strong>：</p>
+                                    <ul>
+                                        <li>-d 删除密码</li>
+                                        <li>-f 强制执行</li>
+                                        <li>-k 更新只能发送在过期之后</li>
+                                        <li>-l 停止账号使用</li>
+                                        <li>-S 显示密码信息</li>
+                                        <li>-u 启用已被停止的账户</li>
+                                        <li>-x 设置密码的有效期</li>
+                                        <li>-g 修改群组密码</li>
+                                        <li>-i 过期后停止用户账号</li>
+                                    </ul>
+                                    <p><strong>选择参数</strong>：</p>
+                                    <ul>
+                                        <li>--help 显示帮助信息</li>
+                                        <li>--version 显示版本信息</li>
+                                    </ul>
+                                    <p>如果默认用户名，则修改当前用户的口令。</p>
+                                    <p>例如，假设当前用户是sam，则下面的命令修改该用户自己的口令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1145" mdtype="fences">$ passwd 
+Old password:****** 
+New password:******* 
+Re-enter new password:*******
+</pre>
+                                    <p>如果是超级用户，可以用下列形式指定任何用户的口令：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1147" mdtype="fences"># passwd sam 
+New password:******* 
+Re-enter new password:*******
+</pre>
+                                    <p>命令用来更改使用者的密码</p>
+                                    <p><strong>实例</strong></p>
+                                    <p>修改用户密码</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1151" mdtype="fences"># passwd runoob  //设置runoob用户的密码
+Enter new UNIX password:  //输入新密码，输入的密码无回显
+Retype new UNIX password:  //确认密码
+passwd: password updated successfully
+# 
+</pre>
+                                    <p>显示账号密码信息</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1153" mdtype="fences"># passwd -S runoob
+runoob P 05/13/2010 0 99999 7 -1
+</pre>
+                                    <p>删除用户密码</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1155" mdtype="fences"># passwd -d lx138 
+passwd: password expiry information changed.
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1157' class='md-header-anchor '></a>Linux w</h2>
+                                    <p>命令用于显示目前登入系统的用户信息。</p>
+                                    <p>执行这项指令可得知目前登入系统的用户有哪些人，以及他们正在执行的程序。</p>
+                                    <p>单独执行 w 指令会显示所有的用户，您也可指定用户名称，仅显示某位用户的相关信息。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1162" mdtype="fences">w [-fhlsuV][用户名称]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-f 　开启或关闭显示用户从何处登入系统。</li>
+                                        <li>-h 　不显示各栏位的标题信息列。</li>
+                                        <li>-l 　使用详细格式列表，此为预设值。</li>
+                                        <li>-s 　使用简洁格式列表，不显示用户登入时间，终端机阶段作业和程序所耗费的CPU时间。</li>
+                                        <li>-u 　忽略执行程序的名称，以及该程序耗费CPU时间的信息。</li>
+                                        <li>-V 　显示版本信息。</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n1177' class='md-header-anchor '></a>Linux su</h2>
+                                    <p>命令用于变更为其他使用者的身份，除 root 外，需要键入该使用者的密码。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1181" mdtype="fences">su [-fmp] [-c command] [-s shell] [--help] [--version] [-] [USER [ARG]]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-f 或 --fast 不必读启动档（如 csh.cshrc 等），仅用于 csh 或 tcsh</li>
+                                        <li>-m -p 或 --preserve-environment 执行 su 时不改变环境变数</li>
+                                        <li>-c command 或 --command=command 变更为帐号为 USER 的使用者并执行指令（command）后再变回原来使用者</li>
+                                        <li>-s shell 或 --shell=shell 指定要执行的 shell （bash csh tcsh 等），预设值为 /etc/passwd 内的该使用者（USER） shell</li>
+                                        <li>--help 显示说明文件</li>
+                                        <li>--version 显示版本资讯</li>
+                                        <li>- -l 或 --login 这个参数加了之后，就好像是重新 login 为该使用者一样，大部份环境变数（HOME SHELL USER等等）都是以该使用者（USER）为主，并且工作目录也会改变，如果没有指定 USER ，内定是 root</li>
+                                        <li>USER 欲变更的使用者帐号</li>
+                                        <li>ARG 传入新的 shell 参数</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n1202' class='md-header-anchor '></a>Linux finger</h2>
+                                    <p>命令可以让使用者查询一些其他使用者的资料。会列出来的资料有：</p>
+                                    <ul>
+                                        <li>Login Name</li>
+                                        <li>User Name</li>
+                                        <li>Home directory</li>
+                                        <li>Shell</li>
+                                        <li>Login status</li>
+                                        <li>mail status</li>
+                                        <li>.plan</li>
+                                        <li>.project</li>
+                                        <li>.forward</li>
+                                    </ul>
+                                    <p>其中 .plan、.project 和 .forward 就是使用者在他的 Home Directory 里的 .plan ， .project 和 .forward 等档案里的资料。如果没有就没有。finger 指令并不限定于在同一服务器上查询，也可以寻找某一个远端服务器上的使用者。只要给一个像是 E-mail address 一般的地址即可。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1226" mdtype="fences">finger [options] user[@address]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-l 　多行显示。</li>
+                                        <li>-s 　单行显示。这个选项只显示登入名称、真实姓名、终端机名称、闲置时间、登入时间、办公室号码及电话号码。如果所查询的使用者是远端服务器的使用者，这个选项无效。</li>
+                                    </ul>
+                                    <p><strong>who</strong>   <strong>查看用户登录信息</strong> </p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1235' class='md-header-anchor '></a>用户组管理</h2>
+                                    <p>每个用户都有一个用户组，系统可以对一个用户组中的所有用户进行集中管理。不同Linux 系统对用户组的规定有所不同，如Linux下的用户属于与它同名的用户组，这个用户组在创建用户时同时创建。</p>
+                                    <p>用户组的管理涉及用户组的添加、删除和修改。组的增加、删除和修改实际上就是对<strong>/etc/group</strong>文件的更新。</p>
+                                    <h2>
+                                        <a name='header-n1238' class='md-header-anchor '></a>groupadd</h2>
+                                    <p>添加组</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1240" mdtype="fences">groupadd 选项 用户组
+</pre>
+                                    <p>可以使用的选项有：</p>
+                                    <ul>
+                                        <li>-g GID 指定新用户组的组标识号（GID）。</li>
+                                        <li>-o 一般与-g选项同时使用，表示新用户组的GID可以与系统已有用户组的GID相同。</li>
+                                    </ul>
+                                    <p><strong>实例1：</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1248" mdtype="fences"># groupadd group1
+</pre>
+                                    <p>此命令向系统中增加了一个新组group1，新组的组标识号是在当前已有的最大组标识号的基础上加1。</p>
+                                    <p><strong>实例2：</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1251" mdtype="fences"># groupadd -g 101 group2
+</pre>
+                                    <p>此命令向系统中增加了一个新组group2，同时指定新组的组标识号是101。</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1254' class='md-header-anchor '></a>Linux groupmod</h2>
+                                    <p>命令用于更改群组识别码或名称。</p>
+                                    <p>需要更改群组的识别码或名称时，可用groupmod指令来完成这项工作。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1258" mdtype="fences">groupmod [-g &lt;群组识别码&gt; &lt;-o&gt;][-n &lt;新群组名称&gt;][群组名称]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-g &lt;群组识别码&gt; 　设置欲使用的群组识别码。</li>
+                                        <li>-o 　重复使用群组识别码。</li>
+                                        <li>-n &lt;新群组名称&gt; 　设置欲使用的群组名称。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>修改组名</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1269" mdtype="fences">[root@w3cschool.cc ~]# groupadd linuxso 
+[root@w3cschool.cc ~]# tail -1 /etc/group 
+linuxso:x:500: 
+[root@w3cschool.cc ~]# tail -1 /etc/group 
+linuxso:x:500: 
+[root@w3cschool.cc ~]# groupmod -n linux linuxso 
+[root@w3cschool.cc ~]# tail -1 /etc/group 
+linux:x:500:
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1271' class='md-header-anchor '></a>Linux groupdel</h2>
+                                    <p>命令用于删除群组。</p>
+                                    <p>需要从系统上删除群组时，可用groupdel(group delete)指令来完成这项工作。倘若该群组中仍包括某些用户，则必须先删除这些用户后，方能删除群组。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1275" mdtype="fences">groupdel [群组名称]
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1277' class='md-header-anchor '></a>groups查看当前用户所在全部组。</h2>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1279' class='md-header-anchor '></a>切换用户组</h2>
+                                    <p>如果一个用户同时属于多个用户组，那么用户可以在用户组之间切换，以便具有其他用户组的权限。</p>
+                                    <p>用户可以在登录后，使用命令newgrp切换到其他用户组，这个命令的参数就是目的用户组。例如：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1282" mdtype="fences">$ newgrp root
+</pre>
+                                    <p>这条命令将当前用户切换到root用户组，前提条件是root用户组确实是该用户的主组或附加组。类似于用户账号的管理，用户组的管理也可以通过集成的系统管理工具来完成。</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1285' class='md-header-anchor '></a>用户账号的系统文件</h2>
+                                    <p>完成用户管理的工作有许多种方法，但是每一种方法实际上都是对有关的系统文件进行修改。</p>
+                                    <p>与用户和用户组相关的信息都存放在一些系统文件中，这些文件包括<strong>/etc/passwd, /etc/shadow, /etc/group</strong>等。</p>
+                                    <p>下面分别介绍这些文件的内容。</p>
+                                    <h3>
+                                        <a name='header-n1289' class='md-header-anchor '></a>1、/etc/passwd文件是用户管理工作涉及的最重要的一个文件。</h3>
+                                    <p>Linux系统中的每个用户都在/etc/passwd文件中有一个对应的记录行，它记录了这个用户的一些基本属性。</p>
+                                    <p>这个文件对所有用户都是可读的。它的内容类似下面的例子：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1292" mdtype="fences">＃ cat /etc/passwd
+
+root:x:0:0:Superuser:/:
+daemon:x:1:1:System daemons:/etc:
+bin:x:2:2:Owner of system commands:/bin:
+sys:x:3:3:Owner of system files:/usr/sys:
+adm:x:4:4:System accounting:/usr/adm:
+uucp:x:5:5:UUCP administrator:/usr/lib/uucp:
+auth:x:7:21:Authentication administrator:/tcb/files/auth:
+cron:x:9:16:Cron daemon:/usr/spool/cron:
+listen:x:37:4:Network daemon:/usr/net/nls:
+lp:x:71:18:Printer administrator:/usr/spool/lp:
+sam:x:200:50:Sam san:/usr/sam:/bin/sh
+</pre>
+                                    <p>从上面的例子我们可以看到，/etc/passwd中一行记录对应着一个用户，每行记录又被冒号(:)分隔为7个字段，其格式和具体含义如下：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1294" mdtype="fences">用户名:口令:用户标识号:组标识号:注释性描述:主目录:登录Shell
+</pre>
+                                    <h4>
+                                        <a name='header-n1295' class='md-header-anchor '></a>1）&quot;用户名&quot;是代表用户账号的字符串。</h4>
+                                    <p>通常长度不超过8个字符，并且由大小写字母和/或数字组成。登录名中不能有冒号(:)，因为冒号在这里是分隔符。</p>
+                                    <p>为了兼容起见，登录名中最好不要包含点字符(.)，并且不使用连字符(-)和加号(+)打头。</p>
+                                    <h4>
+                                        <a name='header-n1298' class='md-header-anchor '></a>2）“口令”一些系统中，存放着加密后的用户口令字。</h4>
+                                    <p>虽然这个字段存放的只是用户口令的加密串，不是明文，但是由于/etc/passwd文件对所有用户都可读，所以这仍是一个安全隐患。因此，现在许多Linux 系统（如SVR4）都使用了shadow技术，把真正的加密后的用户口令字存放到/etc/shadow文件中，而在/etc/passwd文件的口令字段中只存放一个特殊的字符，例如“x”或者“*”。</p>
+                                    <h4>
+                                        <a name='header-n1300' class='md-header-anchor '></a>3）“用户标识号”是一个整数，系统内部用它来标识用户。</h4>
+                                    <p>一般情况下它与用户名是一一对应的。如果几个用户名对应的用户标识号是一样的，系统内部将把它们视为同一个用户，但是它们可以有不同的口令、不同的主目录以及不同的登录Shell等。</p>
+                                    <p>通常用户标识号的取值范围是0～65 535。0是超级用户root的标识号，1～99由系统保留，作为管理账号，普通用户的标识号从100开始。在Linux系统中，这个界限是500。</p>
+                                    <h4>
+                                        <a name='header-n1303' class='md-header-anchor '></a>4）“组标识号”字段记录的是用户所属的用户组。</h4>
+                                    <p>它对应着/etc/group文件中的一条记录。</p>
+                                    <h4>
+                                        <a name='header-n1305' class='md-header-anchor '></a>5)“注释性描述”字段记录着用户的一些个人情况。</h4>
+                                    <p>例如用户的真实姓名、电话、地址等，这个字段并没有什么实际的用途。在不同的Linux 系统中，这个字段的格式并没有统一。在许多Linux系统中，这个字段存放的是一段任意的注释性描述文字，用做finger命令的输出。</p>
+                                    <h4>
+                                        <a name='header-n1307' class='md-header-anchor '></a>6)“主目录”，也就是用户的起始工作目录。</h4>
+                                    <p>它是用户在登录到系统之后所处的目录。在大多数系统中，各用户的主目录都被组织在同一个特定的目录下，而用户主目录的名称就是该用户的登录名。各用户对自己的主目录有读、写、执行（搜索）权限，其他用户对此目录的访问权限则根据具体情况设置。</p>
+                                    <h4>
+                                        <a name='header-n1309' class='md-header-anchor '></a>7)用户登录后，要启动一个进程，负责将用户的操作传给内核，这个进程是用户登录到系统后运行的命令解释器或某个特定的程序，即Shell。</h4>
+                                    <p>Shell是用户与Linux系统之间的接口。Linux的Shell有许多种，每种都有不同的特点。常用的有sh(Bourne Shell), csh(C Shell), ksh(Korn Shell), tcsh(TENEX/TOPS-20 type C Shell), bash(Bourne Again Shell)等。</p>
+                                    <p>系统管理员可以根据系统情况和用户习惯为用户指定某个Shell。如果不指定Shell，那么系统使用sh为默认的登录Shell，即这个字段的值为/bin/sh。</p>
+                                    <p><strong>用户的登录Shell也可以指定为某个特定的程序（此程序不是一个命令解释器）。</strong></p>
+                                    <p>利用这一特点，我们可以限制用户只能运行指定的应用程序，在该应用程序运行结束后，用户就自动退出了系统。有些Linux 系统要求只有那些在系统中登记了的程序才能出现在这个字段中。</p>
+                                    <p>&nbsp;</p>
+                                    <h4>
+                                        <a name='header-n1315' class='md-header-anchor '></a>系统中有一类用户称为伪用户（psuedo users）。</h4>
+                                    <p>这些用户在/etc/passwd文件中也占有一条记录，但是不能登录，因为它们的登录Shell为空。它们的存在主要是方便系统管理，满足相应的系统进程对文件属主的要求。</p>
+                                    <p>常见的伪用户如下所示：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1318" mdtype="fences">伪 用 户 含 义 
+bin 拥有可执行的用户命令文件 
+sys 拥有系统文件 
+adm 拥有帐户文件 
+uucp UUCP使用 
+lp lp或lpd子系统使用 
+nobody NFS使用
+</pre>
+                                    <p>## </p>
+                                    <p><strong>除了上面列出的伪用户外，还有许多标准的伪用户，例如：audit, cron, mail, usenet等，它们也都各自为相关的进程和文件所需要。</strong></p>
+                                    <p>由于/etc/passwd文件是所有用户都可读的，如果用户的密码太简单或规律比较明显的话，一台普通的计算机就能够很容易地将它破解，因此对安全性要求较高的Linux系统都把加密后的口令字分离出来，单独存放在一个文件中，这个文件是/etc/shadow文件。 有超级用户才拥有该文件读权限，这就保证了用户密码的安全性。</p>
+                                    <p>&nbsp;</p>
+                                    <h3>
+                                        <a name='header-n1323' class='md-header-anchor '></a>2、/etc/shadow中的记录行与/etc/passwd中的一一对应，它由pwconv命令根据/etc/passwd中的数据自动产生</h3>
+                                    <p>它的文件格式与/etc/passwd类似，由若干个字段组成，字段之间用&quot;:&quot;隔开。这些字段是：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1325" mdtype="fences">登录名:加密口令:最后一次修改时间:最小时间间隔:最大时间间隔:警告时间:不活动时间:失效时间:标志
+</pre>
+                                    <ol start=''>
+                                        <li>&quot;登录名&quot;是与/etc/passwd文件中的登录名相一致的用户账号</li>
+                                        <li>&quot;口令&quot;字段存放的是加密后的用户口令字，长度为13个字符。如果为空，则对应用户没有口令，登录时不需要口令；如果含有不属于集合 { ./0-9A-Za-z }中的字符，则对应的用户不能登录。</li>
+                                        <li>&quot;最后一次修改时间&quot;表示的是从某个时刻起，到用户最后一次修改口令时的天数。时间起点对不同的系统可能不一样。例如在SCO Linux 中，这个时间起点是1970年1月1日。</li>
+                                        <li>&quot;最小时间间隔&quot;指的是两次修改口令之间所需的最小天数。</li>
+                                        <li>&quot;最大时间间隔&quot;指的是口令保持有效的最大天数。</li>
+                                        <li>&quot;警告时间&quot;字段表示的是从系统开始警告用户到用户密码正式失效之间的天数。</li>
+                                        <li>&quot;不活动时间&quot;表示的是用户没有登录活动但账号仍能保持有效的最大天数。</li>
+                                        <li>&quot;失效时间&quot;字段给出的是一个绝对的天数，如果使用了这个字段，那么就给出相应账号的生存期。期满后，该账号就不再是一个合法的账号，也就不能再用来登录了。</li>
+                                    </ol>
+                                    <p>下面是/etc/shadow的一个例子：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1344" mdtype="fences" style="break-inside: unset;">＃ cat /etc/shadow
+
+root:Dnakfw28zf38w:8764:0:168:7:::
+daemon:*::0:0::::
+bin:*::0:0::::
+sys:*::0:0::::
+adm:*::0:0::::
+uucp:*::0:0::::
+nuucp:*::0:0::::
+auth:*::0:0::::
+cron:*::0:0::::
+listen:*::0:0::::
+lp:*::0:0::::
+sam:EkdiSECLWPdSa:9740:0:0::::
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h3>
+                                        <a name='header-n1346' class='md-header-anchor '></a>用户组的所有信息都存放在/etc/group文件中。</h3>
+                                    <p>将用户分组是Linux 系统中对用户进行管理及控制访问权限的一种手段。</p>
+                                    <p>每个用户都属于某个用户组；一个组中可以有多个用户，一个用户也可以属于不同的组。</p>
+                                    <p>当一个用户同时是多个组中的成员时，在/etc/passwd文件中记录的是用户所属的主组，也就是登录时所属的默认组，而其他组称为附加组。</p>
+                                    <p>用户要访问属于附加组的文件时，必须首先使用newgrp命令使自己成为所要访问的组中的成员。</p>
+                                    <p>用户组的所有信息都存放在/etc/group文件中。此文件的格式也类似于/etc/passwd文件，由冒号(:)隔开若干个字段，这些字段有：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1352" mdtype="fences">组名:口令:组标识号:组内用户列表
+</pre>
+                                    <ol start=''>
+                                        <li>&quot;组名&quot;是用户组的名称，由字母或数字构成。与/etc/passwd中的登录名一样，组名不应重复。</li>
+                                        <li>&quot;口令&quot;字段存放的是用户组加密后的口令字。一般Linux 系统的用户组都没有口令，即这个字段一般为空，或者是*。</li>
+                                        <li>&quot;组标识号&quot;与用户标识号类似，也是一个整数，被系统内部用来标识组。</li>
+                                        <li>&quot;组内用户列表&quot;是属于这个组的所有用户的列表/b]，不同用户之间用逗号(,)分隔。这个用户组可能是用户的主组，也可能是附加组。</li>
+                                    </ol>
+                                    <p>/etc/group文件的一个例子如下：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1363" mdtype="fences">root::0:root
+bin::2:root,bin
+sys::3:root,uucp
+adm::4:root,adm
+daemon::5:root,daemon
+lp::7:root,lp
+users::20:root,sam
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1365' class='md-header-anchor '></a>添加批量用户</h2>
+                                    <p>添加和删除用户对每位Linux系统管理员都是轻而易举的事，比较棘手的是如果要添加几十个、上百个甚至上千个用户时，我们不太可能还使用useradd一个一个地添加，必然要找一种简便的创建大量用户的方法。Linux系统提供了创建大量用户的工具，可以让您立即创建大量用户，方法如下：</p>
+                                    <h3>
+                                        <a name='header-n1367' class='md-header-anchor '></a>（1）先编辑一个文本用户文件。</h3>
+                                    <p>每一列按照<code>/etc/passwd</code>密码文件的格式书写，要注意每个用户的用户名、UID、宿主目录都不可以相同，其中密码栏可以留做空白或输入x号。一个范例文件user.txt内容如下：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1369" mdtype="fences">user001::600:100:user:/home/user001:/bin/bash
+user002::601:100:user:/home/user002:/bin/bash
+user003::602:100:user:/home/user003:/bin/bash
+user004::603:100:user:/home/user004:/bin/bash
+user005::604:100:user:/home/user005:/bin/bash
+user006::605:100:user:/home/user006:/bin/bash
+</pre>
+                                    <h3>
+                                        <a name='header-n1370' class='md-header-anchor '></a>（2）以root身份执行命令 <code>/usr/sbin/newusers</code>，从刚创建的用户文件<code>user.txt</code>中导入数据，创建用户：</h3><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1371" mdtype="fences"># newusers &lt; user.txt
+</pre>
+                                    <p>然后可以执行命令 <code>vipw</code> 或 <code>vi /etc/passwd</code> 检查 <code>/etc/passwd</code> 文件是否已经出现这些用户的数据，并且用户的宿主目录是否已经创建。</p>
+                                    <h3>
+                                        <a name='header-n1373' class='md-header-anchor '></a>（3）执行命令/usr/sbin/pwunconv。</h3>
+                                    <p>将 <code>/etc/shadow</code> 产生的 <code>shadow</code> 密码解码，然后回写到 <code>/etc/passwd</code> 中，并将<code>/etc/shadow</code>的<code>shadow</code>密码栏删掉。这是为了方便下一步的密码转换工作，即先取消 <code>shadow password</code> 功能。</p><pre spellcheck="false"
+                                        class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1375" mdtype="fences"># pwunconv
+</pre>
+                                    <h3>
+                                        <a name='header-n1376' class='md-header-anchor '></a>（4）编辑每个用户的密码对照文件。</h3>
+                                    <p>范例文件 <code>passwd.txt</code> 内容如下：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1378" mdtype="fences">user001:密码
+user002:密码
+user003:密码
+user004:密码
+user005:密码
+user006:密码
+</pre>
+                                    <h3>
+                                        <a name='header-n1379' class='md-header-anchor '></a>（5）以root身份执行命令 <code>/usr/sbin/chpasswd</code>。</h3>
+                                    <p>创建用户密码，<code>chpasswd</code> 会将经过 <code>/usr/bin/passwd</code> 命令编码过的密码写入 <code>/etc/passwd</code> 的密码栏。</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1381"
+                                        mdtype="fences"># chpasswd &lt; passwd.txt
+</pre>
+                                    <h3>
+                                        <a name='header-n1382' class='md-header-anchor '></a>（6）确定密码经编码写入/etc/passwd的密码栏后。</h3>
+                                    <p>执行命令 <code>/usr/sbin/pwconv</code> 将密码编码为 <code>shadow password</code>，并将结果写入 <code>/etc/shadow</code>。</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1384" mdtype="fences"># pwconv
+</pre>
+                                    <p>这样就完成了大量用户的创建了，之后您可以到/home下检查这些用户宿主目录的权限设置是否都正确，并登录验证用户密码是否正确</p>
+                                    <h2>
+                                        <a name='header-n1386' class='md-header-anchor '></a>用户及用户组</h2>
+                                    <h3>
+                                        <a name='header-n1387' class='md-header-anchor '></a>用户UID</h3>
+                                    <ul>
+                                        <li>
+                                            <p>管理员：root, 0</p>
+                                        </li>
+                                        <li>
+                                            <p>普通用户：1-65535 </p>
+                                            <ul>
+                                                <li>系统用户：1-499, 1-999(centos7) 作用：对守护进程获取资源进行权限分配</li>
+                                                <li>登录用户:500+, 1000+</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <h3>
+                                        <a name='header-n1398' class='md-header-anchor '></a>用户组GID</h3>
+                                    <ul>
+                                        <li>
+                                            <p>管理员组：root, 0</p>
+                                        </li>
+                                        <li>
+                                            <p>普通组： </p>
+                                            <ul>
+                                                <li>系统组：1-499, 1-999(centos7)</li>
+                                                <li>普通组：500+, 1000+</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <h3>
+                                        <a name='header-n1409' class='md-header-anchor '></a>Linux安全上下文：</h3>
+                                    <ul>
+                                        <li>运行中的程序：进程 (process)</li>
+                                        <li>以进程发起者的身份运行：</li>
+                                        <li>进程所能够访问的所有资源的权限取决于进程的发起者的身份；</li>
+                                    </ul>
+                                    <h3>
+                                        <a name='header-n1417' class='md-header-anchor '></a>Linux组的类别：</h3>
+                                    <ul>
+                                        <li>用户的基本组(主组)：组名同用户名，且仅包含一个用户：私有组</li>
+                                        <li>用户的附加组(额外组)：</li>
+                                    </ul>
+                                    <h3>
+                                        <a name='header-n1423' class='md-header-anchor '></a>Linux用户和组相关的配置文件：</h3>
+                                    <ul>
+                                        <li>/etc/passwd：用户及其属性信息(名称、UID、基本组ID等等)；</li>
+                                        <li>/etc/group：组及其属性信息；</li>
+                                        <li>/etc/shadow：用户密码及其相关属性；</li>
+                                        <li>/etc/gshadow：组密码及其相关属性；</li>
+                                    </ul>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1434' class='md-header-anchor '></a>Linux login</h2>
+                                    <p>命令用于登入系统。</p>
+                                    <p>login指令让用户登入系统，您亦可通过它的功能随时更换登入身份。在Slackware发行版中 ，您可在指令后面附加欲登入的用户名称，它会直接询问密码，等待用户输入。当/etc目录里含名称为nologin的文件时，系统只root帐号登入系统，其他用户一律不准登入。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1438" mdtype="fences">login
+</pre>
+                                    <p><strong>实例</strong></p>
+                                    <p>使用新的身份登录系统</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1441" mdtype="fences"># login
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1443' class='md-header-anchor '></a>Linux logname</h2>
+                                    <p>命令用于显示用户名称。</p>
+                                    <p>执行logname指令，它会显示目前用户的名称。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1447" mdtype="fences">logname [--help][--version]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>--help 　在线帮助。</li>
+                                        <li>--vesion 　显示版本信息。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>显示登录账号的信息：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1456" mdtype="fences"># logname 
+root
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1458' class='md-header-anchor '></a>logout</h2>
+                                    <p>命令用于退出系统。</p>
+                                    <p>logout指令让用户退出系统，其功能和login指令相互对应。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1462" mdtype="fences">logout
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1464' class='md-header-anchor '></a>Linux last</h2>
+                                    <p> 命令用于显示用户最近登录信息。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1468" mdtype="fences">shell&gt;&gt; last [options]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-R 省略 hostname 的栏位</li>
+                                        <li>-num 展示前 num 个</li>
+                                        <li>username 展示 username 的登入讯息</li>
+                                        <li>tty 限制登入讯息包含终端机代号</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n1479' class='md-header-anchor '></a>Linux lastb</h2>
+                                    <p>命令用于列出登入系统失败的用户相关信息。</p>
+                                    <p>单独执行lastb指令，它会读取位于/var/log目录下，名称为btmp的文件，并把该文件内容</p>
+                                    <p>记录的登入失败的用户名单，全部显示出来。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1484" mdtype="fences">lastb [-adRx][-f &lt;记录文件&gt;][-n &lt;显示列数&gt;][帐号名称...][终端机编号...]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-a 　把从何处登入系统的主机名称或IP地址显示在最后一行。</li>
+                                        <li>-d 　将IP地址转换成主机名称。</li>
+                                        <li>-f&lt;记录文件&gt; 　指定记录文件。</li>
+                                        <li>-n&lt;显示列数&gt;或-&lt;显示列数&gt; 　设置列出名单的显示列数。</li>
+                                        <li>-R 　不显示登入系统的主机名称或IP地址。</li>
+                                        <li>-x 　显示系统关机，重新开机，以及执行等级的改变等信息。</li>
+                                    </ul>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1500' class='md-header-anchor '></a>Linux shutdown</h2>
+                                    <p>命令可以用来进行关机程序，并且在关机以前传送讯息给所有使用者正在执行的程序，shutdown 也可以用来重开机。</p>
+                                    <p>使用权限：系统管理者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1504" mdtype="fences">shutdown [-t seconds] [-rkhncfF] time [message]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-t seconds : 设定在几秒钟之后进行关机程序。</li>
+                                        <li>-k : 并不会真的关机，只是将警告讯息传送给所有使用者。</li>
+                                        <li>-r : 关机后重新开机。</li>
+                                        <li>-h : 关机后停机。</li>
+                                        <li>-n : 不采用正常程序来关机，用强迫的方式杀掉所有执行中的程序后自行关机。</li>
+                                        <li>-c : 取消目前已经进行中的关机动作。</li>
+                                        <li>-f : 关机时，不做 fcsk 动作(检查 Linux 档系统)。</li>
+                                        <li>-F : 关机时，强迫进行 fsck 动作。</li>
+                                        <li>time : 设定关机的时间。</li>
+                                        <li>message : 传送给所有使用者的警告讯息。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>立即关机</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1529" mdtype="fences"># shutdown -h now
+</pre>
+                                    <p>指定5分钟后关机</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1531" mdtype="fences"># shutdown +5 “System will shutdown after 5 minutes” //5分钟够关机并显示警告信息
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1533' class='md-header-anchor '></a>Linux reboot</h2>
+                                    <p>命令用于用来重新启动计算机。</p>
+                                    <p>若系统的 runlevel 为 0 或 6 ，则重新开机，否则以 shutdown 指令（加上 -r 参数）来取代</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1537" mdtype="fences">reboot [-n] [-w] [-d] [-f] [-i]
+</pre>
+                                    <p><strong>参数</strong>：</p>
+                                    <ul>
+                                        <li>-n : 在重开机前不做将记忆体资料写回硬盘的动作</li>
+                                        <li>-w : 并不会真的重开机，只是把记录写到 /var/log/wtmp 档案里</li>
+                                        <li>-d : 不把记录写到 /var/log/wtmp 档案里（-n 这个参数包含了 -d）</li>
+                                        <li>-f : 强迫重开机，不呼叫 shutdown 这个指令</li>
+                                        <li>-i : 在重开机之前先把所有网络相关的装置先停止</li>
+                                    </ul>
+                                    <h2>
+                                        <a name='header-n1550' class='md-header-anchor '></a>Linux sleep</h2>
+                                    <p>命令可以用来将目前动作延迟一段时间。</p>
+                                    <p>使用权限：所有使用者。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1554" mdtype="fences">sleep [--help] [--version] number[smhd]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>--help : 显示辅助讯息</li>
+                                        <li>--version : 显示版本编号</li>
+                                        <li>number : 时间长度，后面可接 s、m、h 或 d</li>
+                                        <li>其中 s 为秒，m 为 分钟，h 为小时，d 为日数</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>休眠5分钟</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1567" mdtype="fences"># sleep 5m
+</pre>
+                                    <p>显示目前时间后延迟 1 分钟，之后再次显示时间</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1569" mdtype="fences">date;sleep 1m;date
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1571' class='md-header-anchor '></a>Linux screen</h2>
+                                    <p>命令用于多重视窗管理程序。</p>
+                                    <p>screen为多重视窗管理程序。此处所谓的视窗，是指一个全屏幕的文字模式画面。通常只有在使用telnet登入主机或是使用老式的终端机时，才有可能用到screen程序。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1575" mdtype="fences">screen [-AmRvx -ls -wipe][-d &lt;作业名称&gt;][-h &lt;行数&gt;][-r &lt;作业名称&gt;][-s &lt;shell&gt;][-S &lt;作业名称&gt;]
+</pre>
+                                    <p><strong>参数说明</strong>：</p>
+                                    <ul>
+                                        <li>-A 　将所有的视窗都调整为目前终端机的大小。</li>
+                                        <li>-d&lt;作业名称&gt; 　将指定的screen作业离线。</li>
+                                        <li>-h&lt;行数&gt; 　指定视窗的缓冲区行数。</li>
+                                        <li>-m 　即使目前已在作业中的screen作业，仍强制建立新的screen作业。</li>
+                                        <li>-r&lt;作业名称&gt; 　恢复离线的screen作业。</li>
+                                        <li>-R 　先试图恢复离线的作业。若找不到离线的作业，即建立新的screen作业。</li>
+                                        <li>-s
+                                            <shell> 　指定建立新视窗时，所要执行的shell。</li>
+                                        <li>-S&lt;作业名称&gt; 　指定screen作业的名称。</li>
+                                        <li>-v 　显示版本信息。</li>
+                                        <li>-x 　恢复之前离线的screen作业。</li>
+                                        <li>-ls或--list 　显示目前所有的screen作业。</li>
+                                        <li>-wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。</li>
+                                    </ul>
+                                    <p><strong>实例</strong></p>
+                                    <p>创建 screen 终端</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1604" mdtype="fences"># screen //创建 screen 终端
+</pre>
+                                    <p>创建 screen 终端 并执行任务</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1606" mdtype="fences"># screen vi ~/main.c //创建 screen 终端 ，并执行 vi命令
+</pre>
+                                    <p>离开 screen 终端</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1608" mdtype="fences"># screen vi ~/main.c //创建 screen 终端 ，并执行 vi命令
+
+#include 
+
+main ()
+{
+
+}
+
+"~/mail.c"       0,0-1    
+
+在 screen 终端 下 按下 Ctrl+a d键
+</pre>
+                                    <p>重新连接离开的 screen 终端</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1610" mdtype="fences"># screen -ls  //显示已创建的screen终端 
+There are screens on:
+2433.pts-3.linux    (2013年10月20日 16时48分59秒)    (Detached)
+2428.pts-3.linux    (2013年10月20日 16时48分05秒)    (Detached)
+2284.pts-3.linux    (2013年10月20日 16时14分55秒)    (Detached)
+2276.pts-3.linux    (2013年10月20日 16时13分18秒)    (Detached)
+4 Sockets in /var/run/screen/S-root.
+
+# screen -r 2276 //连接 screen_id 为 2276 的 screen终端
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1612' class='md-header-anchor '></a>Linux find</h2>
+                                    <p>命令用来在指定目录下查找文件。任何位于参数之前的字符串都将被视为欲查找的目录名。如果使用该命令时，不设置任何参数，则find命令将在当前目录下查找子目录与文件。并且将查找到的子目录和文件全部进行显示。</p>
+                                    <p><strong>语法</strong></p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1615" mdtype="fences">find   path   -option   [   -print ]   [ -exec   -ok   command ]   {} \;
+</pre>
+                                    <p><strong>参数说明</strong> :</p>
+                                    <p>find 根据下列规则判断 path 和 expression，在命令列上第一个 - ( ) , ! 之前的部份为 path，之后的是 expression。如果 path 是空字串则使用目前路径，如果 expression 是空字串则使用 -print 为预设 expression。</p>
+                                    <p>expression 中可使用的选项有二三十个之多，在此只介绍最常用的部份。</p>
+                                    <p>-mount, -xdev : 只检查和指定目录在同一个文件系统下的文件，避免列出其它文件系统中的文件</p>
+                                    <p>-amin n : 在过去 n 分钟内被读取过</p>
+                                    <p>-anewer file : 比文件 file 更晚被读取过的文件</p>
+                                    <p>-atime n : 在过去n天内被读取过的文件</p>
+                                    <p>-cmin n : 在过去 n 分钟内被修改过</p>
+                                    <p>-cnewer file :比文件 file 更新的文件</p>
+                                    <p>-ctime n : 在过去n天内被修改过的文件</p>
+                                    <p>-empty : 空的文件-gid n or -group name : gid 是 n 或是 group 名称是 name</p>
+                                    <p>-ipath p, -path p : 路径名称符合 p 的文件，ipath 会忽略大小写</p>
+                                    <p>-name name, -iname name : 文件名称符合 name 的文件。iname 会忽略大小写</p>
+                                    <p>-size n : 文件大小 是 n 单位，b 代表 512 位元组的区块，c 表示字元数，k 表示 kilo bytes，w 是二个位元组。-type c : 文件类型是 c 的文件。</p>
+                                    <p>d: 目录</p>
+                                    <p>c: 字型装置文件</p>
+                                    <p>b: 区块装置文件</p>
+                                    <p>p: 具名贮列</p>
+                                    <p>f: 一般文件</p>
+                                    <p>l: 符号连结</p>
+                                    <p>s: socket</p>
+                                    <p>-pid n : process id 是 n 的文件</p>
+                                    <p>你可以使用 ( ) 将运算式分隔，并使用下列运算。</p>
+                                    <p>exp1 -and exp2</p>
+                                    <p>! expr</p>
+                                    <p>-not expr</p>
+                                    <p>exp1 -or exp2</p>
+                                    <p>exp1, exp2</p>
+                                    <p><strong>实例</strong></p>
+                                    <p>将目前目录及其子目录下所有延伸档名是 c 的文件列出来。</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1646" mdtype="fences"># find . -name "*.c"
+</pre>
+                                    <p>将目前目录其其下子目录中所有一般文件列出</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1648" mdtype="fences"># find . -type f
+</pre>
+                                    <p>将目前目录及其子目录下所有最近 20 天内更新过的文件列出</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1650" mdtype="fences"># find . -ctime -20
+</pre>
+                                    <p>查找/var/log目录中更改时间在7日以前的普通文件，并在删除之前询问它们：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1652" mdtype="fences"># find /var/log -type f -mtime +7 -ok rm {} \;
+</pre>
+                                    <p>查找前目录中文件属主具有读、写权限，并且文件所属组的用户和其他用户具有读权限的文件：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1654" mdtype="fences"># find . -type f -perm 644 -exec ls -l {} \;
+</pre>
+                                    <p>为了查找系统中所有文件长度为0的普通文件，并列出它们的完整路径：</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1656" mdtype="fences"># find / -type f -size 0 -exec ls -l {} \;
+</pre>
+                                    <p>&nbsp;</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1658" mdtype="fences">find /sbin -perm +700 |ls -l 
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1660' class='md-header-anchor '></a>netstat</h2>
+                                    <p>终端查看进程和占用端口 netstat -lptu<br/> 查看 PID</p>
+                                    <h2>
+                                        <a name='header-n1662' class='md-header-anchor '></a>kill</h2>
+                                    <p>杀死进程 sudo kill -9 进程PID</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1665' class='md-header-anchor '></a>重启网络服务</h2>
+                                    <p><span>	</span>sudo /etc/init.d/networking restart</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1668' class='md-header-anchor '></a>Ubuntu中防火墙(ufw)基本操作</h2>
+                                    <p> sudo ufw status 查看状态</p><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1670" mdtype="fences">   1. 打开 :   sudo ufw enable
+   2. 关闭防火墙 :  sudo ufw disable
+   3. 添加规则 : sudo ufw allow 端口
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1672' class='md-header-anchor '></a>ifconfig </h2>
+                                    <p>查看IP地址和MAC地址</p>
+                                    <p>windows : ipconfig</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1676' class='md-header-anchor '></a>ping</h2>
+                                    <p>测试网络的连通性，Linux会一直ping，windows 4次结束</p>
+                                    <p>ping 127.0.0.1 -c 2 -c 2 表示ping 2次</p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1680' class='md-header-anchor '></a>nslookup</h2>
+                                    <p>解析域名对应的IP地址(不一定准确) nslookup <a href='http://www.baidu.com' target='_blank' class='url'>www.baidu.com</a></p>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1683' class='md-header-anchor '></a>df -h</h2>
+                                    <p>查看磁盘使用情况 df -h</p>
+                                    <h2>
+                                        <a name='header-n1685' class='md-header-anchor '></a>ls -lh</h2>
+                                    <p>h表示提供易读单位 ls -lh 文件名 : 表示指定文件的信息</p>
+                                    <h2>
+                                        <a name='header-n1687' class='md-header-anchor '></a>chmod</h2>
+                                    <p>修改文件权限 查看权限 : ls -l chmod +x test.py chmod 644 文件名</p>
+                                    <p>r(4) w(2) x(1)</p>
+                                    <h2>
+                                        <a name='header-n1690' class='md-header-anchor '></a>whereis 程序名 </h2>
+                                    <p>查看程序位置</p>
+                                    <p>windows : where 程序名</p>
+                                    <h2>
+                                        <a name='header-n1693' class='md-header-anchor '></a>wc -l</h2>
+                                    <p>统计一个文件中文件的行数 wc -l /etc/passwd 不加 -l 会有单词数等信息</p>
+                                    <h2>
+                                        <a name='header-n1695' class='md-header-anchor '></a>sort</h2>
+                                    <p>对文件中的内容进行排序 , 只改变显示顺序，不改变文件 sort 文件名 sort
+                                        <span>	</span>-r 倒序 sort
+                                        <span>	</span>-n 按数字排列 sort
+                                        <span>	</span>-n<span>	</span> -k 1 根据第一列的字符排列</p>
+                                    <p>可以 sort -rnk 1 ‘k&#39;要在最后</p>
+                                    <h2>
+                                        <a name='header-n1698' class='md-header-anchor '></a>uniq -c </h2>
+                                    <p>去除重复行(只能是排一起的) ，-c 并统计每行出现的次数，和sort配合使用</p>
+                                    <p>sort 文件名 | uniq -c 排序去重并统计重复行的重复数</p>
+                                    <ol start=''>
+                                        <li>
+                                            <p>管道命令 对其他命令进行提取 格式 : 其它命令 | 管道命令</p>
+                                            <p>sort 排序</p>
+                                            <p>awk <span>		</span>文本提取
+                                                <span>			</span>1. 语法格式 : awk 选项 &#39;动作&#39; 文件列表
+                                                <span>			</span>2. 用法 : Linux命令 | awk 选项 &#39;动作&#39;</p>
+                                            <p>uniq -c 同13</p>
+                                            <p>head 从头显示行数<br/> head -2 表示前2行</p>
+                                            <p>tail 从尾显示行数<br/> tail -1 表示倒数第一行
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <h2>
+                                        <a name='header-n1709' class='md-header-anchor '></a>ssh </h2><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1710" mdtype="fences">远程连接到服务器 默认端口 22
+格式 : ssh 用户名@IP地址
+      ssh tarena@172.12.43.111
+    要设置防火墙规则
+</pre>
+                                    <h2>
+                                        <a name='header-n1711' class='md-header-anchor '></a>scp</h2><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1712" mdtype="fences">远程复制文件/目录
+
+scp 文件名 用户名@IP地址:绝对路径
+</pre>
+                                    <h2>
+                                        <a name='header-n1713' class='md-header-anchor '></a>程序名 -v</h2><pre spellcheck="false" class="md-fences mock-cm md-end-block" lang="" contenteditable="false" cid="n1714" mdtype="fences">查看版本号(Windows 和 Linux 一样)
+</pre>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1716' class='md-header-anchor '></a>查看指定的端口号的进程</h2>
+                                    <p><span>	</span>netstat -tunlp | grep 端口号</p>
+                                    <h2>
+                                        <a name='header-n1719' class='md-header-anchor '></a>运维工具(XShell)</h2>
+                                    <ol>
+                                        <li>
+                                            <p>xshell(软件，安装在 windows上) 安全终端模拟软件
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>xshell使用方法 文件 - 新建 - 输入服务器IP地址 - 用户名 - 密码 - 确认连接</p>
+                                        </li>
+                                        <li>
+                                            <p>安装 lrzsz sudo apt-get install lrzsz</p>
+                                        </li>
+                                        <li>
+                                            <p>xshell 终端 windows --&gt; Linux rz </p>
+                                            <p>Linux --&gt; windows sz 文件名 </p>
+                                        </li>
+                                    </ol>
+                                    <p>&nbsp;</p>
+                                    <h2>
+                                        <a name='header-n1742' class='md-header-anchor '></a>周期性计划任务</h2>
+                                    <ol>
+                                        <li>
+                                            <p>进入周期性计划任务</p>
+                                            <p>$ crontab -e 按 4 </p>
+                                            <ol>
+                                                <li>设置周期性计划任务</li>
+                                            </ol>
+                                            <hr />
+                                            <p>分 时 日 月 周 分 : 0-59 时 : 0-23 日 : 1-31 月 : 1-12 周 : 0-6</p>
+                                            <ul>
+                                                <li>: 所有可能值 , : 指定多个时间点 1,5 * * * * : 01分和05分(分钟) / : 指定时间间隔频率 */10 * * * * : 每隔10分钟 */10 * 1,5 1 * : 1月1号和1月5号每隔10分钟</li>
+                                            </ul>
+                                            <ul>
+                                                <li>: 指定一个时间段 0 0-6/1 * * * : 0-6点之间每隔1个小时</li>
+                                            </ul>
+                                            <ol>
+                                                <li>每分钟执行1次01.py</li>
+                                            </ol>
+                                            <ul>
+                                                <li>
+                                                    <ul>
+                                                        <li>
+                                                            <ul>
+                                                                <li>
+                                                                    <ul>
+                                                                        <li>
+                                                                            <ul>
+                                                                                <li>pyhon3 绝对路径</li>
+                                                                            </ul>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                            <ol>
+                                                <li>每个周末的0点0分执行backup.py</li>
+                                            </ol>
+                                            <p>0 0 * * 0,6 python3 /backup.py</p>
+                                            <ol>
+                                                <li>每天18:00-23:00之间,每小时执行01.py</li>
+                                            </ol>
+                                            <p>0 18-23/1 * * * python3 /01.py</p>
+                                        </li>
+                                        <li>
+                                            <p>awk的使用(按行去执行动作)</p>
+                                        </li>
+                                        <li>
+                                            <p>语法格式 : awk [选项] &#39;动作&#39; 文件列表</p>
+                                        </li>
+                                        <li>
+                                            <p>用法 : Linux命令 | awk [选项] &#39;动作&#39;</p>
+                                        </li>
+                                        <li>
+                                            <p>使用示例</p>
+                                            <ol>
+                                                <li>
+                                                    <p>awk &#39;{print &quot;abc&quot;}&#39; a.sh</p>
+                                                    <ol>
+                                                        <li>
+                                                            <p>df -h | awk &#39;{print $1}&#39;</p>
+                                                            <ol>
+                                                                <li>awk -F &quot;:&quot; &#39;{print <span class="MathJax_SVG" tabindex="-1" style="font-size: 100%; display: inline-block;"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="31.723ex" height="3.142ex" viewBox="-5 -935.7 13658.3 1352.7" role="img" focusable="false" style="vertical-align: -0.969ex; margin-left: -0.012ex;"><defs></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g fill="red" stroke="red" transform="translate(155,0)"><g transform="scale(0.9)"><text direction="ltr" stroke="none" transform="scale(51.874) matrix(1 0 0 -1 0 0)">Extra close brace or missing open brace</text></g></g><line stroke-linecap="square" stroke="red" stroke-width="51.87" y1="25" x2="25" x1="25" y2="1156" transform="translate(-5,-343)"></line><line stroke-linecap="square" stroke="red" stroke-width="51.87" y1="25" x2="25" x1="25" y2="1156" transform="translate(13601,-343)"></line><line stroke-linecap="square" stroke="red" stroke-width="51.87" y2="25" y1="25" x1="25" x2="13622" transform="translate(0,792)"></line><line stroke-linecap="square" stroke="red" stroke-width="51.87" y2="25" y1="25" x1="25" x2="13622" transform="translate(0,-348)"></line></g></svg></span>
+                                                                    <script
+                                                                        type="math/tex">2}' a.sh a.sh内容 echo:123 echo:456 4. 显示本机的IP地址 ifconfig | head -2 | tail -1 | awk '{print </script>2}&#39; | awk -F &quot;:&quot; &#39;{print $2}&#39; 5. nginx的访问日志 /var/log/nginx/access.log
+                                                                </li>
+                                                            </ol>
+                                                        </li>
+                                                    </ol>
+                                                </li>
+                                                <li>
+                                                    <p>把访问过自己的IP地址给输出来 awk &#39;{print $1}&#39; access.log</p>
+                                                </li>
+                                                <li>
+                                                    <p>统计有多少个IP访问过我 awk &#39;{print $1}&#39; access.log | sort | uniq | wc -l</p>
+                                                </li>
+                                                <li>
+                                                    <p>统计每个IP地址访问的次数,把访问最多的前2个IP输出出来 awk &#39;{print $1}&#39; access.log | sort | uniq -c | sort -rnk 1 | head -2</p>
+                                                    <ol>
+                                                        <li>sort的参数</li>
+                                                    </ol>
+                                                </li>
+                                                <li>
+                                                    <p>sort : 排序</p>
+                                                </li>
+                                                <li>
+                                                    <p>sort | uniq -c : 去重,统计每行次数</p>
+                                                </li>
+                                                <li>
+                                                    <p>sort -n : 以数值方式来排序</p>
+                                                </li>
+                                                <li>
+                                                    <p>sort -n -k 1 : 按照第1列来排序</p>
+                                                </li>
+                                                <li>
+                                                    <p>sort -r : 倒序排列</p>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                    </ol>
+                                    </div>
+</body>
+
+</html>

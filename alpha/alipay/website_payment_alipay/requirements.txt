@@ -1,0 +1,9 @@
+Crypto
+
+pip3 install Crypto
+# 再安装pycrypto
+pip3 install pycrypto
+安装成功后，如果还是提示没有该模块，
+那就python3的安装目录Lib—-site-package中查看是否有Crypto文件夹，
+这时你应该看到有crypto文件夹，将其重命名为Crypto即可
+
