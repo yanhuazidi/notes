@@ -331,5 +331,9 @@ image_data_uri 为渲染模型函数
 product.product_id.image 为fields.Binary()字段
 ```
 
+**or**
 
+```xml
+<img t-att-src="'/web/image/purchase.order.line/%s/product_image/48x48' % ol.id"/>
+```
 
