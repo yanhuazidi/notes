@@ -190,3 +190,16 @@ error_code = {
 http.request.make_response(json.dumps({'code': 404, 'msg': error_code[404]}))
 ```
 
+
+
+## 时间日期转换
+
+```python
+#postgresql 日期时间
+print(purchase_order.quotation_datatime,type(purchase_order.quotation_datatime))
+#<class 'datetime.datetime'>
+if  time.time() - time.mktime(purchase_order.quotation_datatime.timetuple()) < 60*60*24:
+```
+
+
+
