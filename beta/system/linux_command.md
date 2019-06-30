@@ -2305,8 +2305,12 @@ find /sbin -perm +700 |ls -l
 ## netstat
 
 终端查看进程和占用端口
-    netstat -lptu  
-    查看 PID
+
+```
+netstat -lptn            查看 PID
+```
+
+
 
 ## kill
 
