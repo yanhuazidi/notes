@@ -1,0 +1,448 @@
+
+http://www.runoob.com
+
+
+JavaSE  JavaEE  JavaME
+
+程序框架
+    public class 文件名{
+        public static void main(String[] args){
+            System.out.print();
+        }
+    }
+
+执行步骤
+    >>cd 目标文件夹
+    >>javac 文件名.java
+    >>java 文件名
+
+Java 关键字
+    这些保留字不能用于常量、变量、和任何标识符的名称。
+
+      类别	            关键字	         说明
+
+    访问控制	         private	     私有的
+                        protected	    受保护的
+                        public	        公共的
+
+    类、方法和变量修饰符  abstract	      声明抽象
+                        class	        类
+                        extends	        扩充,继承
+                        final	        最终值,不可改变的,修饰常量
+                        implements	    实现（接口）
+                        interface	    接口
+                        native	        本地，原生方法（非Java实现）
+                        new	            新,创建
+                        static	        静态
+                        strictfp	    严格,精准
+                        synchronized	线程,同步
+                        transient	    短暂
+                        volatile	    易失
+
+    程序控制语句	     break           跳出循环
+                        case	        定义一个值以供switch选择
+                        continue	    继续
+                        default	        默认
+                        do	            运行
+                        else	        否则
+                        for	            循环
+                        if	            如果
+                        instanceof	    实例
+                        return	        返回
+                        switch	        根据值选择执行
+                        while	        循环
+
+    错误处理	         assert	        断言表达式是否为真
+                        catch	        捕捉异常
+                        finally	        有没有异常都执行
+                        throw	        抛出一个异常对象
+                        throws	        声明一个异常可能被抛出
+                        try	            捕获异常
+
+    包相关	            import      	引入
+                        package	        包
+
+    基本类型	         boolean	     布尔型
+                        byte	        字节型
+                        char	        字符型
+                        double	        双精度浮点
+                        float	        单精度浮点
+                        int	            整型
+                        long	        长整型
+                        short	        短整型
+
+    变量引用	         super	         父类,超类
+                        this	        本类
+                        void	        无返回值
+
+    保留关键字	         goto	         是关键字，但不能使用
+                        const	        是关键字，但不能使用
+                        null	        空
+
+
+语法规范
+    1.对大小写敏感
+    2.单行语句以 ; 结束
+    3.复合语句以 {} 包含内容
+    4.单行注释 //   多行注释 /*  */
+
+    类名：对于所有的类来说，类名的首字母应该大写。如果类名由若干单词组成，
+            那么每个单词的首字母应该大写，例如 MyFirstJavaClass 。
+    方法名：所有的方法名都应该以小写字母开头。如果方法名含有若干单词，则后面的每个单词首字母大写。
+    源文件名：源文件名必须和类名相同。当保存文件的时候，你应该使用类名作为文件名保存
+            文件名的后缀为.java。（如果文件名和类名不相同则会导致编译错误）
+    主方法入口：所有的Java 程序由public static void main(String []args)方法开始执行。
+
+Java修饰符
+    主要有两类修饰符：
+        访问控制修饰符 : default, public , protected, private
+        非访问控制修饰符 : final, abstract, static, synchronized
+
+数据类型
+        基本数据类型    引用数据类型
+
+    Java中的数据类型转换
+        1：自动数据类型转换（放大转换）
+            满足自动数据类型转换条件：
+
+            1）两种类型要兼容：如数值类型（整型和浮点型）
+
+            2）目标类型大于源类型：例如int型数据可以自动转换为double类型
+        
+        任何数据用+与字符串连接最后都会产生新的字符串
+
+        2：强制数据类型转换（缩小转换）
+            在变量前加上括号，在括号中指定要强制转换的类型
+
+            例：double a = 40.9;
+
+                int b= (int)a;
+
+            注：强制转换会损失数值精度，例如double类型变量a，经强制转换为int类型后值变为40
+
+
+    基本数据类型:
+        对应原始的数据类型，每种数据类型都存在一个引用类型的封装类，
+        分别为  Boolean、Short、Float、Double、Byte、Integer、 Long、Character
+
+        byte：Java中最小的数据类型，在内存中占8位(bit)，即1个字节，取值范围-128~127，默认值0
+
+        short：短整型，在内存中占16位，即2个字节，取值范围-32768~32717，默认值0
+
+        int：整型(整型默认)，用于存储整数，在内在中占32位，即4个字节，取值范围-2147483648~2147483647，默认值0
+                二进制的数据表现形式   以 0b (b可以大写也可以小写)开头
+                八进制的数据表现形式   以 0 开头
+                十六进制的数据表现形式 以 0x 开头
+
+        long：长整型，在内存中占64位，即8个字节-2^63~2^63-1，默认值0L
+
+        float：浮点型，在内存中占32位，即4个字节，用于存储带小数点的数字
+                （与double的区别在于float类型有效小数点只有6~7位），默认值0.0f
+
+        double：双精度浮点型(浮点型默认类型)，用于存储带有小数点的数字，在内存中占64位，即8个字节，默认值0.0
+
+        char：字符型，用于存储单个字符，占16位，即2个字节，取值范围0~65535，默认值为空
+                java是unicode编码,char类型占的两个字节,可以使用中文
+
+        boolean：布尔类型，占1个字节，用于判断真或假（仅有两个值，即true、false），默认值false
+    
+    空类型
+        null 
+        void
+
+    Java数组
+        数组是储存在堆上的对象，可以保存多个同类型变量。
+
+    Java枚举
+        枚举限制变量只能是预先设定好的值。使用枚举可以减少代码中的bug。
+
+
+变量
+    变量声明并定义    数据类型 变量名 = 值;
+
+    多个变量同时声明
+        int a,b,c;
+        a =10;
+        b =20;
+        c =30;
+
+    Java变量名命名规则：小驼峰峰命名
+        1：必须以字母、下划线“_”、或“$”符号开头
+
+        2：可以包括数字、区分大小写
+
+        3：不能使用Java语言的关键字，例如int、class、public等
+    
+    类可以包含以下类型变量：
+        局部变量：在方法、构造方法或者语句块中定义的变量被称为局部变量。
+                变量声明和初始化都是在方法中，方法结束后，变量就会自动销毁。
+
+        成员变量：成员变量是定义在类中，方法体之外的变量。这种变量在创建对
+                象的时候实例化。成员变量可以被类中方法、构造方法和特定类的语句块访问。
+
+        类变量：类变量也声明在类中，方法体之外，但必须声明为static类型。
+
+
+运算符
+    算术运算符：
+
+        +：加法运算，求操作数的和，+ 在有字符串参与中被称为字符串连接符
+
+        -：减法运算，求操作数的差
+
+        *：乘法运算，求操作数的乘积
+
+        /：除法运算，求操作数的商，当操作数都为int时取整。
+
+        %：求余运算，求操作数相除的余数
+
+        ++：自增，操作数自加1
+
+        --：自减，操作数自减1
+
+    复合赋值运算符：
+
+        =：将右边的值赋给左边，例：int a = 1;
+
+        +=：左右两边的和相加赋给左边，例：int a = 1; a+=2;结果a的值为3
+
+        -=：左边减去右边的差赋给左边，例：int a =5;a-=2;结果a的值为3
+
+        *=：两边数值相乘的值赋给左边，例：int a = 2;a*=2;结果a的值为4
+
+        /=：左边除以右边的值赋给左边，例：int a = 6;a/=2;结果a的值为3
+
+        %=：左边除以右边的余数赋给左边，例：int a =7;a%=2;结果a的值为1
+
+
+    关系运算符
+        >：大于         <：小于     >=：大于等于
+
+        <=：小于等于    ==：等于    !=：不等于
+
+        instanceof:    var instanceof class 验证var是否是class的实例
+
+        其结果都是boolean类型，即要么是true要么是false
+        
+
+
+    逻辑运算符
+        &&：与、并且(短路)，   两个条件同时为真时，结果为真
+
+        ||：或、或者(短路)，   两个条件有一个为真时，结果即为真
+
+        !：非，(!+条件)  条件为真时，结果为假
+
+
+输入输出函数
+    输出:
+        System.out
+
+        print() 不换行;     println() 换行;     printf() 格式化输出
+
+        'd' 整数 结果被格式化为十进制整数
+        'o' 整数 结果被格式化为八进制整数
+        'x', 'X' 整数 结果被格式化为十六进制整数
+        'e', 'E' 浮点 结果被格式化为用计算机科学记数法表示的十进制数
+        'f' 浮点 结果被格式化为十进制数
+        'g', 'G' 浮点 根据精度和舍入运算后的值，使用计算机科学记数形式或十进制格式对结果进行格式化。
+        'a', 'A' 浮点 结果被格式化为带有效位数和指数的十六进制浮点数
+    
+    输入:
+        System.in   只接受字符
+        
+        需要用 Scanner 接受各种数据类型
+        import java.util.Scanner;
+        Scanner s = new Scanner(System.in); //System.in作为Scanner构造函数的参数
+
+        String var = s.nextLine();
+        int var = s.nextInt();
+        float var = s.nextFloat();
+
+
+选择结构语句
+
+    if 语句
+        语法一
+            if(条件)
+                单行语句块;
+
+        语法二
+            if(条件){
+                语句块;
+            }
+            else{
+                语句块;
+            }
+
+        语法三
+            if(条件){
+                语句块;
+            }else if(条件){
+                语句块;
+            }else if(条件){
+                语句块;
+            }
+            ...
+            else{
+                语句块;
+            }
+
+    switch  语句
+        switch(var){
+            case 1:
+                语句块;
+                break;
+            case 2:
+                语句块;
+                break;
+            case 3:
+                语句块;
+                break;
+            ......
+            case n:
+                语句块;
+                break;
+            default:
+                break;
+        }
+
+        1、表达式的类型只能为byte、short、char 和int 这4 种之一。
+        2、值1、值2…值n 只能为常数或常量，不能为变量。
+        3、功能代码部分可以写任意多句。
+        4、break 关键字的意思是中断，指结束switch 语句，break 语句为可选。
+        5、case 语句可以有任意多句，是标号语句。
+        6、default 语句可以写在switch 语句中的任意位置，功能类似于if 语句中的else。
+
+
+循环结构
+    while 语句
+        while(条件) {
+            语句块;
+            循环条件变量;
+        }
+    
+    do while 语句
+        do{
+            语句块;
+            循环条件变量;
+        }while(条件);
+    
+    for 语句
+        for(初始化; 布尔表达式; 更新) {
+            代码语句;
+        }
+
+    增强 for 循环语法:
+        for(声明语句 : 表达式)
+        {
+            语句块;
+        }
+
+        声明语句：声明新的局部变量，该变量的类型必须和数组元素的类型匹配。
+                其作用域限定在循环语句块，其值与此时数组元素的值相等。
+
+        表达式：表达式是要访问的数组名，或者是返回值为数组的方法。
+            int [] numbers = {10, 20, 30, 40, 50};
+            for(int x : numbers ){
+                System.out.print( x );
+            }
+
+跳转语句
+    break;
+    continue;
+
+类 
+    构造方法
+        每个类都有构造方法。如果没有显式地为类定义构造方法，
+            Java编译器将会为该类提供一个默认构造方法。
+
+        在创建一个对象的时候，至少要调用一个构造方法。
+        构造方法的名称必须与类同名，一个类可以有多个构造方法。
+
+        下面是一个构造方法示例：
+                public class Puppy{
+                    public Puppy(){
+                    }               
+                    public Puppy(String name){
+                        // 这个构造器仅有一个参数：name
+                    }
+                }
+
+创建对象
+    对象是根据类创建的。在Java中，使用关键字new来创建一个新的对象。
+    创建对象需要以下三步：
+
+        声明：声明一个对象，包括对象名称和对象类型。
+        实例化：使用关键字new来创建一个对象。
+        初始化：使用new创建对象时，会调用构造方法初始化对象。
+
+    下面是一个创建对象的例子：
+
+        public class Puppy{
+            public Puppy(String name){
+                //这个构造器仅有一个参数：name
+                System.out.println("小狗的名字是 : " + name ); 
+            }
+            public static void main(String []args){
+                // 下面的语句将创建一个Puppy对象
+                Puppy myPuppy = new Puppy( "tommy" );
+            }
+        }
+
+    下面是一个类的方法定义和属性，方法调用的例子
+            public class Puppy{
+                int puppyAge;
+                public Puppy(String name){
+                    // 这个构造器仅有一个参数：name
+                    System.out.println("小狗的名字是 : " + name ); 
+                }
+                
+                public void setAge( int age ){
+                    puppyAge = age;
+                }
+                
+                public int getAge( ){
+                    System.out.println("小狗的年龄为 : " + puppyAge ); 
+                    return puppyAge;
+                }
+                
+                public static void main(String []args){
+                    /* 创建对象 */
+                    Puppy myPuppy = new Puppy( "tommy" );
+                    /* 通过方法来设定age */
+                    myPuppy.setAge( 2 );
+                    /* 调用另一个方法获取age */
+                    myPuppy.getAge( );
+                    /*你也可以像下面这样访问成员变量 */
+                    System.out.println("变量值 : " + myPuppy.puppyAge ); 
+                }
+            }
+
+源文件声明规则
+    当在一个源文件中定义多个类，并且还有import语句和package语句时，要特别注意这些规则。
+
+    1.一个源文件中只能有一个public类
+    2.一个源文件可以有多个非public类
+    3.源文件的名称应该和public类的类名保持一致。例如：源文件中public类的类名是Employee，
+        那么源文件应该命名为Employee.java。
+    4.如果一个类定义在某个包中，那么package语句应该在源文件的首行。
+    5.如果源文件包含import语句，那么应该放在package语句和类定义之间。
+        如果没有package语句，那么import语句应该在源文件中最前面。
+    6.import语句和package语句对源文件中定义的所有类都有效。在同一源文件中，
+        不能给不同的类不同的包声明。
+    类有若干种访问级别，并且类也分不同的类型：抽象类和final类等。
+
+    除了上面提到的几种类型，Java还有一些特殊的类，如：内部类、匿名类。
+
+
+Java包
+    包主要用来对类和接口进行分类。当开发Java程序时，可能编写成百上千的类，
+    因此很有必要对类和接口进行分类。
+
+Import语句
+    在Java中，如果给出一个完整的限定名，包括包名、类名，那么Java编译器就可以很容
+    易地定位到源代码或者类。Import语句就是用来提供一个合理的路径，使得编译器可以找到某个类。
+
+    例如，下面的命令行将会命令编译器载入java_installation/java/io路径下的所有类
+        import java.io.*;

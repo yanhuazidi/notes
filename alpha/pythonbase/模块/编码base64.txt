@@ -1,0 +1,108 @@
+base64模块介绍
+经常听到有人说“base64加密”，其实base64并不能用于数据加密，它也不是为了纯粹的数据加密而生的，
+它的出现是为了解决不可见字符串的网络传输和数据保存问题。因为，用base64对数据进行转换的过程不
+能成为“加密”与“解密”，只能成为“编码”与“解码”。下面我们也会用到它，所以这里顺便做下简单的介绍。
+
+1. base64的作用
+Base64是一种用64个字符来表示任意二进制数据的方法，它是一种通过查表对二进制数据进行编码的方法，
+不能用于数据加密。base64最初的出现时为了能够正确的传输邮件数据，因为邮件中的附件（比如图片）
+的二进制数中可能存在不可见字符（ascii码中128-255之间的值是不可见字符），比如我们尝试用记事本或
+其他文本编辑器打开一个图片时，通常都会看到一大堆乱码，这些乱码就是不可见字符。由于早期的一些网络
+设备和网络协议是无法正确识别这些字符的，这就可能在数据传输时出现各种无法预知的问题。base64的作用
+就是把含有不可见字符的信息用可见字符来表示（Ascii码中0-127之间的值是可见字符），从而解决这个问题。
+
+关于base64的介绍及实现原理可以看看这几篇文章：
+
+http://www.cnblogs.com/wellsoho/archive/2009/12/09/1619924.html
+https://www.zhihu.com/question/36306744/answer/
+http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001399413803339f4bbda5c01fc479cbea98b1387390748000
+
+2. base64的常见应用场景
+base64适用于小段内容的编码，比如数字证书的签名、URL、Cookie信息
+等需要通过网络进行传输的小段数据。关于base64在数字签名中的应用会
+在本文后面讲解pycrypto模块使用实例时有具体的应用示例。
+
+3. base64模块介绍及简单使用示例
+Python中有一个内置的base64模块可直接用来进行base64的编码和解码
+工作--即提供 “二进制数据” 与 “可打印（可见）的ASCII字符”之间
+的转换功能。常用的函数有以下几个：
+
+函数名	描述
+base64.b64encode(s, altchars=None)	对二进制数据（字节串）s通过base64进行编码，返回编码后的字节串
+base64.b64decode(s, altchars=None, validate=False)	对通过base64编码的字节对象或ASCII字符串s进行解码，返回解码后的字节串
+base64.urlsafe_b64encode(s)	与b64encode()函数不同的是，它会把标准Base64编码结果中的字符'+'和字符'/'分别替换成字符'-'和字符'_'。
+base64.urlsafe_b64decode(s)	解码通过base64.urlsafe_b64encode()函数编码的字节对象或ASCII字符串s。
+提示： URL中有一些有特殊意义的字符,也就是保留字符:';', '/', '?', ':', '@', '&', '=', '+', '$' 和 ',' ，在URL的参数值中应该避免这些字符的出现。
+
+下面来看个简单的示例：
+
+import base64
+
+data = 'hello, 世界！'
+based_data1 = base64.b64encode(data)
+print(based_data1)
+plain_data1 = base64.b64decode(based_data1)
+print(plain_data1)
+based_data2 = base64.urlsafe_b64encode(data)
+print(based_data2)
+plain_data2 = base64.urlsafe_b64decode(based_data2)
+print(plain_data2)
+输出结果：
+
+aGVsbG8sIOS4lueVjO+8gQ==
+hello, 世界！
+
+aGVsbG8sIOS4lueVjO-8gQ==
+hello, 世界！
+
+3. base64编码结果后的等号'='
+通过上面的这个简单示例的输出结果会发现，随翻urlsafe_b64encode()函数会
+把编码结果中的字符'+'和字符'/'替换成其他URL的非保留字符，但是它的编码
+结果中还是可能出现字符'='。那么这些字符'='代表什么呢？能否去掉呢？
+
+其实base64编码的过程中会先把原来数据中的每3个字节的二进制数据编码
+为4个字节的文本数据，当原始数据最后不满3个字节时就需要用'\00'字节进
+行补位凑够3个字节，而且会在编码结果的最后加上相应个数的'='号来表示
+补了多少个字节，这样解码的时候就可以去掉那些补位的字节。
+
+由此我们可以得出两个结论：
+
+1）base64编码后的结果的末尾可能存在字符'='个数分别是：0个、1个和2个；
+2）base64编码后的结果应该是4的倍数。
+基于以上第2个结论，为了避免编码结果中可能出现的的字符'='对网络数据传输造成影响，
+可以在传出前去掉后面的字符'='，接收方可以通过对数据的长度对4求模得到应该
+补上的字符'='个数，从而得到正确的数据。比如，我们可以通过下面这个解码函数
+来完成这个过程：
+
+import base64
+
+def safe_b64decode(s):
+    length = len(s) % 4
+    for i in range(length):
+        s = s + '='
+    return base64.b64decode(s)
+
+if __name__ == '__main__':
+    print(safe_b64decode('aGVsbG8sIOS4lueVjO+8gQ==').decode())
+    print(safe_b64decode('aGVsbG8sIOS4lueVjO+8gQ=').decode())
+    print(safe_b64decode('aGVsbG8sIOS4lueVjO+8gQ').decode())
+输出结果：
+
+hello, 世界！
+hello, 世界！
+hello, 世界！
+可见，虽然我们把上面那个示例中通过base64编码后的结果后面的字符'='去掉了，
+通过我们自己定义的safe_b64decode()函数最终得到了正确的解码结果。
+
+
+
+base64的函数输入输出都是二进制，不能是字符串，补码的‘ = ’可以多，不能少，少了报错。
+
+# base64.encode(f,f1) | base64.decode(f,f1)
+import base64
+
+with open('wei.jpg','rb') as f,open('wei2.jpg','wb') as f1:
+    base64.encode(f,f1)
+
+with open('wei2.jpg','rb') as f,open('wei1.jpg','wb') as f1:
+    base64.decode(f,f1)

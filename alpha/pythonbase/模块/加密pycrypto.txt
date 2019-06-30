@@ -1,0 +1,214 @@
+pycrypto模块
+
+
+
+1. pycryto模块介绍
+pycryto模块不是Python的内置模块，它的官方网站地址是这里。
+pycrypto模块是一个实现了各种算法和协议的加密模块的结合，提供了各
+种加密方式对应的多种加密算法的实现，包括 单向加密、对称加密以及
+公钥加密和随机数操作。而上面介绍的hashlib和hmac虽然是Python的
+内置模块，但是它们只提供了单向加密相关算法的实现，如果要使用对称
+加密算法（如, DES，AES等）或者公钥加密算法我们通常都是使用pycryto这个第三方模块来实现。
+
+需要注意的是，pycrypto模块最外层的包（package）不是pycrypto，而是Crypto。
+它根据加密方式类别的不同把各种加密方法的实现分别放到了不同的子包
+（sub packages）中，且每个加密算法都是以单独的Python模块（一个.py文件）存在的。
+我们来看下这些子包：
+
+包名	描述
+Crypto.Hash	该包中主要存放的是单向加密对应的各种哈希算法/散列算法的实现模块，如MD5.py, SHA.py，SHA256.py等。
+Crypto.Cipher	该包中主要存放的是对称加密对应的各种加密算法的实现模块，如DES.py, AES.py, ARC4.py等；以及公钥加密对应的各种加密算法的实现模块，如PKCS1_v1_5.py等。
+Crypto.PublicKey	该包中主要存放的是公钥加密与签名算法的实现模块，如RSA.py, DSA.py等。
+Crypto.Signatue	该包中主要存放的是公钥签名相关算法的实现模块，如PKCS1_PSS.py, PKCS1_v1_5.py。
+Crypto.Random	该包中只有一个随机数操作的实现模块 random.py
+Crypto.Protocol	该包中存放的是一些加密协议的实现模块，如Chaffing.py, KDF.py等。
+Crypto.Util	该包存放的是一些有用的模块和函数
+这里需要说明的是，Crypto.PublicKey子包下的RSA.py和DSA.py模块只是用来生
+成秘钥对的，而基于公钥的加密与解密功能是由Crypto.Cipher子包下的
+PKCS1_v1_5.py或PKCS1_OAEP.py以这个密钥对儿为密钥来实现的；同样，
+签名与验证相关算法的功能是由Crypto.Signature子包下的PKCS1_v1_5.py和
+PKCS1_PASS.py以这个密钥对而为密钥来实现的。
+
+2. pycrypto的安装与使用
+pycrypto的安装
+由于pycryto不是Python的内置模块，所以在使用它之前需要通过Python模块
+管理工具(如pip)来安装。不幸的是，如果你使用的是Windows平台会遇到一些问题，
+比如执行pip install pycryto命令来安装pycrpto时可能会得到以下错误提示信息：
+
+error: Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat). 
+或
+
+error: Unable to find vcvarsall.bat
+这是由于pycrypto模块是用C语言实现的，Python模块管理工具在安装它时需要
+使用C/C++编译工具对它的代码进行编译，但是找不到对应版本的编译工具，
+具体解释及解决方案请查看http://www.cnblogs.com/yyds/p/7065637.html
+
+pycrypto的使用方式
+由于pycrypto把不同的类别加密算法的实现模块都放到了Crypto下不同的子包下了，所以我们只需要确定我们所需要使用的加密算法的实现模块在哪个子包下，然后导入相应的实现模块就可以使用了。比如我们打算使用MD5算法，就可以通过from Crypto.Hash import MD5来导入MD5这个模块，然后就可以使用该模块相应的api了。
+
+pycrypto使用实例
+实例1： 使用SHA256算法获取一段数据的摘要信息
+
+from Crypto.Hash import SHA256
+
+hash = SHA256.new()
+hash.update('Hello, World!')
+digest = hash.hexdigest()
+print(digest)
+输出结果：
+
+dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f
+实例2： 使用AES算法加密，解密一段数据
+
+from Crypto.Cipher import AES
+
+# 加密与解密所使用的密钥，长度必须是16的倍数
+secret_key = "ThisIs SecretKey" 
+# 要加密的明文数据，长度必须是16的倍数
+plain_data = "Hello, World123!"
+# IV参数，长度必须是16的倍数
+iv_param = 'This is an IV456'
+
+# 数据加密
+aes1 = AES.new(secret_key, AES.MODE_CBC, iv_param)
+cipher_data = aes1.encrypt(plain_data)
+print('cipher data：', cipher_data)
+
+# 数据解密
+aes2 = AES.new(secret_key, AES.MODE_CBC, 'This is an IV456')
+plain_data2 = aes2.decrypt(cipher_data)  # 解密后的明文数据
+print('plain text：', plain_data2)
+输出结果：
+
+('cipher data\xef\xbc\x9a', '\xcb\x7fd\x03\x12T,\xbe\x91\xac\x1a\xd5\xaa\xe6P\x9a')
+('plain text\xef\xbc\x9a', 'Hello, World123!')
+实例3： 随机数操作
+
+from Crypto.Random import random
+
+print('random.randint: ', random.randint(10, 20))
+print('random.randrange: ', random.randrange(10, 20, 2))
+print('random.randint: ', random.getrandbits(3))
+print('random.choice: ', random.choice([1, 2, 3, 4, 5]))
+print('random.sample: ', random.sample([1, 2, 3, 4, 5], 3))
+list = [1, 2, 3, 4, 5]
+random.shuffle(list)
+print('random.shuffle: ', list)
+输出结果：
+
+('random.randint: ', 10L)
+('random.randrange: ', 10L)
+('random.randint: ', 5L)
+('random.choice: ', 5)
+('random.sample: ', [5, 4, 2])
+('random.shuffle: ', [5, 2, 1, 3, 4])
+实例4： 使用RSA算法生成密钥对儿
+
+生成秘钥对：
+
+from Crypto import Random
+from Crypto.PublicKey import RSA
+
+# 获取一个伪随机数生成器
+random_generator = Random.new().read
+# 获取一个rsa算法对应的密钥对生成器实例
+rsa = RSA.generate(1024, random_generator)
+
+# 生成私钥并保存
+private_pem = rsa.exportKey()
+with open('rsa.key', 'w') as f:
+    f.write(private_pem)
+
+# 生成公钥并保存
+public_pem = rsa.publickey().exportKey()
+with open('rsa.pub', 'w') as f:
+    f.write(public_pem)
+私钥文件rsa.key的内容为：
+
+-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQCo7vV5xSzEdQeFq9n5MIWgIuLTBHuutZlFv+Ed8fIk3yC4So/d
+y1f64iuYFcDeNU7eVGqTSkHmAl4AihDXoaH6hxohrcX0bCg0j+VoQMe2zID7MzcE
+d50FhJbuG6JsWtYzLUYs7/cQ3urZYwB4PEVa0WxQj2aXUMsxp6vl1CgB4QIDAQAB
+AoGAS/I5y4e4S43tVsvej6efu1FTtdhDHlUn1fKgawz1dlwVYqSqruSW5gQ94v6M
+mZlPnqZGz3bHz3bq+cUYM0jH/5Tygz4a+dosziRCUbjMsFePbJ4nvGC/1hwQweCm
++7sxog4sw91FrOfAg/iCcoeho0DghDolH9+zzwRYPIWUyUECQQDFGe+qccGwL9cU
+v+GmZxtF8GkRL7YrXI7cvnZhnZZ7TANjxlYukLGEpiFGIDd0Aky1QhkK18L8DTO4
++iGXTpgJAkEA22o03/1IqeRBofbkkDmndArHNUnmv5pyVFaLKPoVgA4A1YsvqxUL
+DK6RwFGONUMknBWY59EDKCUdIf3CsVIhGQJAJKDMRB19xBMv4iBCe9z/WYDy1YnL
+TcWWmvkeIMfbVjBrFNif3WlwQ9lnp5OHGpzuymRtKPGtv49ohECfi3HEmQJAPI+n
+AoAdk07+Up8b3TccoinrbCj2uMH/dongpTHJx2uWDVr6kEUhpKF2d1fLYaYjr7VC
+XBHTxjvgO6aYG2to2QJBAIzDugOSTeQFpidCoewfa0XX4guF+WRf8wzyBC/XE6TY
+3cIY05sjbpfiVwW/Cb8Z2ia8EgBTGN8HSIFOUQ2jRl4=
+-----END RSA PRIVATE KEY-----
+公钥文件rsa.pub的内容为：
+
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCo7vV5xSzEdQeFq9n5MIWgIuLT
+BHuutZlFv+Ed8fIk3yC4So/dy1f64iuYFcDeNU7eVGqTSkHmAl4AihDXoaH6hxoh
+rcX0bCg0j+VoQMe2zID7MzcEd50FhJbuG6JsWtYzLUYs7/cQ3urZYwB4PEVa0WxQ
+j2aXUMsxp6vl1CgB4QIDAQAB
+-----END PUBLIC KEY-----
+实例5： 公钥加密算法的实现
+
+前面说过，公钥加密算法是由Crypto.Cipher子包下的PKCS1_v1_5.py或PKCS1_OAEP.py模块以已经存在的密钥对儿为密钥来实现的，现在常用的是PKCS1_v1_5。另外，我们前面提到过，使用对方的公钥加密，使用对方的私钥解密才能保证数据的机密性，因此这里以上面生成的公钥进行加密数据，以上面生成的私钥解密数据：
+
+from Crypto import Random
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5 as Cipher_PKCS1_v1_5
+import base64
+
+# 数据加密
+message = "This is a plain text."
+with open('rsa.pub', 'r') as f:
+    public_key = f.read()
+    rsa_key_obj = RSA.importKey(public_key)
+    cipher_obj = Cipher_PKCS1_v1_5.new(rsa_key_obj)
+    cipher_text = base64.b64encode(cipher_obj.encrypt(message))
+    print('cipher test: ', cipher_text)
+
+# 数据解密
+with open('rsa.key', 'r') as f:
+    private_key = f.read()
+    rsa_key_obj = RSA.importKey(private_key)
+    cipher_obj = Cipher_PKCS1_v1_5.new(rsa_key_obj)
+    random_generator = Random.new().read
+    plain_text = cipher_obj.decrypt(base64.b64decode(cipher_text), random_generator)
+    print('plain text: ', plain_text)
+输出结果：
+
+('cipher test: ', 'oq1sOSz4lS9PgrKmiwuAHs7iUhmWMvWdEbXLTOdhGtyIAr6xwmjtnBNpuvMVIM2Mz/O/xVzPu5L8nzUVW2THKpQinNwC7JWF0wnxrTHwKrmfXIIxxibQJS02obxkoEeqrjRo0b8V7yktYIV3ig2SlU3yjcr+lOFmRX+h6dE2TAI=')
+('plain text: ', 'This is a plain text.')
+实例6： 数据签名与签名验证的实现
+
+同样，签名与验证相关算法的功能是由Crypto.Signature子包下的PKCS1_v1_5.py和PKCS1_PASS.py以这个密钥对而为密钥来实现的。数据签名的目的是为了防止别人篡改发送人的原始数据，其原理是：
+
+1）先以单向加密方式通过某种哈希算法（如MD5，SHA1等）对要发送的数据生成摘要信息（数据指纹）；
+2）然后发送方用自己密钥对儿中的私钥对这个摘要信息进行加密；
+3）数据接收方用发送的公钥对加密后的摘要信息进行解密，得到数据摘要的明文A；
+4）数据接收方再通过相同的哈希算法计算得到数据摘要信息B；
+5）数据接收方对比数据摘要A与数据摘要B，如果两者一致说明数据没有被篡改过。
+from Crypto.Hash import SHA
+from Crypto.Signature import PKCS1_v1_5 as Signature_PKCS1_v1_5
+message = "This is the message to send."
+# 数据签名
+with open('rsa.key', 'r') as f:
+    private_key = f.read()
+    rsa_key_obj = RSA.importKey(private_key)
+    signer = Signature_PKCS1_v1_5.new(rsa_key_obj)
+    digest = SHA.new()
+    digest.update(message)
+    signature = base64.b64encode(signer.sign(digest))
+    print('signature text: ', signature)
+
+# 验证签名
+with open('rsa.pub', 'r') as f:
+    public_key = f.read()
+    rsa_key_obj = RSA.importKey(public_key)
+    signer = Signature_PKCS1_v1_5.new(rsa_key_obj)
+    digest = SHA.new(message)
+    is_ok = signer.verify(digest, base64.b64decode(signature))
+    print('is ok: ', is_ok)
+输出结果：
+
+('signature text: ', 'Bb4gvPU9Ji63kk3SSTiAVLctDbdb91DQuQKecbTcO2Jvpwbr7fr9sKZO+vZ8LIuSOdJkhbGX6swsSNwDI/CoT0xCdjiasfySPgsLyTcSWLyy9P7SrDuveH1ABUR/oYisvT1wFsScu0NMOBR8sLpboPk2DiW6n400jZq7t09xUyc=')
+('is ok: ', True)

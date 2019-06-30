@@ -1,0 +1,1665 @@
+网络编程
+
+    网络功能：数据的传输
+
+    网络协议 ：在网络通信中双方都遵循的规定，包括建立什么样的数据结构，消息结构等。
+
+    网络数据的传输流程
+        1、发送端由应用层到物理层逐层添加首部信息，最终在物理层发送消息包
+        2、发送的消息中间经过多个节点传送(路由基站交换机等)最终到达目标主机
+        3、目标主机逐层解析消息包，最终由应用层呈现数据信息
+
+网络传输模型
+    ISO ：国际标准化组织
+
+    OSI七层模型    
+        目的：使网络通信工作流程标准化
+
+            应用层: 提供用户服务，具体功能有具体程序体现
+            表示层：提供数据的压缩、优化、加密
+            会话层：建立应用层级的连接(首部)，选择适当的传输服务
+            传输层：提供传输服务，做一些流量的控制(TCP/UDP)
+            网络层：路由选择，网络互联，网络寻址
+            链路层：进行数据交换，控制具体消息的发送链路的连接
+            物理层：提供了数据传输的硬件保证，网卡，接口设置，传输介质
+        
+        优点： 建立了统一的工作流程分步清晰每一步各司其职降低了通信模块的耦合度
+
+    四层模型(TCP/IP模型)
+        应用层，传输层，网络层，物理层
+            将应用层，表示层，会话层功能统一由应用层开发完成，便于应用开发
+
+    五层模型
+        应用层，传输层，网络层，链路层，物理层 
+
+IP  地址 
+    在网络上确定一台主机的网络路由位置
+
+        IPv4 : 点分十进制  32位
+        IPv6 ：128位
+
+        特殊IP ： 以127开头的是本机IP
+                0.0.0.0    使用本机能够使用的网卡地址
+                最后一个为 .0    表达在同一个网段(同一局域网)
+                最后一个为 .1    通常标识网关地址
+                最后一个为 .255  广播地址
+
+    域名  网络服务器地址的别名   www.baidu.com
+           1. 方便记忆
+           2. 表达一定的含义
+
+    端口号(port) ； 是网络地址的一部分，用于区分网络主机上不同的网络应用程序
+
+            * 在一个系统中应用监听的端口号不能重复
+            取值范围：1 ~ 65535
+            1 -- 255  一些众所周知的公共程序端口
+            256 -- 1023  系统应用端口
+            1024 -- 65535 
+
+    网络主机：在网络中标识一台计算机 host
+            本地："lscalhost"
+                '127.0.0.1'
+
+            网络：'0.0.0.0'        
+                176.17.8.32
+    相关命令：
+        ipconfig  查看ip地址详细信息命令
+        
+        ping ip :  连接测试命令(Linux)
+
+        获取计算机名
+            import socket
+            socket.gethostname()
+            'tedu'
+
+        获取计算机的网络地址
+            socket.gethostbyname("localhost")
+            '127.0.0.1'
+
+        查看应用程序端口号
+            In [2]: socket.getservbyname('mysql')
+            Out[2]: 3306
+
+传输层服务
+    面向连接的传输服务   (基于 TCP协议 的数据传输)
+        传输特征:提供可靠的数据传输，可靠性是指数据传输过程中
+                无丢失、无失序、无差错、无重复。
+        实现手段：在通信前需要建立数据连接，通信结束要正常断开连接
+
+        连接(三次握手)： cliert(客户端)     server(服务端)
+                        SYN=1  Sep=X        ACK = X+1
+
+                1、客户端向服务器发送连接标志变量表示请求连接
+                2、服务器收到请求后，回复变量标志确定可连接
+                3、客户端收到回复，发送最终连接标志建立连接
+        
+        断开(四次挥手)： 主动方             被动方 
+                1、主动方发送标志，表示请求断开连接
+                2、被动方收到请求后立即发送信息表示收到请求
+                3、被动方消息处理完成，再次发送标志表示已经准备好，可以断开
+                4、主动方收到被动方标志，发送最终断开标志，连接断开
+
+        适用情况：对数据准确性有明确要求，传输文件较大，需要确保可靠性传输的情况。
+                (网页获取、文件下载、)
+            
+    面向无连接的传输服务  (基于 UDP协议 的传输)
+        传输特征：不保证传输的可靠性，传输过程中没有连接和断开的过程，数据自由收发。
+                
+        适用情况 ： 网络较差、对传输可靠性要求不高，使用TCP效率较低
+                (网络视频、群聊、广播)
+
+socket模块 
+     
+    套接字 : 实现网络编程，进行数据传输的一种技术手段
+    使用socket模块提供的接口函数进行组合搭配，完成网络套接字编程
+
+    套接字分类：
+            流式套接字(SOCK_STREAM) ：TCP传输
+            数据报套接字(SOCK_DGRAM) ： UDP传输
+
+    面向连接  ---  TCP协议  --- 可靠 ---  流式套接字
+    无连接   ---   UDP协议  --- 不可靠  ---  数据报套接字
+
+TCP套接字编程
+    服务端流程 ：1、创建套接字
+                sockfd = scoket.socket(socket_family = AF_INET,     函数原型
+                                        socket_type = SOCK_STREAM,
+                                        proto = 0)         
+            功能 ：创建套接字
+            参数 ：socket_family  地址族类型  AF_INET 表示用的IPV4地址
+                   socket_type    套接字类型  SOCK_STREAM 流式套接字
+                   proto          通常为0 ，指向套接字协议的子协议(TCP/UDP没有子协议)
+            返回值 : 返回套接字类型
+
+            2、绑定地址     (不绑定系统会随机分配地址，服务器必须有一个确定的地址给客户端访问)
+                sockfd.bind(addr)
+               功能：绑定本机的网络地址
+               参数：元组  (ip,port)     # ('0.0.0.0',8888)
+               无返回
+            
+            3、设置监听
+                sockfd.listen(n)
+               功能：将套接字设置为监听套接字并且创建监听队列参数
+               参数：n 设置监听队列的大小
+               无返回
+
+            4、等待处理客户端连接请求
+                connfd,addr = sockfd.accept()
+               功能 ：阻塞等待处理客户端请求
+               无参
+               返回俩个值  connfd 连接的客户端的连接套接字
+                          addr 连接的客户端的地址
+
+               * 阻塞函数 ：程序运行过程中遇到阻塞函数则暂停执行，直到到达某种条件后再继续执行
+                                input()，time.sleep()
+
+            5、收发消息
+                date = connfd.recv(buffersize)
+                功能 ：接受消息
+                参数 ：每次最多接受多少字节消息
+                返回值 ： 接受到的网络消息
+
+                n = connfd.send(data)
+                功能 : 发送消息
+                参数 ： 要发送的内容  bytes格式
+                返回值 ： 发送了多少个字节
+
+            6、关闭套接字
+               connfd.close()
+               sockfd.close()
+               功能： 关闭套接字   
+
+    客户端流程:
+            1、创建套接字
+                *只有相同类型的套接字才能进行连接传输
+
+            2、请求连接
+                sockfd.connect(server_addr)
+                功能：连接服务器
+                参数：服务器地址:元组('IP',端口)
+
+            3、收发消息
+                * 防止两端都阻塞
+
+            4、关闭套接字
+               sockfd.close()
+
+TCP 套接字传输特征
+    1.当一端退出时如果另一端阻塞在recv，此时recv会立即结束阻塞返回空字串
+    2.如果另一端不存在，则在调用send发送时会出现Broken Pipe异常
+    3.一个监听套接字可以同时连接多个客户端，也可以重复使用
+
+网络收发缓冲区
+    1.减少和磁盘的交互
+    2.协调收发速度(数据处理速度)
+
+    send 和 recv 实际是向缓冲区发送，向缓冲区接收 (数据传输有操作系统处理)
+
+TCP 粘包    (只有TCP会产生粘包)
+    产生原因：
+        1.TCP以字节流的方式进行数据传输，消息之间没边界
+        2.多次发送的消息被一次接收。(多次连续发送)
+    影响：
+        如果每次发送的内容是一个独立含义的个体此时粘包会产生影响
+    处理粘包：
+        1.将消息结构化 (格式)
+        2.在消息结尾添加结束标志
+        3.控制消息发送速度
+
+UDP 套接字编程
+        服务器端:
+                1.创建数据报套接字
+                    sockfd = socket(AF_TNET，SOCK_DGRAM)
+                
+                2.绑定地址
+                    sockfd.bind(addr)
+
+                3.消息收发
+                    data,addr = sockfd.recvfrom(buffersize)
+                    功能：接受UDP消息
+                    参数：每次最多接受多少字节消息
+                    返回值：data  收到的消息
+                        addr  消息发送方的地址
+
+                    n = sockfd.sendto(data,addr)
+                    功能：发送UDP消息
+                    参数：data 要发送的消息  bytes格式
+                        addr  目标地址
+                    返回：发送的字节数
+
+                4.关闭套接字
+                    sockfd.close()
+
+        客户端
+            1.创建数据报套接字
+            2.消息发收
+            3.关闭套接字
+
+TCP 和 UDP 编程上的区别
+    1.流式套接字是以字节流方式传输数据，数据报则以数据报
+        形式传输
+    2.TCP 传输会有粘包 UDP不会
+    3.TCP 保证传输的可靠性，UDP 不保证
+    4.TCP 需要 listen accept 操作 ，UDP 不需要
+    5.TCP 使用send recv 收发消息， UDP 使用 sendto recvfrom
+
+补充函数：
+    sendall(data)   会把缓冲消息一次发送，不能一次发送就不发送了。
+    功能与参数与 sand 基本相同
+    返回值 ：发送成功 None  失败得到异常
+
+本地套接字
+        功能：本地两个程序之间发送数据信息
+        
+    创建流程:
+            1.创建本地套接字
+                sockfd = sockot(AF_UNIX,SOCK_STREAM)  # IP 改了
+            
+            2.绑定本地套接字文件                客户端connect(path)即可
+                sockfd.bind(path)
+                #   path = './文件名'  (空文件，用于链接的实体)
+                    会自动创建，已有可能会报错。
+            3.监听
+                sockfd.listen(int)
+        
+            4.连接
+                connfd,addr = sockfd.accept()
+            
+            5.消息收发
+                connfd.recv()
+                connfd.send()
+            
+            6.关闭
+                connfd.close()
+                sockfd.close()
+
+套接字属性：
+        sockfd.type   套接字类型
+        sockfd.family 套接字地址族类型
+
+        sockfd.getsockname()  获取套接字绑定地址
+        
+        sockfd.fileno()   获取套接字对应的文件描述符
+            文件描述符：系统中每一个IO操作系统都会分配一个整数作为编号
+                        该整数即为这个IO操作的文件描述符
+                       文件描述符是系统识别IO的标志
+                       0 | 1 | 2 被系统SYS 标准输入、输出和错误输出占据。
+            文件打开操作也有：
+                f.fileno()
+
+        sockfd.getpeername()  连接套接字获取对应客户端地址
+
+        sockfd.setsockopt(level,option,value)
+            功能：设置套接字选项，丰富或者修改套接字属性功能
+            参数： level  选项类别   SOL_SOCKET
+                option 每个选项类别对应的子选项   SO_REUSEADDR
+                value  对选项设置值       1
+            创建套接字后立即设置
+                s.setsockopt(SOL_SOCKET,SO_BROADCAST,1)  端口号不保留
+
+        sockfd.getsockopt(level,option)
+            功能：获取套接字选项值
+            参数： level  选项类别 
+                option 每个选项类别对应的子选项
+
+UDP 应用之广播
+
+        广播：一点发送，多点接收
+        广播地址：每个网段的最大地址为广播地址
+                    设置可以接收和发送广播
+        发广播:
+            from socket import *
+            from time import sleep
+
+            dest = ("176.17.8.255",9999)
+
+            s = socket(AF_INET,SOCK_DGRAM)
+            s.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
+
+            try:
+                while True:
+                    #sleep(2)
+                    sss = input(">>")
+                    s.sendto(sss.encode(),dest)
+            except KeyboardInterrupt:
+                print("\n强制退出")
+            except Exception as e:
+                print(e)
+            finally:
+                s.close()
+
+        收广播:
+            from socket import *
+
+            s = socket(AF_INET,SOCK_DGRAM)
+
+            s.bind(("0.0.0.0",9999))
+
+            try:
+                while True:
+                        msg,addr = s.recvfrom(1024)
+                        print("从{}获取广播:{}".format(addr,msg.decode()))           
+            except KeyboardInterrupt:
+                print("\n退出广播")
+            except Exception as e:
+                print(e)
+            finally:
+                s.close()
+
+TCP 应用之HTTP传输    (浏览器是软件客户端，网页是文件)
+    http协议  超文本传输协议  应用层协议
+        用途：网页获取
+              数据的传输
+    特点：
+        1.应用层协议，传输层选择TCP传输
+        2.简单，灵活，很多语言都有http专门接口
+        3.无状态协议，协议本身不要求记录传输的数据
+        4.http1.1  支持持久连接
+
+    网页请求过程
+       1.客户端(浏览器)  通过TCP传输  发送http 请求给服务端
+       2.服务端接收到http请求后进行解析
+       3.服务端处理具体请求内容，组织响应内容
+       4.将响应内容以http响应格式回发给浏览器
+       5.浏览器接收响应内容解析展示
+
+    http请求  request
+             由浏览器发起
+        请求格式:
+            请求行 ；具体的请求类别和请求路径
+                格式： GET     /      HTTP/1.1
+                      类别   内容     协议版本
+
+                类别            每一种类别表示要做不同的事情
+                    GET                 获取网络资源
+                    POST                提交一定的信息，得到反馈
+                    HEAD                只获取响应头
+                    PUT                 更新服务器资源
+                    DELETE              删除服务器资源
+                    CONNECT             未定义(保留)
+                    TRACE               测试
+                    OPTIONS             获取服务器性能信息(一般关闭)
+
+            请求头 ：对请求内容的基本描述
+            (空行)
+            请求体 ：请求参数或者提交内容
+
+            [
+            b'GET / HTTP/1.1',
+            b'Host: 127.0.0.1:8800',
+            b'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0',
+            b'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+            b'Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+            b'Accept-Encoding: gzip, deflate',
+            b'Connection: keep-alive',
+            b'Upgrade-Insecure-Requests: 1', 
+            b''
+            ]
+            ----------------
+            GET / HTTP/1.1
+            Host: 127.0.0.1:8800
+            User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0
+            Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+            Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+            Accept-Encoding: gzip, deflate
+            Connection: keep-alive
+            Upgrade-Insecure-Requests: 1
+
+    http 响应 (response)
+        响应行 ：反馈基本的响应情况
+            格式 ：HTTP / 1.1     200        OK
+                    版本         响应码    附加信息
+                响应码:1xx    提示信息，表示请求被接收，后端
+                    2xx    响应成功
+                    3xx    响应需要进一步操作，重定向
+                    4xx    客户端错误
+                    5xx    服务器错误
+
+        响应头 ：对响应内容的描述
+            以键值对的形式，与响应码有一部分重复
+        空行
+        响应体 ：具体的响应内容
+            软件文本
+
+    e.g
+                from socket import *
+
+                def handleClient(connfd):
+                    request = connfd.recv(4096)
+                    request_lines = request.splitlines()    #切割字节串方法
+                    for line in request_lines:
+                        print(line)
+                    try:
+                        f = open('index.html')
+                    except IOError:
+                        response = "HTTP/1.1 404 Not Found\r\n"
+                        response +='\r\n'
+                        response +="======Sorry not found======"
+                    else:
+                        response = "HTTP/1.1 200 OK Found\r\n"
+                        response +='\r\n'
+                        response +=f.read()
+                    finally:
+                        connfd.send(response.encode())
+                        f.close()      
+
+                def main():
+                    sockfd = socket()
+                    sockfd.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+                    sockfd.bind(("0.0.0.0",8800))
+                    sockfd.listen(5)
+                    print("Listen to the port 8800")
+                    while True:
+                        connfd,addr = sockfd.accept()
+                        handleClient(connfd)
+                        connfd.close()
+
+                if __name__ == "__main__":
+                    main()
+
+IO   input output
+        在内存中存在数据交换的操作认为是 IO 操作
+
+            和终端交互 ： input  print
+            和磁盘交互 ： read   write
+            和网络交互 ： recv   send
+
+        IO 密集型程序:在程序执行中有大量的IO操作，而cpu运算较少。
+            特点：消耗cpu资源少，耗时长
+
+        计算密集型程序(cpu密集型)：程序中计算较多，IO操作较少
+            特点：消耗cpu资源多，运算速度快
+
+    IO的类型
+             阻塞IO   非阻塞IO  IO多路复用  异步IO   事件IO
+
+        阻塞IO ：是IO的默认形态，是效率较低的一种IO情形
+                阻塞情况：1.因为某种条件没有达成造成的函数阻塞
+                            accept  input  recv
+                        2.处理IO的时间较长产生的阻塞行为
+                            网络传输，大文件的读写
+
+        非阻塞 IO ：
+                1.将原本的阻塞函数通过属性的修改使其变成非阻塞函数(只能改变调用方法的套接字对象的属性)
+                    sockfd.setblocking(bool)
+                    功能：将套接字设置为非阻塞IO
+                    参数：默认为True 表示套接字调用阻塞函数时为阻塞状态
+                        设置为False 表示调用阻塞函数时变为非阻塞状态
+
+                注意：非阻塞IO通常和循环一起使用，不断执行任务，然后再检测IO行为
+                        是否满足运行条件
+                
+                超时检测：即设置一个最长阻塞等待时间，超过时间后则不再阻塞
+                    sockfd.settimeout(sec)
+                    功能 ： 设置套接字的超时时间
+                    参数 ：设置的时间为秒 integer
+                注意： 超时状态一定是阻塞函数状态
+
+        IO多路复用：同时监控多个IO事件，当哪个IO事件准备就绪就执行哪个IO事件。
+                    以此形成可以同时操作多个IO的行为，避免一个IO阻塞造成
+                    其他IO无法运行，提高了执行效率。
+            
+            准备就绪的IO ：IO 能够操作，可以进行处理执行
+
+IO多路复用具体方案：
+            系统支持：
+                select:  windows linux unix
+                poll:      linux   unix
+                epoll:     linux   unix
+                
+            python 模块
+                import select 
+
+        select 方法实现多路复用
+        rs ，ws , xs = select(rlist,wlist,xlist[,timeout]) 
+        功能：监控IO事件，阻塞等待IO发生  （最多监控1024个 IO事件）
+        参数：rlist   传列表  想要关注的等待发生的IO事件
+            wlist   列表    想要关注的可以主动处理的IO事件
+            xlist   列表    想要关注的出现异常去处理的IO事件
+            timeout  超时时间，默认为阻塞设置超时后即阻塞一定时间
+        返回值: rs 列表  rlist中准备就绪的IO对象
+                ws 列表  wlist中准备就绪的IO对象
+                xs 列表  xlist中准备就绪的IO对象 
+
+基于 select IO 多路复用的tcp服务端
+     步骤：1.将关注的IO放入对应类别的关注列表
+          2.通过select函数进行监控
+          3.遍历select返回值确定哪个IO事件发生
+          4.处理发生IO事件
+
+    注意： wlist中如果存在IO事件，select会立即返回让你处理
+          在处理IO 过程中不要出现死循环等长期占有服务端的情况
+          IO 多路复用占用计算机资源较少，效率较高
+    e.g
+                from select import select
+                from socket import *
+
+                s = socket(AF_INET,SOCK_STREAM)
+                s.bind(("127.0.0.1",5555))
+                s.listen(3)
+
+                print("监控IO")
+                rlist = [s]
+                wlist = []
+                xlist = [s]
+                while True:         #以大的循环来使用select
+                    print("等待连接")
+                    rs,ws,xs = select(rlist,wlist,xlist)
+                    for r in rs:
+                        if r is s:
+                            c,addr = r.accept()
+                            print("Connect from",addr)
+                            rlist.append(c)
+                        else:
+                            data = r.recv(1024)
+                            if not data:
+                                rlist.remove(r)
+                                r.close()
+                                continue
+                            print("收到:",data.decode())
+                            # r.send("收到消息".encode())
+                            wlist.append(r)
+
+                    for w in ws:
+                        w.send("get infometion".encode())
+                        wlist.remove(w)
+                    for x in xs:
+                        pass
+
+poll 实现IO多路复用
+        p = select.poll()
+        功能：创建poll 对象
+        返回值：poll对象
+
+        p.register(fd,event)
+        功能：注册要关注的 IO 事件
+        参数： fd   要关注的 IO 对象
+            ecent  选择要关注的事件  默认全部。
+            常用事件类型：POLLIN    读 IO 事件       同rlist
+                         POLLOUT   写IO事件         同wlist
+                         POLLERR   出错IO事件       同xlist
+                         POLLHUO   IO连接断开事件
+            e.g   p.register(sockfd,POLLIN | POLLERR)  同时关注多个事件
+
+        p.unregister(fd)
+        功能：取消对 IO 的关注
+        参数：IO 对象或者是文件的描述符
+
+        events = p.poll()
+        功能：阻塞等待监控的IO事件发生
+        无参
+        反回值： events 是一个列表
+                格式: [(fileno,event),(),()...] 
+                其中每个元组为一个就绪的IO事件，元组中有该IO的fileno和就绪的事件类型。
+        需要字典配合通过fileno查找对应的IO事件对象
+            {fileno : io_obj}          e.g  {sockfd.fileno():sockfd}
+
+        poll_server 步骤
+                    from socket import *
+                    from select import *
+
+                    s = socket(AF_INET,SOCK_STREAM)
+                    s.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
+                    s.bind(('0.0.0.0',8888))
+                    s.listen(3)
+
+                    p = poll()
+
+                    fdmap = {s.fileno():s}
+                    p.register(s,POLLIN|POLLERR)
+
+                    while True:
+                        print("等待IO...")
+                        events = p.poll()
+                        for fd,event in events:
+                            if fd ==s.fileno():
+                                c,addr =fdmap[fd].accept()
+                                print("Connect from",addr)
+                                p.register(c,POLLIN | POLLERR)
+                                fdmap[c.fileno()] = c
+                            elif event & POLLIN:
+                                data = fdmap[fd].recv(1024)
+                                if not data:
+                                    p.unregister(fd)
+                                    fdmap[fd].close()
+                                    del fdmap[fd]
+                                else:
+                                    print("Receive:",data.decode())
+                                    fdmap[fd].send("收到啦".encode())
+
+epoll 方法实现 IO 多路复用
+    使用方法：基本与poll方法相同
+    1.生成对象改为epoll()方法
+    2.事件类型改为EPOLL
+
+    特点： 1. epoll的效率比select和poll要高(select和poll差不多))
+          2. epoll的IO监控数量比select要多
+          3. epoll的触发方式更多 
+                 事件类型更多，多EPOLLET(边缘触发)
+            水平触发：不间断询问未处理IO事件
+            边缘触发：只问一次，下一次IO发生再询问
+        
+struct 模块  结构化数据
+            原理：将数据转换为bytes格式，并且可以将bytes格式数据转换回来
+
+        Struct(fmt)
+        功能：生成 struct 对象
+        参数：fmt 定制的数据结构组成
+                e.g :
+                    要发的数据： 1 b'zhang' 1.75
+                    组织的类型格式： Struct('i5sf')
+
+                    python类型   fmt
+                    int          i
+                    float        f
+                    bytes        ns      (n代表有几个字符)
+            返回：struct
+
+        st.pack(v1,v2,v3....)
+        功能：将数据按照指定格式打包转换为bytes
+        参数：要发的数据
+        返回值： 打包后的bytes 字串
+
+        st.unpack(bytes_data)
+        功能：将bytes字节串解析为指定格式数据
+        参数：要解析的bytes 字节串
+        返回值：元组，为解析后内容
+
+        struct 模块可以直接调用pack(fmt)   unpack(fmt)
+            此时两个函数第一个参数为fmt
+            struct.pack('i5sf',1,b'zhang',1.75)
+
+位运算 (同位比较)
+    & 按位与     1011 & 1110    1010    一 0 则 0
+    | 按位或     1011 | 1110    1111    一 1 则 1
+    ^ 按位异或   1011 ^ 1110    0101    相同为0 不同为1
+    <<  左异     1011 << 2    101100  移几位就乘几个2
+    >>  右异     1011 >> 2    10      去掉低位
+
+
+////////////////////////////////多任务编程
+    多任务编程方案
+        意义：充分的利用计算机资源提高程序的运行效率
+        定义：通过一定的编程手段，在一个程序的运行中可以
+                同时利用计算机执行多个任务，以此提高程序运行效率
+            
+        实现方案：多进程  多线程
+
+    并发：同时处理多个任务，内核在任务间不停的切换，达到好像多个任务均被同时
+         执行的效果，实际每个时刻只有一个任务占有内核。
+
+    并行：多个任务利用计算机多核资源在同时执行，此时多个任务间为并行关系
+
+========================================多进程编程
+进程  process
+    定义：程序在计算机中的一次运行过程
+
+    程序；是一个可执行的文件，是静态的占有磁盘空间
+
+    进程：进程是一个动态的过程，占有计算机资源，有一定的生命周期。
+
+    一些概念：
+        cpu 时间片：   如果一个进程占有cpu内核则称这个进程在cpu时间片上
+        PCB (进程控制块) ：   在内存中开辟的一块空间存放进程的基本信息
+        进程ID(PID)：   系统为进程分配的ID号，每个进程不重复，自然整数
+
+            系统进程详细信息查看命令： ps -aux
+
+    进程的诞生
+        1.用户空间通过调用程序接口或者命令发起进程创建请求
+        2.操作系统接受用户请求，开始创建进程
+        3.操作系统分配计算机资源，确定进程状态，开辟空间等
+        4.操作系统将创建的进程提供给用户使用
+
+
+    父子进程：系统中每一个进程都有唯一的父进程，可以有多个或0个
+            子进程，这样形成父子进程关系
+
+        进程关系查看命令：pstree
+    
+    进程状态：
+        三态：1.就绪态 ：进程具备条件，等待系统分配cpu资源
+             2.运行态 ：进程占用cpu时间片正在运行
+             3.等待态 ：进程暂时阻塞不具备执行条件
+
+        五态：4.新建态 ：创建一个新的进程，获取资源的过程
+             5.终止态 ：进程结束，释放资源的过程
+
+         查看命令  ps -aux  --> STAT 列
+           
+           S  等待态  可中断的等待，不确定条件中断
+           D  等待态  不可中断等待，特定条件中断
+           T  等待态  暂停
+           R  运行态  包含就绪态
+           Z  僵尸进程
+        状态标识后的标识意思
+            <  有较高的优先级
+            N  较低的优先级
+            +  前台进程
+            s  会话组组长
+            l  有链接子进程的
+
+
+    进程优先级
+        作用：决定进程的优先权限和占用资源的优先程度
+
+        查看命令 top  动态查看进程优先级  用 < > 翻页
+
+           NI  列为优先级
+        
+        linux 优先级范围 ： -20 ~ 19  数字越小优先级越高
+      
+        指定优先级运行程序：
+            nice  -9  python  aaa.py    以9的优先级
+            nice  --9  python  aaa.py    以-9的优先级
+
+    进程的特征
+        1.进程可以使用计算机的多核资源
+        2.进程是计算机分配系统资源的最小单位
+        3.进程之间运行互不影响，各自独立运行
+        4.每个进程的空间独立，各占有自己的空间资源
+    多进程的优缺点
+        优点：可以使用计算机的多核同时运行多个任务，提高运行效率
+        缺点：进程创建删除需要消耗的系统资源较多
+
+    孤儿进程和僵尸进程
+
+        孤儿进程 ：父进程先于子进程退出，此时子进程就会成为孤儿进程
+            * 孤儿进程会被系统进程收养，此时系统进程就会成为该进程
+            新的父进程
+
+        僵尸进程 ：子进程先于父进程退出，父进程没有处理子进程退出状态，
+                此时子进程就会成为僵尸进程。
+            * 僵尸进程虽然结束但是会存留部分PCB在内存，大量的僵尸进
+            程会占用内存资源
+
+os.frok
+    import os
+
+    pid = os.fork()
+    功能：创建新的进程
+    无参
+    返回值： 失败返回一个负数
+             成功：在原进程中返回子进程的PID号
+                   在子进程中返回 0
+
+    注意：1.子进程会复制父进程的全部代码段和内存空间
+         2.子进程从fork的下一句开始执行
+         3. if elif else 结构判断 fork返回值的不同从而使父子进程
+            执行不同的代码几乎是固定搭配
+         4.父子进程各自独立运行，运行顺序不确定
+         5.子进程有自己特有的内容比如 PID  进程控制块 命令集等
+
+
+        import os
+        from time import sleep
+
+        pid = os.fork()    #原样拷贝父进程空间，新进程以赋值pid=0开始执行
+
+        if pid < 0 :
+            print("Create ptocess failed")
+        elif pid == 0:
+            sleep(2)
+            print("The new process")
+        else:
+            sleep(3)
+            print("The old process")
+
+        print("fork rest over")
+
+    frok 注意：
+        1、进入阻塞态的进程一定会让出cpu时间片
+        2、各个进程在自己空间内对数据的操作不影响其它进程
+        3、父进程在执行fork之前开辟的空间子进程也会复制
+
+    进程相关函数
+
+        os.getpid()
+            功能 ：获取当前进程的PID号
+            返回值 ：返回当前进程的PID号
+
+        os.getppid()
+            功能 ： 获取当前进程的父进程的PID号
+            返回值 ：返回父进程的PID号
+            注意：孤儿进程的父进程PID号会被改为系统进程
+
+        os._exit(status)
+            功能 ：退出进程
+            参数 ：整数  (表示自定义的进程退出状态标志)
+
+        sys.exit([status])
+            功能 ：退出进程
+            参数 ：整数  表示退出状态  默认为0
+                传入一个字符串  则退出时会打印该字符串
+
+        exit([status]) 同上
+        quit([status]) 同上
+
+        避免僵尸进程：
+             1、
+                pid,status = os.wait()
+                功能：在父进程中阻塞等待子进程退出
+                返回值： pid 退出的子进程的PID
+                        status 子进程的退出状态
+             2、
+                pid,status = os.waitpid(pid,option)
+                功能：在父进程中阻塞等待子进程退出
+                参数：  pid      -1     表示等待任意子进程
+                                 >0     表示等待指定PID的子进程退出
+                      optinon    0      表示阻塞等待
+                               WNOHANG  表示非阻塞(子进程还会成为僵尸)
+                    传入(-1,0) 等同于os.wait()
+
+                返回值： pid 退出的子进程的PID
+                        status 子进程的退出状态
+
+             3、创建二级子进程
+                1、父进程创建子进程等待子进程退出
+                2、子进程再创建二级子进程然后退出
+                3、二级子进程成为孤儿，和原来父进程各执行任务
+
+        如果父进程创建对象后，再创建子进程，子进程从父进程获取对象。
+            此时父子进程在对象操作上会有一定的影响
+
+            e.g 套接字对象监听相同的端口，文件对象会使用同一个偏移量
+
+        如果父进程先创建子进程，则父子进程中各自产生的对象没有任何关系
+
+multiprocessing  Process 模块创建进程
+    要求：
+        1.将需要执行的进程事件封装为函数
+        2.使用模块的Process类生成进程对象，并关联相应函数
+        3.可以通过对象属性设置进程信息
+        4.启动进程，此时会自动运行绑定的函数，作为一个进程来执行
+        5.回收进程
+
+    Process()
+        功能 ：创建进程对象
+        参数 ：target    绑定的目标函数
+                 name   给进程起名字，默认为Process-1
+                 args   元组，给target目标函数按照位置传参
+               kwargs   字典  给target 目标函数按照键值传参
+
+    p.start()
+        功能 ：启动进程
+            target 绑定的函数开始执行，进程真正创建
+
+    p.join([timeout])
+        功能 ：阻塞等待回收进程
+        参数 ：timeout  超时时间
+
+    注意：
+        1.使用multiprocessing 创建进程，同样子进程复制父进程的全部空间代码段，
+         父子进程执行互不影响，各自有各自的运行空间。子进程只执行对应的函数部分
+
+        2.如果不使用join回收子进程则子进程会成为僵尸进程
+
+        3.multiprocessing 中父进程往往只用来管理子进程的创建回收，
+            具体事件由子进程完成
+
+    进程对象属性:
+        p.name   进程名称
+        p.pid    进程PID号
+        p.daemon 
+              默认为 False 表示主进程退出不会影响子进程的执行
+              如果设置为True 此时主进程退出，子进程也会退出
+              要在start之前设置，且一般不会和join一起使用
+
+        p.is_alive()  查看进程是否在生命周期  返回bool 
+
+    e.g
+            from multiprocessing import Process
+            from time import sleep
+            import os
+
+            def th1():
+                sleep(3)
+                print("吃法")
+                print(os.getppid(),'--',os.getpid())
+
+            def th2():
+                sleep(2)
+                print("睡觉")
+                print(os.getppid(),'--',os.getpid())
+
+            def th3():
+                sleep(4)
+                print("打豆豆")
+                print(os.getppid(),'--',os.getpid())
+
+            things = [th1,th2,th3]
+            process = []
+            for th in things:
+                p = Process(target = th)
+                process.append(p)
+                p.start()
+
+            print("父进程")
+
+            for i in process:
+                i.join()
+
+自定义进程类
+    1.继承process类
+    2.编写自己的__init__添加自己的属性
+      使用super重新加载父类的__init__方法
+    3.重写run方法
+    4.使用自己的类创建进程对象
+    5.调用start()启动进程，此时会自动执行run方法
+    6.调用join()回收进程
+
+    e.g
+        from multiprocessing import Process
+        from time import ctime,sleep
+
+        class ClockProcess(Process):
+            def __init__(self,value):
+                self.value = value
+                super().__init__()
+            def run(self):
+                for i in range(5):
+                    print("The time is {}".format(ctime()[11:19]))
+                    sleep(self.value)
+            
+        p = ClockProcess(2)
+        p.start()
+        p.join()
+
+进程池技术
+    产生原因：如果有大量任务需要多进程完成，则可能要频繁的创建删除进程，
+             此时给计算机带来的压力较大
+
+    原理：创建一定量的进程作为进程池，用来处理事件，事件处理完毕后
+          不销毁进程，而是继续等待处理其它事件，直到所有待处理事件结束
+          再统一销毁进程。增加进程的重复利用，降低资源消耗。
+    使用方法：
+        1.创建进程池，放适当的进程
+        2.将要做的事件(要封装成函数)放入进程池等待队列
+        3.不断取事件使用进程池中进程执行，直到所有事件处理完成
+        4.关闭进程池，回收进程
+
+    from multiprocessing import Pool
+    pool = Pool(process)
+        功能 ：创建进程池对象
+        参数 ：指定进程池进程的数据量，默认根据系统自动判定(内核数)
+
+    result = pool.apply_async(dunc,args,kwds)    按process数同步执行
+        功能：使用进程池中的进程执行相应函数
+        参数：func  进程事件函数
+             args   给 func 按位置传参
+             kwds   给 func 按键值传参
+        返回值：返回函数事件对象(用 .get()方法可以获取函数的返回值)
+    
+    result = pool.apply(dunc,args,kwds)  同步返回值，一个一个执行
+        功能：使用进程池中的进程执行相应函数
+        参数：func  进程事件函数
+             args   给 func 按位置传参
+             kwds   给 func 按键值传参
+        返回值：返回所执行函数结果的字符串列表，
+
+    pool.close()
+        功能：关闭进程池，不能再添加新的事件
+    
+    pool.join()
+        功能：阻塞等待回收进程池进程
+    
+    pool.map(func,iter)     同内建map()相似用法
+        功能：将要做的事件加入进程池
+        参数：func  事件函数
+             iter  迭代对象
+        返回值：函数的返回值列表
+
+            from multiprocessing import Pool
+            from time import sleep,ctime
+
+            def worker(msg):
+                sleep(2)
+                print(msg)
+                return ctime()
+
+            pool = Pool()
+
+            result = []
+            for i in range(10):
+                msg = 'hello %d'%i
+                r = pool.apply_async(func = worker,args = (msg,))
+                # r = pool.apply(func = worker,args = (msg,))
+                result.append(r)
+            pool.close()
+            pool.join()
+            print(result)
+            for i in result:
+                # print(i)
+                print(i.get())
+
+进程间通信  (IPC)
+        原因：进程空间相对独立，资源无法相互获取，此时在不同进程间
+             需要专门的方法进行通信
+        
+        消息队列  共享内存  管道  信号量  套接字
+
+
+                   管道            消息列队                 共享
+
+        开辟空间    内存              内存                  内存
+        读写方式   两端读写          先进先出              覆盖之前的
+        效率        一般              一般                  较高
+        特点     多用于父子进程    有很多第三方队列     需要注意同步操作
+
+    multiprocessing Pipe  通信管道(Pipe)
+        原理：在内存当中开辟管道空间，生成管道操作对象，多个进程使用同一个
+             管道对象进行读写即可实现通信
+
+        from multiprocessing import Pipe
+
+        fd1,fd2 = Pipe(duplex = True)
+            功能：创建管道
+            参数：默认表示双向管道
+                False 为单向管道
+            返回值：表示管道两端的读写对象
+                    双向管道则两端都可以读写
+                    单向管道fd1只能读，fd2只能写
+            
+            fd.recv()
+            功能：从管道读取内容
+            无参
+            返回值:读到的内容
+            *管道为空则为阻塞
+
+            fd.send(data)
+            功能：向管道写入内容
+            参数:要写入的数据
+            *可以写入 python的数据类型
+        e.g
+            from multiprocessing import Process,Pipe
+            import os,time
+
+            fd1,fd2 = Pipe(False)
+
+            def fun(name):
+                time.sleep(3)
+                fd2.send(name)
+
+            jobs = []
+            for i in range(5):
+                p = Process(target = fun, args = (i,))
+                jobs.append(p)
+                p.start()
+
+            for i in range(5):
+                data = fd1.recv()
+                print(data)
+
+            for i in jobs:
+                i.join()
+
+    multiprocessing Queue消息队列:
+        队列:先进先出
+        原理:在管道中建立队列模型，进程通过队列对象将消息存入队列，或者从队列
+            取出消息，完成进程间通信
+
+        from multiprocessing import Queue
+
+        q = Queue(maxsize = 0)
+            功能：创建队列对象
+            参数: 表示队列中最多存放多少个消息
+            返回值: 队列对象
+
+        q.put(data,[block,timeout])
+            功能: 向队列存入消息
+            参数: data 要存入的内容 python的数据类型
+                block  默认队列满时会阻塞，设置为False则为非阻塞  满时报错
+                timeout  超时检测
+
+        q.get([block,timeout])
+            功能: 从队列获取消息
+            参数: block 默认当队列为空时阻塞，设置为False则为非阻塞  报错
+                timeout  超时检测
+        
+        q.full()   判断队列是否为满
+        q.empty()  判断队列是否为空
+        q.qsize()  返回队列中消息的个数
+        q.close()  关闭队列
+
+        e.g
+            from multiprocessing import Queue,Process
+            import time
+
+            q = Queue()
+            def fun1():
+                for i in range(10):
+                    time.sleep(1)
+                    q.put((1,2))
+            
+        def fun2():
+            for i in range(10):
+                time.sleep(1.5)
+                a,b = q.get()
+                print("sum = ",a+b)
+
+        p1 = Process(target = fun1)
+        p2 = Process(target = fun2)
+
+        p1.start()
+        p2.start()
+        p1.join()
+        p2.join()
+
+    multiprocessing Value,Array 共享内存
+
+        原理: 在内存空间开辟一个区域，对多个进程可见，进程可以写入内容或读写
+            内容，但是每次写入的内容会覆盖之前的内容。
+
+        from multiprocessing import Value,Array
+
+            Value：
+                obj = Value(ctype,obj)  只能存储单个数据
+                功能 ：开辟共享内存空间
+                参数 ：ctype  字符串，表示共享内存中要存储的数据类型
+                                    int         -->'i'
+                                    float       -->'f'
+                                    char(bytes) -->'c'   要是 b''格式
+                    obj  共享内存中放入的初始化数据
+                发送与取值:
+                obj.value  对该属性的修改和使用即对共享内存数据的修改和使用
+
+            Array：
+                obj = Array(ctype,obj)
+                功能 ： 开辟共享内存空间
+                参数 ： ctype  字符串  表示共享内存中要存储的数据类型
+                        obj   存入一个结构化数据(列表，bytes字串)  表示共享内存中的初始数据
+                                传入正整数  表示在共享内存中开辟指定大小的数据空间
+
+                返回值：共享内存对象
+                * 可以通过遍历获取每个值，支持索引，赋值操作
+                    e.g  obj[2]  表示获取共享内存中第三项，对其修改即对共享内存修改
+                            如果是字串(c)  , 修改字节数必须对应
+                * 如果存入的是字符串，可以通过obj.value 直接打印整个字符串,不然是分开的b'c'
+                    要用decode()转换成字符串
+                eg:
+                    from multiprocessing import Process,Array
+                    import time
+
+                    # shm = Array('i',[1,2,3,4,5])  #将列表放入共享内存
+                    # shm = Array('i',5)      #开辟五个整型空间
+                    shm = Array('c',b'12345')   # 存入字符类型
+
+                    def fun():
+                        for i in shm:
+                            print(i)
+                        shm[2] = b'x'
+
+                    p = Process(target=fun)
+
+                    p.start()
+                    p.join()
+                    for i in shm:
+                        print(i,end = ' ')
+                    print()
+                    print(shm.value)
+
+
+
+
+    multiprocessing Semap 信号量(信号灯)
+        原理 ：给定一个数量，多个进程均可见。多个进程可以通过方法操作数量，达到协同工作的目的
+
+        from multiprocessing import Semap
+
+        sem = Semaphore(num)
+        功能 ：创建信号量对象
+        参数 ：信号量的初始值
+        返回值 ：信号量对象
+
+        sem.acquire()   将信号量减一，当信号量为 0 时会阻塞       
+        sem.release()   将信号量加一
+        sem.get_value()  获取信号量数量
+
+        e.g:
+            from multiprocessing import Semaphore,Process
+            from time import sleep
+            import os
+
+            sem = Semaphore(3)
+
+            def fun():
+                print("%d 想执行事件"%os.getpid())
+                sem.acquire()
+                print("%d　执行事件"%os.getpid())
+                sleep(3)
+                print("%d　执行事件完毕"%os.getpid())
+
+            jobs = []
+
+            for i in range(5):
+                p = Process(target=fun)
+                jobs.append(p)
+                p.start()
+
+            for i in range(3):
+                sleep(5)
+                sem.release()
+
+            for i in jobs:
+                i.join()
+
+            print(sem.get_value())
+    
+========================================多线程编程
+线程  Thread
+    什么是线程：1.线程也是多任务编程方法
+               2.也可以使用计算机的多核资源
+               3.线程被称为轻量级的进程
+               4.显示是系分配内核的最小工作单元
+
+    线程的特征：
+            1.一个进程可包含多个线程
+            2.线程是一个运行的过程，消耗计算机资源
+            3.多个线程的执行相互不影响不干扰，主线程结束不影响分支线程
+            4.线程的创建销毁，销毁的资源远远小于进程
+            5.一个进程中的多个线程，共享这个进程的系统资源
+            6.每个线程也有自己特有的特征，比如ID，指令集
+
+threading  Thread  模块创建线程
+    from threading import Thread
+
+    t = Thread()
+    功能 : 创建线程对象
+    参数 ：target   绑定线程函数
+           args     元组      给线程函数位置传参
+           kwargs   字典      给线程函数键值传参
+           name    线程名称   默认为Thread-1
+
+    t.start()           启动线程
+    t.join([timeout])    回收线程
+
+        e.g
+            import threading
+            from time import sleep,time
+            import os
+
+            a = time()
+
+            num = 1
+            def music():
+                for i in range(5):
+                    sleep(2)
+                    print("播放学猫叫",os.getpid())
+                global num
+                num = 10000
+
+            t = threading.Thread(target=music)
+            t.start()
+
+            for i in range(3):
+                sleep(3)
+                print("播放卡路里",os.getpid())
+
+            t.join()
+
+            print(num)      #  10000
+
+            c = time() - a
+            print(int(c))
+
+线程对象属性
+    t.name       线程名称
+    t.serName()  设置名称
+    t.getName()  获取名称
+    
+    t.is_alive()  线程状态(bool)  在t.join()后一定是False,之前不一定，join是阻塞回收。
+
+    threading.currenThread()  在线程函数中获取当前线程对象(指向了当前线程对象,可直接引用)
+            e.g   threading.currentThread().getName()
+
+
+    t.daemon  默认为False此时主线程退出，分支线程会继续执行，
+              如果设置为True 则主线程退出，分支线程也会退出
+        
+    t.setDaemon(True)  设置daemon属性  (要在start()之前设置，通常不和join()同用)
+    t.isdaemon()      判断daemon值
+
+
+创建自己的线程类
+    步骤： 1.继承Thread
+          2.添加自己的属性写__init__,加载父类的init
+          3.重写run方法
+          4.使用自己的类生成线程对象，调用start启动线程，此时会自动运行
+             run方法作为线程执行
+        e.g:
+            class MyThread(Thread):
+                def __init__(self,target,args=(),kwargs={},name='thread-1'):
+                    super().__init__()
+                    self.fun = target
+                    self.args = args
+                    self.kwargs = kwargs
+                    self.name = name
+                
+                def run(self):
+                    self.fun(*self.args,**self.kwargs)
+                    
+            if __name__=="__main__":
+
+                def player(sec,song):
+                    for i in range(2):
+                        print("Playing %s:%s"%(song,ctime()))
+                        sleep(sec)
+                t = MyThread(target=player,args=(3,),\
+                    kwargs={'song':'凉凉'},name='hehe')
+
+                t.start()
+                t.join()
+    
+线程间通信
+    通信方法: 使用进程空间中全局变量通信
+
+    注意事项: 共享资源的争夺，往往需要同步互斥机制协调
+
+线程的同步互斥:
+    共享资源(临界资源): 多个线程都可以操作的资源称为共享资源
+    临界区: 指一段代码段，对临界资源操作的代码段为临界区
+
+    同步: 同步是一种合作关系，为完成任务，多进程或者线程之间形成一
+         种协调，按照必要的步骤有序执行操作临界资源
+
+    互斥: 互斥是一种制约关系，当一个 进程或者多个进程使用临界资源时
+         会进行加锁处理，此时另一个进程或者线程就无法操作临界资源，
+         直到解锁后才能操作
+
+    
+    线程的同步互斥方法
+        线程 Event 
+            from threading import Event
+
+            e = Event()  创建线程event对象  默认为False，阻塞
+            e.wait([timeout])
+            功能 : 阻塞函数， 等待e被设置   False时阻塞，True不阻塞
+            参数 ：超时时间
+
+            e.set()   将e变为设置状态  True
+
+            e.clear()  将e变回未设置状态    False
+
+            e.is_set()   判断当前状态
+        
+        线程锁  Lock
+
+            from threading import Lock
+
+            lock = Lock()
+            lock.acquire()  上锁    如果已经上锁调用此函数会阻塞
+            lock.release()  解锁
+
+            with lock:   上锁操作
+                ....
+                        with 语句块结束自动解锁
+
+python 线程的GIL问题
+
+    GIL ：全局解释器锁
+
+        由于python解锁器锁设计中加入了解释器锁，导致python解释器在同一时刻
+        只能解释一个线程，所以大大降低了python的执行效率
+
+    后果；python 线程一般会用在存在大量阻塞的IO程序或者高延迟的IO程序中，
+         (网络消息收发)，因为python线程在遇到阻塞时会主动让出解释器。
+        
+    GIL建议解决:
+        *尽量使用进程完成并发
+        *不使用c作为解释器
+        *可以使用多种组合的并发方案
+
+进程和线程的区别和联系
+        1.两者都是多任务编程方式，都能够使用计算机的多核
+        2.进程的创建和删除消耗的计算机资源比线程多
+        3.进程空间独立，数据互不干扰，有专门的通信方法，
+            而线程使用全局变量通信
+        4.一个进程可以创建多个线程分支，两者之间存在包含关系
+        5.多个线程公用进程的资源，在共享资源操作时往往需要同步互斥操作
+        6.进线程都在系统中有自己的特点属性标志，如ID，代码段，命令集等
+
+    使用场景：
+        1.某个任务中并发比较多，此时多线程消耗资源较少
+        2.不同的独立的任务模块，用多进程相对空间比较好管理
+        3.在通信上考虑可行性，如果数据逻辑复杂需要的同步互斥较多，
+            这时使用线程同步互斥可能会容易出错
+
+服务器：
+    硬件服务器: 主机  机组(集群)
+    软件服务器: 服务器端代码，在硬件服务器上运行，提供一定的完整的后端服务
+
+        httpserver -->  处理http请求
+        webserver  -->  网站的后端服务器程序
+        邮箱服务器  -->  邮件处理
+        ftp服务器   -->  文件处理
+
+    前端    用户端      客户端      前台应用
+
+        特征: 与用户直接交互，提供给用户使用的
+        要求: 要有良好的用户体验
+
+    后端    服务端      后台应用
+
+        特征: 提供逻辑处理，数据处理
+        要求: 更高的并发量，更快的处理速度，更强的安全性
+
+    服务器模型
+        服务器的基本结构: c/s  客户端服务器模型
+                         b/s  浏览器服务器模型
+
+网络通信模型
+    循环服务器模型: 循环接收客户端请求，处理请求，同一时刻只能
+                    处理一个请求，处理完毕后再处理下一个
+        优点: 实现简单，占用资源少
+        缺点: 无法同时处理多个客户端请求
+        适用情况 : 处理的任务可以很快完成，不需要建立并发，udp比tcp更适合循环模型
+
+    并发服务器模型: 能够同时处理多个客户端的请求
+
+        IO并发 :  IO多路复用
+            优点: 资源消耗少，能同时处理多个IO
+            编程: 只能监控IO事件，当多个任务都是CPU计算时无法同时处理
+
+        多进程多线程并发: 为每个客户端创建单独的进程或线程处理客户端请求
+            优点: 每个客户端都可以长时间占有服务器，能使用多核资源处理
+                    IO或者CPU计算
+            缺点: 资源消耗较高
+
+socketserver  集成模块完成多进程多线程 socket并发
+
+        import socketserver
+        功能 : 通过模块提供的不同类的组合完成多进程或多线程的TCP或UDP的并发程序
+
+        'StreamRequestHandler    完成流式套接字请求
+        'DatagramRequestHandler  完成数据报套接字请求
+
+        ForkingMixIn            创建多进程并发程序
+        ThreadingMixIn          创建多线程并发程序
+
+        TCPServer            创建TCP套接字服务
+        UDPServer            创建UDP套接字服务
+
+        ForkingTCPServer      ForkingMixIn + TCPServer
+        ForkingUDPServer      ForkingMixIn + UDPServer
+
+        ThreadingTCPServer    ThreadingMixIn + TCPServer
+        ThreadingUDPServer    ThreadingMixIn + UDPServer
+
+        BaseRequestHandler
+        BaseServer
+        ThreadingUnixDatagramServer
+        ThreadingUnixStreamServer
+        UnixDatagramServer
+        UnixStreamServer
+        _ServerSelector
+
+
+    使用步骤：
+            1.创建服务器类，通过选择继承模块的TCPServer或UDPServer确定服务器类型，
+                多进程或多线程类确定并发类型
+            2.创建请求处理类，根据服务器类型选择继承流式套接字处理类还是数据报套接字处理类
+
+            3.通过服务器类创建服务器对象，并绑定请求处理类。
+            4.通过serve_forever() 启动服务器，调用处理类
+
+                from socketserver import *
+
+                class Server(ForkingMixIn,TCPServer):
+                    pass
+
+                class Handler(StreamRequestHandler):
+                    def handle(self):
+                        print("Connect from:",self.client_address)
+                        while True:
+                            data = self.request.recv(1024)
+                            if not data:
+                                break
+                            print(data.decode())
+                            self.request.send(b'hehehehheheh')
+
+                if __name__=="__main__":
+                    server_addr = ("0.0.0.0",6666)
+
+                    server = Server(server_addr,Handler)
+                    print("等待链接...")
+                    server.serve_forever()
+        =====================================================
+            from socketserver import *
+
+            class Server(ThreadingMixIn,UDPServer):
+                pass
+
+            class Handler(DatagramRequestHandler):
+                def handle(self):
+                    while True:
+                        data = self.rfile.readline()
+                        if not data:
+                            break
+                        print(data.decode())
+                        self.wfile.write(b'ggggggggggg')
+
+            if __name__=="__main__":
+                server = Server(("0.0.0.0",8888),Handler)
+                print("等待链接...")
+                server.serve_forever()
+
+=======================================协程    Coroutine
+
+    协程基础
+        定义：纤程，微线程。 是为非抢占式多任务产生子程序的计算机程序组件
+            协程允许不同入口点在不同位置暂停或者开始，可以暂停执行函数
+
+        yield 实现生成器的跳转是协程现象的基本体现
+
+    协程原理：记录一个函数的上下文栈，协程调度切换时，将记录的上下文栈
+            保存起来，在切换回来时进行调取，恢复原有的执行内容，因此可以从
+            上一次执行的位置继续执行
+    
+    协程特点:无论有多少协程在程序中，同一时刻只能有一个任务执行，
+            且不会阻塞主进程的执行，当主进程发生协程阻塞时才会进入协程函数
+            普通阻塞不会进入协程。
+
+    协程优点：协程是一个单线程程序，占用计算机资源少
+            协程无需进行切换开销
+            协程没有同步互斥
+
+    协程缺点：
+            无法利用计算机多核资源
+
+
+greenlet  第三方库 安装：sudo pip3 install greenlet
+
+    greenlet.greenlet(fun)
+    功能：生成协程对象
+    参数：协程函数
+
+    g.switch()
+    功能:选择要执行的协程事件
+
+        e.g        from greenlet import greenlet
+
+                def test1():
+                    print(1)
+                    gr2.switch()
+                    print(1)
+                    gr2.switch()
+
+                def test2():
+                    print(2)
+                    gr1.switch()
+                    print(2)
+
+                gr1 = greenlet(test1)
+                gr2 = greenlet(test2)
+
+                gr1.switch()
+
+
+gevent  第三方库
+    
+    1.将协程事件封装为函数
+    2.生成协程对象
+        gevent.spawn(func,argv)
+        功能 ：生成协程对象
+        参数 ：func 协程函数
+              argv  给协程函数传参 (不定参)
+        返回值 : 返回协程对象
+    
+    3.协程回收
+        gevent.joinall(list,[timeout])
+        功能 : 阻塞等待回收协程
+        参数 ：list 要回收的协程列表
+              timeout  超时时间
+
+    gevent.sleep() :gevent阻塞 ，可以使协程跳转
+        无论有多少协程在程序中，同一时刻只能有一个任务执行，
+        且不会阻塞主进程的执行，当主进程发生协程阻塞时才会进入协程函数
+        普通阻塞不会进入协程。
+
+            import gevent
+
+            def foo():
+                print("Running foo")
+                gevent.sleep(2)
+                print("Running foo again")
+
+            def bar():
+                print("Running bar")
+                gevent.sleep(3)
+                print("Running bar again")
+
+            f = gevent.spawn(foo)
+            g = gevent.spawn(bar)
+
+            gevent.joinall([f,g])
+
+把套接字阻塞变为协程阻塞，实现并发协程处理方案
+    from gevent import monkey
+    monkey.patch_all()
+
+        *修改了原有socket代码行为，必须在socket导入之前执行
+
+            import gevent
+            from gevent import monkey
+            monkey.patch_all()
+
+            from socket import *
+
+            def server():
+                s = socket()
+                s.bind(("0.0.0.0",8888))
+                s.listen(10)
+                while True:
+                    c,addr = s.accept()
+                    print("connect from:",addr)
+                    gevent.spawn(handle,c)
+                    
+            def handle(c):
+                while True:
+                    data = c.recv(1024)
+                    if not data:
+                        break
+                    print(data.decode())
+                    c.send(b"xxxxxxxxxxxx")
+                c.close()
+            server()

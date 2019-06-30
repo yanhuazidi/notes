@@ -1,0 +1,13 @@
+<!-- 添加顶部滚动信息（公告）例子：《沁园春.雪》-->
+<div id="Scroll_info" style="text-align: center;color:red;font-size:13px;padding:5px;opacity: 0.5">人生三从境界：昨夜西风凋碧树，独上高楼，望尽天涯路。 衣带渐宽终不悔，为伊消得人憔悴。 众里寻他千百度，蓦然回首，那人却在灯火阑珊处。</div>
+<script>
+       function func(){
+           var tag = document.getElementById('Scroll_info');
+           var content = tag.innerText;
+           var f = content.charAt(0);
+           var l = content.substring(1,content.length);
+           var new_content = l + f;
+           tag.innerText = new_content;
+       }
+       setInterval('func()',1600);
+</script>

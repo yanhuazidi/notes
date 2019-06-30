@@ -1,0 +1,659 @@
+﻿魔法方法名
+
+说明
+
+ 	
+基础魔法方法（较为常用）
+
+
+__new__(cls[, ...])	1.实例化对象时第一个被调用的方法
+
+		2.其参数直接传递给__init__方法处理
+
+		3.我们一般不会重写该方法
+
+__init__(self[, ...])	构造方法，初始化类的时候被调用
+
+__del__(self)	析构方法，当实例化对象被彻底销毁时被调用（实例化对象的所有指针都被销毁时被调用）
+
+__call__(self[, args...])	允许一个类的实例像函数一样被调用：x(a, b) 调用 x.__call__(a, b)
+
+__len__(self)	定义当被 len() 调用时的行为
+
+__repr__(self)	定义当被 repr() 调用时的行为
+
+__str__(self)	定义当被 str() 调用时的行为
+
+__bytes__(self)	定义当被 bytes() 调用时的行为
+
+__hash__(self)	定义当被 hash() 调用时的行为
+
+__bool__(self)	定义当被 bool() 调用时的行为，应该返回 True 或 False
+
+__format__(self, format_spec)	定义当被 format() 调用时的行为
+ 
+
+	属性相关的方法
+
+__getattr__(self, name)	定义当用户试图获取一个不存在的属性时的行为
+
+__getattribute__(self, name)	定义当该类的属性被访问时的行为
+
+__setattr__(self, name, value)	定义当一个属性被设置时的行为
+
+__delattr__(self, name)	定义当一个属性被删除时的行为
+
+__dir__(self)		定义当 dir() 被调用时的行为
+
+__get__(self, instance, owner)定义当描述符的值被取得时的行为
+
+__set__(self, instance, value)	定义当描述符的值被改变时的行为
+
+__delete__(self, instance)	定义当描述符的值被删除时的行为
+ 	
+
+比较操作符
+
+__lt__(self, other)	定义小于号的行为：x < y 调用 x.__lt__(y)
+
+__le__(self, other)	定义小于等于号的行为：x <= y 调用 x.__le__(y)
+
+__eq__(self, other)	定义等于号的行为：x == y 调用 x.__eq__(y)
+
+__ne__(self, other)	定义不等号的行为：x != y 调用 x.__ne__(y)
+
+__gt__(self, other)	定义大于号的行为：x > y 调用 x.__gt__(y)
+
+__ge__(self, other)	定义大于等于号的行为：x >= y 调用 x.__ge__(y)
+ 	
+
+算数运算符
+
+__add__(self, other)	定义加法的行为：+
+
+__sub__(self, other)	定义减法的行为：-
+
+__mul__(self, other)	定义乘法的行为：*
+
+__truediv__(self, other)	定义真除法的行为：/
+
+__floordiv__(self, other)	定义整数除法的行为：//
+
+__mod__(self, other)	定义取模算法的行为：%
+
+__divmod__(self, other)	定义当被 divmod() 调用时的行为
+
+__pow__(self, other[, modulo])	定义当被 power() 调用或 ** 运算时的行为
+
+__lshift__(self, other)	定义按位左移位的行为：<<
+
+__rshift__(self, other)	定义按位右移位的行为：>>
+
+__and__(self, other)	定义按位与操作的行为：&
+
+__xor__(self, other)	定义按位异或操作的行为：^
+
+__or__(self, other)	定义按位或操作的行为：|
+ 	
+
+反运算（类似于运算方法）
+
+__radd__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rsub__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rmul__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rtruediv__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用 
+
+__rfloordiv__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rmod__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rdivmod__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rpow__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rlshift__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rrshift__(self, other) 	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__rxor__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+
+__ror__(self, other)	 当被运算对象（左边的操作对象）不支持该运算时被调用
+ 	
+
+增量赋值运算
+
+__iadd__(self, other)	定义赋值加法的行为：+=
+
+__isub__(self, other)	定义赋值减法的行为：-=
+
+__imul__(self, other)	定义赋值乘法的行为：*=
+
+__itruediv__(self, other)	定义赋值真除法的行为：/=
+
+__ifloordiv__(self, other)	定义赋值整数除法的行为：//=
+
+__imod__(self, other)	定义赋值取模算法的行为：%=
+
+__ipow__(self, other[, modulo])	定义赋值幂运算的行为：**=
+
+__ilshift__(self, other)	定义赋值按位左移位的行为：<<=
+
+__irshift__(self, other)	定义赋值按位右移位的行为：>>=
+
+__iand__(self, other)	定义赋值按位与操作的行为：&=
+
+__ixor__(self, other)	定义赋值按位异或操作的行为：^=
+
+__ior__(self, other)	定义赋值按位或操作的行为：|=
+ 	
+
+一元操作符
+
+__neg__(self)	定义正号的行为：+x
+
+__pos__(self)	定义负号的行为：-x
+
+__abs__(self)	定义当被 abs() 调用时的行为
+
+__invert__(self)	定义按位求反的行为：~x
+ 	
+
+类型转换
+
+__complex__(self)	定义当被 complex() 调用时的行为（需要返回恰当的值）
+
+__int__(self)	定义当被 int() 调用时的行为（需要返回恰当的值）
+
+__float__(self)	定义当被 float() 调用时的行为（需要返回恰当的值）
+
+__round__(self[, n])	定义当被 round() 调用时的行为（需要返回恰当的值）
+
+__index__(self)	1. 当对象是被应用在切片表达式中时，实现整形强制转换
+
+		2. 如果你定义了一个可能在切片时用到的定制的数值型,你应该定义 __index__
+
+		3. 如果 __index__ 被定义，则 __int__ 也需要被定义，且返回相同的值
+ 	
+
+上下文管理（with 语句）
+
+__enter__(self)	1. 定义当使用 with 语句时的初始化行为
+
+		2. __enter__ 的返回值被 with 语句的目标或者 as 后的名字绑定
+
+__exit__(self, exc_type, exc_value, traceback)	1. 定义当一个代码块被执行或者终止后上下文管理器应该做什么
+
+		2. 一般被用来处理异常，清除工作或者做一些代码块执行完毕之后的日常工作
+ 	
+
+容器类型（一般用于操作容器类）
+
+__len__(self)	定义当被 len() 调用时的行为（一般返回容器类的长度）
+
+__getitem__(self, key)	定义获取容器中指定元素的行为，相当于 self[key]
+
+__setitem__(self, key, value)	定义设置容器中指定元素的行为，相当于 self[key] = value
+
+__delitem__(self, key)	定义删除容器中指定元素的行为，相当于 del self[key]
+
+__iter__(self)	定义当迭代容器中的元素的行为
+
+__reversed__(self)	定义当被 reversed() 调用时的行为
+
+__contains__(self, item)	定义当使用成员测试运算符（in 或 not in）时的行为
+
+
+
+
+Python中的魔术方法详解
+介绍
+　　在Python中，所有以“__”双下划线包起来的方法，都统称为“Magic Method”，中文称『魔术方法』,
+    例如类的初始化方法 __init__ ,Python中所有的魔术方法均在官方文档中有相应描述，
+    但是对于官方的描述比较混乱而且组织比较松散。很难找到有一个例子。
+
+构造和初始化
+　　每个Pythoner都知道一个最基本的魔术方法， __init__ 。通过此方法我们可以定义一个对象的初始操作。
+    然而，当调用 x = SomeClass() 的时候， __init__ 并不是第一个被调用的方法。
+    实际上，还有一个叫做__new__ 的方法，两个共同构成了“构造函数”。
+
+　　__new__是用来创建类并返回这个类的实例, 而__init__只是将传入的参数来初始化该实例。
+　　在对象生命周期调用结束时，__del__ 方法会被调用，可以将__del__理解为“构析函数”。下面通过代码的看一看这三个方法:
+
+from os.path import join 
+class FileObject: 
+    '''给文件对象进行包装从而确认在删除时文件流关闭'''
+    def __init__(self, filepath='~', filename='sample.txt'): 
+        #读写模式打开一个文件 
+        self.file = open(join(filepath, filename), 'r+') 
+    def __del__(self): 
+        self.file.close() 
+        del self.file
+控制属性访问
+　　许多从其他语言转到Python的人会抱怨它缺乏类的真正封装。(没有办法定义私有变量，然后定义公共的getter和setter)。
+    Python其实可以通过魔术方法来完成封装。我们来看一下:
+
+__getattr__(self, name):
+　　定义当用户试图获取一个不存在的属性时的行为。这适用于对普通拼写错误的获取和重定向，对获取一些不建议的属性时候给出警告
+    (如果你愿意你也可以计算并且给出一个值)或者处理一个 AttributeError 。只有当调用不存在的属性的时候会被返回。
+
+__setattr__(self, name, value):
+　　与__getattr__(self, name)不同，__setattr__ 是一个封装的解决方案。无论属性是否存在，它都允许你定义对对属性的赋值行为，
+    以为这你可以对属性的值进行个性定制。实现__setattr__时要避免"无限递归"的错误。
+
+__delattr__:
+　　与 __setattr__ 相同，但是功能是删除一个属性而不是设置他们。实现时也要防止无限递归现象发生。
+
+
+__getattribute__(self, name):
+　　__getattribute__定义了你的属性被访问时的行为，相比较，__getattr__只有该属性不存在时才会起作用。因此，
+    在支持__getattribute__的Python版本,调用__getattr__前必定会调用 __getattribute__。__getattribute__同样要避免"无限递归"的错误。
+    需要提醒的是，最好不要尝试去实现__getattribute__,因为很少见到这种做法，而且很容易出bug。
+
+　　在进行属性访问控制定义的时候很可能会很容易引起“无限递归”。如下面代码:
+
+#  错误用法 
+def __setattr__(self, name, value): 
+    self.name = value 
+    # 每当属性被赋值的时候(如self.name = value)， ``__setattr__()`` 会被调用，这样就造成了递归调用。 
+    # 这意味这会调用 ``self.__setattr__('name', value)`` ，每次方法会调用自己。这样会造成程序崩溃。 
+#  正确用法 
+def __setattr__(self, name, value): 
+    self.__dict__[name] = value  # 给类中的属性名分配值 
+    # 定制特有属性
+Python的魔术方法很强大，但是用时却需要慎之又慎，了解正确的使用方法非常重要。
+
+创建自定义容器
+　　有很多方法可以让你的Python类行为向内置容器类型一样，比如我们常用的list、dict、tuple、string等等。
+    Python的容器类型分为可变类型(如list、dict)和不可变类型（如string、tuple），可变容器和不可变容器的区别在于，
+    不可变容器一旦赋值后，不可对其中的某个元素进行修改。
+
+　　在讲创建自定义容器之前，应该先了解下协议。这里的协议跟其他语言中所谓的"接口"概念很像，它给你很多你必须定义的方法。
+然而在Python中的协议是很不正式的，不需要明确声明实现。事实上，他们更像一种指南。
+
+自定义容器的magic method
+　　下面细致了解下定义容器可能用到的魔术方法。首先，实现不可变容器的话，你只能定义 __len__ 和 __getitem__ (下面会讲更多)。
+可变容器协议则需要所有不可变容器的所有，另外还需要 __setitem__ 和 __delitem__ 。如果你希望你的对象是可迭代的话，
+你需要定义 __iter__ 会返回一个迭代器。迭代器必须遵循迭代器协议，需要有 __iter__(返回它本身) 和 next。
+
+__len__(self):
+　　返回容器的长度。对于可变和不可变容器的协议，这都是其中的一部分。
+
+__getitem__(self, key):
+　　定义当某一项被访问时，使用self[key]所产生的行为。这也是不可变容器和可变容器协议的一部分。如果键的类型错误将产生TypeError；
+    如果key没有合适的值则产生KeyError。
+
+__setitem__(self, key, value):
+　　当你执行self[key] = value时，调用的是该方法。
+
+__delitem__(self, key):
+　　定义当一个项目被删除时的行为(比如 del self[key])。这只是可变容器协议中的一部分。当使用一个无效的键时应该抛出适当的异常。
+
+__iter__(self):
+　　返回一个容器迭代器，很多情况下会返回迭代器，尤其是当内置的iter()方法被调用的时候，以及当使用for x in container:方式循环的时候。
+    迭代器是它们本身的对象，它们必须定义返回self的__iter__方法。
+
+__reversed__(self):
+　　实现当reversed()被调用时的行为。应该返回序列反转后的版本。仅当序列可以是有序的时候实现它，例如对于列表或者元组。
+
+__contains__(self, item):
+　　定义了调用in和not in来测试成员是否存在的时候所产生的行为。你可能会问为什么这个不是序列协议的一部分？因为当__contains__没有被定义的时候，
+    如果没有定义，那么Python会迭代容器中的元素来一个一个比较，从而决定返回True或者False。
+
+__missing__(self, key):
+　　dict字典类型会有该方法，它定义了key如果在容器中找不到时触发的行为。比如d = {'a': 1}, 当你执行d[notexist]时，d.__missing__['notexist']就会被调用。
+
+ 
+
+实例
+　　下面是书中的例子，用魔术方法来实现Haskell语言中的一个数据结构。
+
+# -*- coding: utf-8 -*- 
+class FunctionalList: 
+    ''' 实现了内置类型list的功能,并丰富了一些其他方法: head, tail, init, last, drop, take'''
+    def __init__(self, values=None): 
+        if values is None: 
+            self.values = [] 
+        else: 
+            self.values = values 
+    def __len__(self): 
+        return len(self.values) 
+    def __getitem__(self, key): 
+        return self.values[key] 
+    def __setitem__(self, key, value): 
+        self.values[key] = value 
+    def __delitem__(self, key): 
+        del self.values[key] 
+    def __iter__(self): 
+        return iter(self.values) 
+    def __reversed__(self): 
+        return FunctionalList(reversed(self.values)) 
+    def append(self, value): 
+        self.values.append(value) 
+    def head(self): 
+        # 获取第一个元素 
+        return self.values[0] 
+    def tail(self): 
+        # 获取第一个元素之后的所有元素 
+        return self.values[1:] 
+    def init(self): 
+        # 获取最后一个元素之前的所有元素 
+        return self.values[:-1] 
+    def last(self): 
+        # 获取最后一个元素 
+        return self.values[-1] 
+    def drop(self, n): 
+        # 获取所有元素，除了前N个 
+        return self.values[n:] 
+    def take(self, n): 
+        # 获取前N个元素 
+        return self.values[:n]
+　　
+
+　　其实在collections模块中已经有了很多类似的实现，比如Counter、OrderedDict等等。
+
+反射
+　　你也可以控制怎么使用内置在函数sisinstance()和issubclass()方法 反射定义魔术方法. 这个魔术方法是:
+
+__instancecheck__(self, instance):
+　　检查一个实例是不是你定义的类的实例
+
+__subclasscheck__(self, subclass):
+　　检查一个类是不是你定义的类的子类
+
+　　这些魔术方法的用例看起来很小, 并且确实非常实用. 它们反应了关于面向对象程序上一些重要的东西在Python上,
+    并且总的来说Python: 总是一个简单的方法去找某些事情, 即使是没有必要的. 这些魔法方法可能看起来不是很有用, 
+    但是一旦你需要它们，你会感到庆幸它们的存在。
+
+可调用的对象
+　　你也许已经知道，在Python中，方法是最高级的对象。这意味着他们也可以被传递到方法中，就像其他对象一样。这是一个非常惊人的特性。
+　　在Python中，一个特殊的魔术方法可以让类的实例的行为表现的像函数一样，你可以调用它们，将一个函数当做一个参数传到另外一个函数中等等。
+    这是一个非常强大的特性，其让Python编程更加舒适甜美。
+
+
+__call__(self, [args...]):
+　　允许一个类的实例像函数一样被调用。实质上说，这意味着 x() 与 x.__call__() 是相同的。注意 __call__ 的参数可变。
+    这意味着你可以定义 __call__ 为其他你想要的函数，无论有多少个参数。
+
+　　__call__ 在那些类的实例经常改变状态的时候会非常有效。调用这个实例是一种改变这个对象状态的直接和优雅的做法。用一个实例来表达最好不过了:
+
+# -*- coding: UTF-8 -*- 
+class Entity: 
+    """ 
+    调用实体来改变实体的位置 
+    """
+def __init__(self, size, x, y): 
+    self.x, self.y = x, y 
+    self.size = size 
+def __call__(self, x, y): 
+    """ 
+    改变实体的位置 
+    """
+    self.x, self.y = x, y
+
+
+上下文管理
+　　with声明是从Python2.5开始引进的关键词。你应该遇过这样子的代码:
+with open('foo.txt') as bar: 
+    # do something with bar
+　　在with声明的代码段中，我们可以做一些对象的开始操作和退出操作,还能对异常进行处理。这需要实现两个魔术方法: __enter__ 和 __exit__。
+
+__enter__(self):
+　　定义了当使用with语句的时候，会话管理器在块被初始创建时要产生的行为。请注意，__enter__的返回值与with语句的目标或者as后的名字绑定。
+
+__exit__(self, exception_type, exception_value, traceback):
+　　定义了当一个代码块被执行或者终止后，会话管理器应该做什么。它可以被用来处理异常、执行清理工作或做一些代码块执行完毕之后的日常工作。
+    如果代码块执行成功，exception_type，exception_value，和traceback将会为None。否则，你可以选择处理这个异常或者是直接交给用户处理。
+    如果你想处理这个异常的话，请确保__exit__在所有语句结束之后返回True。如果你想让异常被会话管理器处理的话，那么就让其产生该异常。
+
+创建对象描述器
+　　描述器是通过获取、设置以及删除的时候被访问的类。当然也可以改变其它的对象。描述器并不是独立的。相反，它意味着被一个所有者类持有。
+    当创建面向对象的数据库或者类，里面含有相互依赖的属相时，描述器将会非常有用。一种典型的使用方法是用不同的单位表示同一个数值，或者表示某个数据的附加属性。
+
+　　为了成为一个描述器，一个类必须至少有__get__，__set__，__delete__方法被实现：
+
+__get__(self, instance, owner):
+ 
+
+定义了当描述器的值被取得的时候的行为。instance是拥有该描述器对象的一个实例。owner是拥有者本身
+
+__set__(self, instance, value):
+定义了当描述器的值被改变的时候的行为。instance是拥有该描述器类的一个实例。value是要设置的值。
+
+__delete__(self, instance):
+定义了当描述器的值被删除的时候的行为。instance是拥有该描述器对象的一个实例。
+
+ 
+
+　　下面是一个描述器的实例：单位转换。
+
+# -*- coding: UTF-8 -*- 
+class Meter(object): 
+    """ 
+    对于单位"米"的描述器 
+    """
+    def __init__(self, value=0.0): 
+        self.value = float(value) 
+    def __get__(self, instance, owner): 
+        return self.value 
+    def __set__(self, instance, value): 
+        self.value = float(value) 
+class Foot(object): 
+    """ 
+    对于单位"英尺"的描述器 
+    """
+    def __get__(self, instance, owner): 
+        return instance.meter * 3.2808
+    def __set__(self, instance, value): 
+        instance.meter = float(value) / 3.2808
+class Distance(object): 
+    """ 
+    用米和英寸来表示两个描述器之间的距离 
+    """
+    meter = Meter(10) 
+    foot = Foot() 
+　　使用时： 
+>>>d = Distance() 
+>>>print d.foot 
+>>>print d.meter 
+32.808
+10.0
+ 
+
+复制
+　　有时候，尤其是当你在处理可变对象时，你可能想要复制一个对象，然后对其做出一些改变而不希望影响原来的对象。这就是Python的copy所发挥作用的地方。
+
+__copy__(self):
+　　定义了当对你的类的实例调用copy.copy()时所产生的行为。copy.copy()返回了你的对象的一个浅拷贝——这意味着，当实例本身是一个新实例时，
+    它的所有数据都被引用了——例如，当一个对象本身被复制了，它的数据仍然是被引用的（因此，对于浅拷贝中数据的更改仍然可能导致数据在原始对象的中的改变）。
+
+__deepcopy__(self, memodict={}):
+　　定义了当对你的类的实例调用copy.deepcopy()时所产生的行为。copy.deepcopy()返回了你的对象的一个深拷贝——对象和其数据都被拷贝了。
+    memodict是对之前被拷贝的对象的一个缓存——这优化了拷贝过程并且阻止了对递归数据结构拷贝时的无限递归。
+    当你想要进行对一个单独的属性进行深拷贝时，调用copy.deepcopy()，并以memodict为第一个参数。
+
+ 
+
+其他方法
+用于比较的魔术方法
+__cmp__(self, other)  是比较方法里面最基本的的魔法方法
+
+__eq__(self, other) 定义相等符号的行为，==
+
+__ne__(self,other)  定义不等符号的行为，！=
+
+__lt__(self,other)  定义小于符号的行为，<
+
+__gt__(self,other)  定义大于符号的行为，>
+
+__le__(self,other)  定义小于等于符号的行为，<=
+
+__ge__(self,other)  定义大于等于符号的行为，>=
+
+ 
+
+数值计算的魔术方法
+单目运算符和函数
+__pos__(self)   实现一个取正数的操作
+
+__neg__(self)   实现一个取负数的操作
+
+__abs__(self)   实现一个内建的abs()函数的行为
+
+__invert__(self)    实现一个取反操作符（～操作符）的行为
+
+__round__(self, n)  实现一个内建的round（）函数的行为
+
+__floor__(self) 实现math.floor()的函数行为
+
+__ceil__(self)  实现math.ceil()的函数行为
+
+__trunc__(self) 实现math.trunc()的函数行为
+
+ 
+
+双目运算符或函数
+__add__(self, other)    实现一个加法
+
+__sub__(self, other)    实现一个减法
+
+__mul__(self, other)    实现一个乘法
+
+__floordiv__(self, other)   实现一个“//”操作符产生的整除操作（）
+
+__div__(self, other)    实现一个“/”操作符代表的除法操作
+
+__truediv__(self, other)    实现真实除法
+
+__mod__(self, other)    实现一个“%”操作符代表的取模操作
+
+__divmod__(self, other) 实现一个内建函数divmod（）
+
+__pow__ 实现一个指数操作(“**”操作符）的行为
+
+__lshift__(self, other) 实现一个位左移操作（<<）的功能
+
+__rshift__(self, other) 实现一个位右移操作（>>）的功能
+
+__and__(self, other)    实现一个按位进行与操作（&）的行为
+
+__or__(self, other) 实现一个按位进行或操作的行为
+
+__xor__(self, other)    __xor__(self, other)
+
+ 
+
+增量运算
+__iadd__(self, other)   加法赋值
+
+__isub__(self, other)   减法赋值
+
+__imul__(self, other)   乘法赋值
+
+__ifloordiv__(self, other)  整除赋值，地板除，相当于 //= 运算符
+
+__idiv__(self, other)   除法赋值，相当于 /= 运算符
+
+__itruediv__(self, other)   真除赋值
+
+__imod_(self, other)    模赋值，相当于 %= 运算符
+
+__ipow__    乘方赋值，相当于 **= 运算符
+
+__ilshift__(self, other)    左移赋值，相当于 <<= 运算符
+
+__irshift__(self, other)    左移赋值，相当于 >>= 运算符
+
+__iand__(self, other)   与赋值，相当于 &= 运算符
+
+__ior__(self, other)    或赋值
+
+__ixor__(self, other)   异或运算符，相当于 ^= 运算符
+
+ 
+
+类型转换
+__int__(self)   转换成整型
+
+__long__(self)  转换成长整型
+
+__float__(self) 转换成浮点型
+
+__complex__(self)   转换成 复数型
+
+__oct__(self)   转换成八进制
+
+__hex__(self)   转换成十六进制
+
+__index__(self) 如果你定义了一个可能被用来做切片操作的数值型，你就应该定义__index__
+
+__trunc__(self) 当 math.trunc(self) 使用时被调用__trunc__返回自身类型的整型截取
+
+__coerce__(self, other) 执行混合类型的运算
+
+
+在进行属性访问控制定义的时候很可能会很容易引起“无限递归”。如下面代码:
+
+#  错误用法 
+def __setattr__(self, name, value): 
+    self.name = value 
+    # 每当属性被赋值的时候(如self.name = value)， ``__setattr__()`` 会被调用，这样就造成了递归调用。 
+    # 这意味这会调用 ``self.__setattr__('name', value)`` ，每次方法会调用自己。这样会造成程序崩溃。 
+#  正确用法 
+def __setattr__(self, name, value): 
+    self.__dict__[name] = value  # 给类中的属性名分配值
+    # 定制特有属性
+
+
+
+可变元组的实例
+class MyList(tuple):
+    def __init__(self,value=()):
+        self.data=list(value)
+
+    def __getitem__(self,key):
+        return tuple(self.__dict__['data'][key])
+
+    def __setitem__(self,key,value):
+        self.__dict__['data'][key]=value
+    
+    def __str__(self):
+        return str(tuple(self.__dict__['data']))
+
+a = MyList((1,2,3,4,5))
+
+print(a[1:3])
+a[2]='00000'
+print(a.__dict__)
+print(a)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

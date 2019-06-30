@@ -1,0 +1,297 @@
+
+git 的使用
+    代码的协调管理工具
+
+1.防止代码丢失，作代码备份
+2.做代码的版本管理，创建多个版本或者结点，在多个版本之间切换
+3.可以将代码在多人之间简单的传输共享
+4.可以方便多人协同开发，开辟各自分支和分支管理
+
+什么是git 
+    是一个开源的分布式版本控制系统，可以用于高效的管理大小项目
+
+    分布式:每个节点关系平等，都保存完整代码，节点之间相互推送
+            或者下载代码。工作方式多样
+
+    集中式:有明确的中央服务器统一管理代码，每个节点将代码上传
+            中央服务器或者从中央服务器下载。逻辑简单
+
+特点：
+    git 可以管理各种文件，特别是代码项目，多在Linx 和 Uinx系统中使用
+    是开源的系统，是唯一可以操作github的管理工具
+    git 是分布式管理，不同于集中式，这也是和svn最大的差别
+    git 可以脱网操作，传输速度更快
+    git 的安全性很强，有全球唯一的commit版本号
+    git 分支管理很强大，可以方便多人协同工作
+
+
+git 安装
+    sudo apt-get install git
+
+git 基本配置
+        git config
+
+    配置级别 
+        1.系统级别，系统中所有用户均使用的配置
+            命令：git config --system
+            配置文件：/etc/gitconfig
+            配置用户sudo git config --system user.name Tedu
+
+        2.当前用户的所有项目均使用的配置
+            命令：git config --global
+            配置文件：~/.gitconfig
+            配置邮箱 git config --global user.email tarena@tedu.cn
+
+        3.只在当前项目中使用的配置
+            命令：git config (要求命令要在git项目文件夹中执行)
+            配置文件：项目文件夹/.git/config
+            配置编辑器
+                     git config core.editor vscode
+
+        4.查看当前配置
+            git config --list
+
+git 基本概念
+
+    工作区：通过自己主机操作的git目录
+
+    暂存区：用来记录你工作区的行为，作为暂时保存
+
+    本地仓库：本地用来备份同步工作区内容的区域
+
+    远程仓库：其它主机的git仓库
+
+git 的基本操作命令
+    初始化仓库
+        git init    (在指定项目文件夹下)
+        * 初始化仓库后产生，git目录为git的管理目录，
+          初始化仓库的目录中的内容即可使用git进行管理
+        
+    查看工作分支状态
+        git status
+        *默认工作分支为master，可以通过创建新的分支切换
+
+    文件提交到暂存区
+        git add [file]
+        * 可以一次提交多个内容，中间用空格隔开
+        * 提交的内容可以是文件也可以是目录
+        * 提交所有内容用 * 表示
+
+    删除暂存区的记录
+        git rm --cached [file]   (目录加 -r )
+
+    将暂存区记录的修改内容同步到本地仓库
+        git commit -m "add some message"    
+        * -m 为添加的附加信息
+        * 当工作区和本地仓库内容一致时，git status提示工作区干净
+
+    查看提交记录    上面的最新
+        git log     或 git log ---pretty=oneline
+      eg.
+        commit 9c4dd2137b7bef260d70f27e16b1c640c9401ff3  全球唯一版本号
+        Author: wei <yanhuazidi@163.com>    作者信息
+        Date:   Fri Nov 2 16:18:01 2018 +0800       提交日期时间
+
+            add some files      提交日志
+
+工作区操作
+    查看工作区文件和本地仓库的差异
+        git diff [file]
+
+    放弃工作区的修改
+        git checkout -- [file]
+
+    恢复仓库文件到工作区
+        git checkout [file]
+
+文件的移动和删除
+    删除工作区文件并提交到暂存区记录
+        git rm [file]
+    
+    移动工作区文件并提交到暂存区记录
+        git mv file dir
+
+    * rm  mv  的用法和shell命令rm mv 相同，操作后直接commit 同步到本地仓库
+
+版本控制命令
+    回到之前版本
+        git reset --hard HEAD^  回到上一个版本
+
+        HEAD 后几个^ 表示回到之前的几个版本
+
+    通过 commit_id 回到指定的版本
+        git reset --hard commit_id
+
+    查看操作日志    上面的最新
+        git reflog 
+        *获取到操作记录后可以根据commit_id去往较新的版本
+
+标签管理
+    什么是标签: 即在当前工作位置添加快照，保存项目的版本信息，
+                一般用于项目版本的迭代
+
+    创建标签
+        git tag v1.0 [-m '标签信息']
+        默认会在最新的commit_id处打标签
+
+    查看所有标签
+        git tag
+    
+    查看标签具体信息 
+        git show 标签号
+    
+    在某个指定commig_id处打标签
+        git tag v0.9 [commit_id]
+
+    回到某个标签的版本
+        git reset --hard v0.9
+
+    删除某个标签
+        git tag -d 标签号  
+
+保存临时工作区
+    创建临时工作区
+        git stash
+
+        *将工作区修改内容暂时封存，恢复到最近一个干净状态
+
+    查看保存的工作区
+        git stash list
+		>>>stash@{0}: WIP on dev: f52c633 add merge
+		上面的最新
+		
+    应用某一个工作区
+		一是用	git stash apply	恢复上一个工作区，
+			也可以指定某个工作区: git stash apply stash@{index}  
+		
+		但是恢复后，stash内容并不删除，你需要用git stash drop来删除
+		
+		二是应用上一个工作区，并删除当前的
+			git stash pop
+
+    删除工作区
+        git stash drop stash@{index}  删某一个
+        git stash clear   删所有
+
+分支管理
+    分支即每个人在获取原有分支(master)代码的基础上，作为自己的工作环境，单独开发，
+    不会影响其他分支操作，开发完成后再统一合并到主线分支
+
+    好处：安全，不影响其他人工作，自己控制进度
+    问题：冲突，减低耦合度可以有效的减少冲突
+
+查看当前分支
+    git branch
+
+    前面带 * 代表当前正在工作的分支
+
+创建分支
+    git branch [branch_name]
+    分支是复制的本地仓库，如果工作区不干净，则分支与主分支不一样
+
+切换工作分支
+    git checkout [branch]
+
+    git checkout -b [branch] 创建并切换到新的分支 
+	
+合并某分支到当前分支
+    git merge [branch_name]
+
+删除分支
+    git branch -d [branch]
+    普遍删除，只有分支合并后才能删
+
+    强制删除未合并分支
+    git branch -D [branch]
+	
+查看分支提交情况
+	git log --graph --pretty=oneline --abbrev-commit
+
+远程仓库的
+    在远程主机上的仓库。
+    git 是分布式的，每一台主机上的git结构基本相同，只是把其它主机上
+       的git 仓库叫做远程仓库
+
+创建共享仓库:
+    1.创建目录
+        mkdir [dirname]
+    
+    2.设置仓库文件夹的属主
+        chown [yonghu:yonghuzu] [dirname]
+
+    3.创建共享仓库
+        git init --bare [aid.git]
+
+    4.设置git 项目文件夹属组
+        chow -R [yonghu:yonghuzu] [aid.git]
+
+添加远程仓库
+    在项目文件夹中执行
+	默认 库名 origin
+    git remote add origin [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
+	指定 库名 github
+	git remote add github git@github.com:michaelliao/learngit.git
+	
+查看远程库信息	
+	git remote -v
+
+向远程主机推送分支
+    git push -u origin [master]
+    输入对方密码
+
+从远程主机获取项目
+    在指定文件夹内(普通文件夹)
+	
+	默认clone 主分支
+    git clone [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
+	
+	clone 指定分支
+	git clone -b dev http://10.1.1.11/service/tmall-service.git
+
+	
+	
+指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：
+	$ git branch --set-upstream-to=origin/dev dev
+	Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+
+将代码同步到远程主机
+    git push 远程仓库名 分支名
+
+从远程仓库拉取代码到本地
+    git pull(直接合并到本地分支)
+    git fetch(创建新的分支,需要自己合并)
+
+删除已有的远程仓库
+    git remote rm [origin]
+
+
+github
+    开源的项目社区网站，提供丰富的开源项目，也为用户提供项目管理服务
+
+    git 是gitbub 唯一指定的代码管理工具
+
+    网址 : https://github.com
+
+    创建新的仓库 : 右上角 +    --》 new repository -->填写信息
+
+    操作github：
+        1.git remote 连接远程仓库
+        2.通过 git push 上传代码
+        
+         * github 就是一个远程仓库
+		 
+
+多人协作的工作模式通常是这样：
+
+	首先，可以试图用git push origin <branch-name>推送自己的修改；
+
+	如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+
+	如果合并有冲突，则解决冲突，并在本地提交；
+
+	没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+
+	如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，
+	用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。	
+
+    

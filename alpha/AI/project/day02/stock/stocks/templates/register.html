@@ -1,0 +1,50 @@
+<!DOCTYPE>
+<html>
+  <head>
+      <title></title>
+      <script src="/static/jquery-3.2.0.js"></script>
+  </head>
+  <body>
+    <p><input type="text" name="username" id="username" placeholder="请输入用户名"></p>
+    <p id="show"></p>
+    <p><input type="password" name="pwd" id="pwd" placeholder="请输入密码"></p>
+    <p><input type="password" name="cpwd" id="cpwd" placeholder="请输入确认密码"></p>
+    <p><input type="button" name="btn" id="btn" value="提交"></p>
+
+    <script>
+      $("#btn").click(function () {
+          var username = $("input[name='username']").val();
+          var pwd = $("input[name='pwd']").val();
+          var cpwd = $("input[name='cpwd']").val();
+
+          $.ajax({
+              type:"post",
+              url:"/userinfo/registerh",
+              datatype:'json',
+              data:{
+                  username:username,
+                  pwd:pwd,
+                  cpwd:cpwd,
+              },
+              success:function(datas){
+
+                  var datashow = JSON.parse(datas);
+                  if(datashow["result"]==false){
+                      $("#show").text(datashow['error'])
+                  }else {
+
+                  }
+
+
+
+              },
+              error:function (error) {
+                  console.log(error);
+              }
+          });
+      });
+
+    </script>
+
+  </body>
+</html>

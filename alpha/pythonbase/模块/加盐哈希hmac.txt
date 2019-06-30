@@ -1,0 +1,39 @@
+hmac模块
+hashmac模块简介：
+前面说过，HMAC算法也是一种一种单项加密算法，并且它是基于上面各种哈希算法/散列算法的，
+只是它可以在运算过程中使用一个密钥来增增强安全性。hmac模块实现了HAMC算法，提供了相应
+的函数和方法，且与hashlib提供的api基本一致。
+
+hmac模块提供的函数：
+
+函数名	描述
+hmac.new(key, msg=None, digestmod=None)	用于创建一个hmac对象，key为密钥，msg为初始数据，
+digestmod为所使用的哈希算法，默认为hashlib.md5
+hmac.compare_digest(a, b)	比较两个hmac对象，返回的是a==b的值
+hmac对象中的方法和属性：
+
+方法名/属性名	描述
+HMAC.update(msg)	同hashlib.update(msg)
+HMAC.digest()	同hashlib.digest()
+HMAC.hexdigest()	同hashlib.hexdigest()
+HMAC.copy()	同hashlib.copy()
+HMAC.digest_size	同hashlib.digest_size
+HMAC.block_size	同hashlib.block_size
+HMAC.name	同hashlib.name
+hmac模块使用步骤：
+hmac模块模块的使用步骤与hashlib模块的使用步骤基本一致，只是在第1步获取hmac对象时，只能使用
+hmac.new()函数，因为hmac模块没有提供与具体哈希算法对应的函数来获取hmac对象。
+
+hmac模块使用实例：
+import hmac
+import hashlib
+
+h1 = hmac.new('key', 'Hello, ')
+h1.update('World!')
+ret1 = h1.hexdigest()
+print(type(ret1), len(ret1), ret1)
+
+h2 = hmac.new('key', digestmod=hashlib.md5)
+h2.update('Hello, World!')
+ret2 = h2.hexdigest()
+print(type(ret2), len(ret2), ret2)

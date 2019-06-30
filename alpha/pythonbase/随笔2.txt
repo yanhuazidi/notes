@@ -1,0 +1,566 @@
+﻿
+>>>help(__builtins__)
+
+
+
+
+
+设置与获取
+
+·设置Cookie
+
+response =HttpResponse('ok') 
+response.set_cookie('hello', 'django', expires=60 * 60 * 24 * 7) 
+return response
+
+
+
+·获取Cookie
+
+hello=request.COOKIES.get('hello')
+return HttpResponse(hello)
+·删除Cookie
+
+response = HttpResponse('ok')
+response.delete_cookie('hello')
+return response
+Cookie常用参数
+·key：键
+
+·value：值
+
+·max_age：该Cookie失效的时间，单位秒。如果为正数，则该Cookie在maxAge秒之后失效。
+			如果为负数，该Cookie为临时Cookie，关闭浏览器即失效，浏览器也不会以任何形式保存
+			该Cookie。如果为0，表示删除该Cookie。默认为–1
+
+·expires：过期时间，为具体时间
+
+·path：该Cookie的使用路径。如果设置为“/sessionWeb/”，则只有contextPath为
+		“/sessionWeb”的程序可以访问该Cookie。如果设置为“/”，则本域名下
+			contextPath都可以访问该Cookie。注意最后一个字符必须为“/”
+
+·domain：可以访问该Cookie的域名。如果设置为“.google.com”，则所有以“google.com”
+				结尾的域名都可以访问该Cookie。注意第一个字符必须为“.”
+
+·secure：HTTPS传输时应设置为true
+
+·httponly：值应用于http传输，JavaScript无法获取
+
+
+
+
+
+
+
+
+
+obj.read()：从文件中读取整个上传的数据，这个方法只适合小文件；
+
+obj.chunks()：按块返回文件，通过在for循环中进行迭代，可以将大文件按块写入到服务器中；
+
+obj.multiple_chunks()：这个方法根据myFile的大小，返回True或者False，当myFile文件大于2.5M(默认为2.5M，可以调整)时，该方法返回True，否则返回False，因此可以根据该方法来选择选用read方法读取还是采用chunks方法
+
+obj.name：这是一个属性，不是方法，该属性得到上传的文件名，包括后缀，如123.exe；
+
+obj.size：这也是一个属性，该属性得到上传文件的大小
+class MyModel(models.Model):
+    name = models.CharField(max_length=150,null=True)
+    video = models.ImageField(upload_to='images',max_length=255)
+def save_file(request): 
+    mymodel = MyModel.objects.get(id=1) 
+    # 读取上传的文件中的video项为二进制文件
+    file_content = ContentFile(request.FILES['video'].read()) 
+    # ImageField的save方法，第一个参数是保存的文件名，第二个参数是ContentFile对象，里面的内容是要上传的图片、视频的二进制内容
+    mymodel.video.save(request.FILES['video'].name, file_content)
+
+
+
+
+
+
+
+图片的加载
+<script language="JavaScript">
+function setImageData(imageBase64) {
+    var myImg = document.getElementById("myImg");
+    myImg.src = "data:image/jpeg;base64," + imageBase64;
+}
+</script>
+</head>
+<body>
+<img id="myImg" src="data:image/jpeg;base64,MyImageDataEncodedInBase64=" alt="My Image data in base 64" />
+
+</body>
+<html>
+
+
+
+
+jquere 的oninput方法
+$('input').bind('input propertychange',(function(){}）
+
+
+
+
+遇到有些编码不规范的文件，你可能会遇到UnicodeDecodeError，
+因为在文本文件中可能夹杂了一些非法编码的字符。遇到这种情况，
+open()函数还接收一个errors参数，表示如果遇到编码错误后如何处理。
+最简单的方式是直接忽略：
+>>> f = open('/Users/michael/gbk.txt', 'r', encoding='gbk', errors='ignore')
+
+
+类的 __base__属性
+            作用： 用来绑定此类的第一个基类类对象
+            
+           __bases__属性
+            作用： 用来绑定此类的所有基类类对象，为元组
+
+
+__new__() 方法的特性：
+
+__new__(*args, **kwargs) from builtins.type
+ |      Create and return a new object.  See help(type) for accurate signature.
+
+__new__() 方法是在类准备将自身实例化时调用。
+__new__() 方法始终都是类的类方法，即使没有被加上类方法装饰器。
+一个类可以有多个位置参数和多个命名参数，而在实例化开始之后，在调用 __init__() 方法之前，Python 首先调用 __new__() 方法：
+如果当前类是直接继承自 object，那当前类的 __new__() 方法返回的对象应该为：
+    return object.__new__(cls)
+事实上如果（新式）类中没有重写__new__()方法，即在定义新式类时没有重新定义__new__()时，
+Python默认是调用该类的直接父类的__new__()方法来构造该类的实例，如果该类的父类也没有重写__new__()，
+那么将一直按此规矩追溯至object的__new__()方法，因为object是所有新式类的基类。
+
+ 而如果新式类中重写了__new__()方法，那么你可以自由选择任意一个的其他的新式类（必定要是新式类，
+ 只有新式类必定都有__new__()，因为所有新式类都是object的后代，而经典类则没有__new__()方法）
+ 的__new__()方法来制造实例，包括这个新式类的所有前代类和后代类，只要它们不会造成递归死循环。
+
+通常来说，新式类开始实例化时，__new__()方法会返回cls（cls指代当前类）的实例，
+然后该类的__init__()方法作为构造方法会接收这个实例（即self）作为自己的第一个参数，
+然后依次传入__new__()方法中接收的位置参数和命名参数。
+ 
+
+注意：如果__new__()没有返回cls（即当前类）的实例，那么当前类的__init__()方法是不会被调用的。
+如果__new__()返回其他类（新式类或经典类均可）的实例，那么只会调用被返回的那个类的构造方法。
+
+class Myclass(object):
+    def __init__(self, x):
+        self.x = x
+     
+c1 = Myclass(11)
+c2 = Myclass.__new__(Myclass, 12)
+if isinstance(c2, Myclass):
+    type(c2).__init__(c2, 12)
+print c1.x, c2.x
+
+通过构造函数创建实例，会调依次用__new__()方法和__init__()方法来实例化和初始化，
+所以当__init__()方法中绑定了实例属性 x 时，通过构造函数传入的参数就被绑定到了该属性上。所以 c1 有属性 x 。
+当在类体外调用__new__()方法，只是创建了一个实例，并没有传递到__init__()进行初始化，
+所以 'c2.x' 就会出现属性不存在的错误。但只要显式调用 __init__()方法，就能创建 x 属性了。
+
+
+
+
+类同样也是一种对象。是的，没错，就是对象。只要你使用关键字class，Python解释器在执行的时候就会创建一个对象。
+>>> class ObjectCreator(object):
+…       pass
+…
+将在内存中创建一个对象，名字就是ObjectCreator。这个对象（类）自身拥有创建对象（类实例）的能力，
+而这就是为什么它是一个类的原因。但是，它的本质仍然是一个对象，于是乎你可以对它做如下的操作：
+
+1)   你可以将它赋值给一个变量
+
+2)   你可以拷贝它
+
+3)   你可以为它增加属性
+
+4)   你可以将它作为函数参数进行传递
+
+
+
+
+
+id(obj, /)     这里的 / 不代表任何参数，它指示前面的都是位置参数，没有关键词参数
+
+
+
+next(...)
+        next(iterator[, default])
+        
+        Return the next item from the iterator. If default is given and the iterator
+        is exhausted, it is returned instead of raising StopIteration.
+
+iter(collection) -> iterator
+iter(callable, sentinel) -> iterator
+
+iter()函数有两种用法，一种是传一个参数，一种是传两个参数。结果都是返回一个iterator对象。
+
+所谓的iterator对象，就是有个next()方法的对象。next方法的惯例或约定（convention）是，
+每执行一次就返回下一个值（因此它要自己记录状态，通常是在iterator对象上记录），
+直到没有值的时候raiseStopIteration。
+
+传1个参数：参数collection应是一个容器，支持迭代协议(即定义有__iter__()函数)，
+或者支持序列访问协议（即定义有__getitem__()函数），否则会返回TypeError异常。
+
+传2个参数：当第二个参数sentinel出现时，参数callable应是一个可调用对象(实例)，
+即定义了__call__()方法，当枚举到的值等于哨兵时，就会抛出异常StopIteration。
+
+iter(callable, sentinel) -> iterator
+如果是传递两个参数给 iter() , 第一个参数必须是callable ,它会重复地调用第一个参数， 
+直到迭代器的下个值等于sentinel：即在之后的迭代之中，迭代出来sentinel就立马停止。
+关于Python中，啥是可调用的，可以参考：python callable()函数
+>>> class IT(object):
+        def __init__(self):
+               self.l=[1,2,3,4,5]
+               self.i=iter(self.l)
+        def __call__(self):   #定义了__call__方法的类的实例是可调用的
+               item=next(self.i)
+               print "__call__ is called,which would return",item
+               return item
+        def __iter__(self): #支持迭代协议(即定义有__iter__()函数)
+               print "__iter__ is called!!"
+               return iter(self.l)
+
+>>> it=IT() #it是可调用的
+>>> it1=iter(it,3) #it必须是callable的，否则无法返回callable_iterator
+>>> callable(it)
+True
+>>> it1
+<callable-iterator object at 0x0306DD90>
+>>> for i in it1:
+print i
+
+__call__ is called,which would return 1
+1
+__call__ is called,which would return 2
+2
+__call__ is called,which would return 3
+
+可以看到传入两个参数得到的it1的类型是一个callable_iterator，它每次在调用的时候，都会调用__call__函数，并且最后输出3就停止了。
+！
+
+
+
+查看父类
+In [1]: class a(list):
+   ...:     pass
+   ...: 
+ 
+In [2]: a.__bases__
+Out[2]: (list,)
+ 
+In [3]: a.mro()
+Out[3]: [__main__.a, list, object]
+
+
+
+动态给类绑定一个属性
+    class Student(object):
+        pass
+    
+    Student.name='aaa'
+    print(Student.name)
+    aaa
+    
+然后，尝试给实例绑定一个属性：
+    >>> s = Student()
+    >>> s.name = 'Michael' # 动态给实例绑定一个属性
+    >>> print(s.name)
+    Michael
+
+
+给实例绑定一个方法：
+    >>> def set_age(self, age): # 定义一个函数作为实例方法
+    ...     self.age = age
+    ...
+    >>> from types import MethodType
+    >>> s.set_age = MethodType(set_age, s) # 给实例绑定一个方法
+    >>> s.set_age(25) # 调用实例方法
+    >>> s.age # 测试结果
+    25
+    给一个实例绑定的方法，对另一个实例是不起作用的：
+    >>> s2 = Student() # 创建新的实例
+    >>> s2.set_age(25) # 尝试调用方法
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Student' object has no attribute 'set_age'
+    
+为了给所有实例都绑定方法，可以给class绑定方法：
+    >>> def set_score(self, score):
+    ...     self.score = score
+    ...
+    >>> Student.set_score = set_score
+    给class绑定方法后，所有实例均可调用
+    
+    
+使用__slots__  来限制该class实例能添加的属性
+  class Student(object):
+    __slots__ = ('name', 'age') # 用tuple定义允许绑定的属性名称
+    
+    使用__slots__要注意，__slots__定义的属性仅对当前类实例起作用，对继承的子类是不起作用的
+    除非在子类中也定义__slots__，这样，子类实例允许定义的属性就是自身的__slots__加上父类的__slots__
+    使用__slots__后，类属性里就没有默认的__dict__了
+    __slots__只能限制实例的属性及方法，对于类则没有影响
+    将方法绑定给类后，类调用方法后，类和实例都可以访问类中的属性与方法，这不受slots范围限制
+    #方法没有绑定给类而直接绑定给实例时，需要在slots规定范围中加入该方法和方法中的属性
+    
+    1、当子类定义中没有slots时，父类的slots对子类不起作用。子类实例想加什么属性就加什么属性
+    2、当子类定义中有slots时，父类的slots会对子类起作用。子类会继承父类的slot，
+        那么子类实例能加的属性就是父类slots和子类本身slots规定的属性了。
+        
+        
+使用@property
+    @property广泛应用在类的定义中，可以让调用者写出简短的代码，同时保证对参数进行必要的检查，
+    这样，程序运行时就减少了出错的可能性。
+    
+    神奇的@property，我们在对实例属性操作的时候，就知道该属性很可能不是直接暴露的，而是通过getter和setter方法来实现的。
+    
+    如果使用@property进行自动生成getter and setter，属性前一定要加入一个 "_" 不然报RecursionError
+    
+    class Student(object):
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, value):
+        if not isinstance(value, int):
+            raise ValueError('score must be an integer!')
+        if value < 0 or value > 100:
+            raise ValueError('score must between 0 ~ 100!')
+        self._score = value
+    
+            
+    >>> s = Student()
+    >>> s.score = 60 # OK，实际转化为s.set_score(60)
+    >>> s.score # OK，实际转化为s.get_score()
+    60
+    
+   还可以定义只读属性，只定义getter方法，不定义setter方法就是一个只读属性  
+    class Student(object):
+        @property
+        def birth(self):
+            return self._birth
+    
+        @birth.setter
+        def birth(self, value):
+            self._birth = value
+    
+        @property
+        def age(self):
+            return 2015 - self._birth
+    
+    不能只设置setter，要先设置读:@property
+ 
+ 
+    
+python 多重继承之拓扑排序  
+    https://kevinguo.me/2018/01/19/python-topological-sorting/
+    什么是拓扑排序：
+    从DAG途中选择一个没有前驱(即入度为0)的顶点并输出
+    从图中删除该顶点和所有以它为起点的有向边。
+    重复1和2直到当前DAG图为空或当前途中不存在无前驱的顶点为止。后一种情况说明有向图中必然存在环。
+    python多重继承：
+    把继承关系先构成一张图
+    利用拓扑排序的方法输出拓扑顺序，并列关系时遵循取最左原则
+    python继承顺序遵循C3算法，只要在一个地方找到了所需的内容，就不再继续查找
+    
+    print(D.__mro__)
+
+
+
+__getitem__
+    要使类实例表现得像list那样按照下标取出元素，需要实现__getitem__()方法：
+    class Fib(object):
+        def __getitem__(self, n):
+            a, b = 1, 1
+            for x in range(n):
+                a, b = b, a + b
+            return a
+
+    >>> f = Fib()
+    >>> f[0]
+    1
+    >>> f[1]
+    1
+    >>> f[2]
+    2
+    
+    但是list有个神奇的切片方法：
+        >>> list(range(100))[5:10]
+        [5, 6, 7, 8, 9]
+        对于Fib却报错。原因是__getitem__()传入的参数可能是一个int，也可能是一个切片对象slice，所以要做判断：
+        没有对step参数作处理,也没有对负数作处理：
+        class Fib(object):
+            def __getitem__(self, n):
+                if isinstance(n, int): # n是索引
+                    a, b = 1, 1
+                    for x in range(n):
+                        a, b = b, a + b
+                    return a
+                if isinstance(n, slice): # n是切片
+                    start = n.start
+                    stop = n.stop
+                    if start is None:
+                        start = 0
+                    a, b = 1, 1
+                    L = []
+                    for x in range(stop):
+                        if x >= start:
+                            L.append(a)
+                        a, b = b, a + b
+                    return L
+        现在试试Fib的切片：
+        
+        >>> f = Fib()
+        >>> f[0:5]
+        [1, 1, 2, 3, 5]
+        >>> f[:10]
+        [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+        
+对象看成dict，__getitem__()的参数也可能是一个可以作key的object，例如str。
+与之对应的是__setitem__()方法，把对象视作list或dict来对集合赋值。最后，还有一个__delitem__()方法，用于删除某个元素。
+
+总之，通过上面的方法，我们自己定义的类表现得和Python自带的list、tuple、dict没什么区别，
+这完全归功于动态语言的“鸭子类型”，不需要强制继承某个接口。
+
+
+__getattr__
+正常情况下，当我们调用类的方法或属性时，如果不存在，就会报错。比如定义Student类：
+
+class Student(object):
+
+    def __init__(self):
+        self.name = 'Michael'
+调用name属性，没问题，但是，调用不存在的score属性，就有问题了：
+
+>>> s = Student()
+>>> print(s.name)
+Michael
+>>> print(s.score)
+Traceback (most recent call last):
+  ...
+AttributeError: 'Student' object has no attribute 'score'
+错误信息很清楚地告诉我们，没有找到score这个attribute。
+
+要避免这个错误，除了可以加上一个score属性外，Python还有另一个机制，那就是写一个__getattr__()方法，动态返回一个属性。修改如下：
+
+class Student(object):
+
+    def __init__(self):
+        self.name = 'Michael'
+
+    def __getattr__(self, attr):
+        if attr=='score':
+            return 99
+当调用不存在的属性时，比如score，Python解释器会试图调用__getattr__(self, 'score')来尝试获得属性，这样，我们就有机会返回score的值：
+
+>>> s = Student()
+>>> s.name
+'Michael'
+>>> s.score
+99
+返回函数也是完全可以的：
+
+class Student(object):
+
+    def __getattr__(self, attr):
+        if attr=='age':
+            return lambda: 25
+只是调用方式要变为：
+
+>>> s.age()
+25
+注意，只有在没有找到属性的情况下，才调用__getattr__，已有的属性，比如name，不会在__getattr__中查找。
+
+此外，注意到任意调用如s.abc都会返回None，这是因为我们定义的__getattr__默认返回就是None。要让class只响应特定的几个属性，我们就要按照约定，抛出AttributeError的错误：
+
+class Student(object):
+
+    def __getattr__(self, attr):
+        if attr=='age':
+            return lambda: 25
+        raise AttributeError('\'Student\' object has no attribute \'%s\'' % attr)
+这实际上可以把一个类的所有属性和方法调用全部动态化处理了，不需要任何特殊手段。
+
+这种完全动态调用的特性有什么实际作用呢？作用就是，可以针对完全动态的情况作调用。
+
+举个例子：
+
+现在很多网站都搞REST API，比如新浪微博、豆瓣啥的，调用API的URL类似：
+
+http://api.server/user/friends
+http://api.server/user/timeline/list
+如果要写SDK，给每个URL对应的API都写一个方法，那得累死，而且，API一旦改动，SDK也要改。
+
+利用完全动态的__getattr__，我们可以写出一个链式调用：
+
+class Chain(object):
+
+    def __init__(self, path=''):
+        self._path = path
+
+    def __getattr__(self, path):
+        return Chain('%s/%s' % (self._path, path))
+
+    def __str__(self):
+        return self._path
+
+    __repr__ = __str__
+试试：
+
+>>> Chain().status.user.timeline.list
+'/status/user/timeline/list'
+这样，无论API怎么变，SDK都可以根据URL实现完全动态的调用，而且，不随API的增加而改变！
+
+还有些REST API会把参数放到URL中，比如GitHub的API：
+
+GET /users/:user/repos
+调用时，需要把:user替换为实际用户名。如果我们能写出这样的链式调用：
+
+Chain().users('michael').repos
+就可以非常方便地调用API了。有兴趣的童鞋可以试试写出来。
+
+__call__
+一个对象实例可以有自己的属性和方法，当我们调用实例方法时，我们用instance.method()来调用。能不能直接在实例本身上调用呢？在Python中，答案是肯定的。
+
+任何类，只需要定义一个__call__()方法，就可以直接对实例进行调用。请看示例：
+
+class Student(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self):
+        print('My name is %s.' % self.name)
+调用方式如下：
+
+>>> s = Student('Michael')
+>>> s() # self参数不要传入
+My name is Michael.
+__call__()还可以定义参数。对实例进行直接调用就好比对一个函数进行调用一样，所以你完全可以把对象看成函数，把函数看成对象，因为这两者之间本来就没啥根本的区别。
+
+如果你把对象看成函数，那么函数本身其实也可以在运行期动态创建出来，因为类的实例都是运行期创建出来的，这么一来，我们就模糊了对象和函数的界限。
+
+那么，怎么判断一个变量是对象还是函数呢？其实，更多的时候，我们需要判断一个对象是否能被调用，能被调用的对象就是一个Callable对象，比如函数和我们上面定义的带有__call__()的类实例：
+
+>>> callable(Student())
+True
+>>> callable(max)
+True
+>>> callable([1, 2, 3])
+False
+>>> callable(None)
+False
+>>> callable('str')
+False
+通过callable()函数，我们就可以判断一个对象是否是“可调用”对象。
+
+
+
+
+
+
+
+
+
+

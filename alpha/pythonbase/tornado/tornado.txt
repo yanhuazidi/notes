@@ -1,0 +1,438 @@
+http://shouce.jb51.net/tornado/ch1.html#ch1-1-1
+
+孙伟  	blog.csdn.net/piglite
+
+from tornado.web import Application,RequestHandler
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
+
+
+
+class IndexHandler(RequestHandler):
+    def get(self):
+        self.write('Hello World')
+    def post(self):
+        pass
+
+app = Application(handlers=[('/',IndexHandler)])
+server = HTTPServer(app)
+server.listen(8888)
+IOLoop.current().start()
+
+
+将端口号写到配置文件中
+from tornado.options import define,parse_config_file,options
+	1. 定义端口号在配置文件中的名称，类型，默认值
+		define('名称',type=int,default=8888)
+	2. 解析配置文件
+		parse_config_file('配置文件路径')
+	3. 读取配置文件中的内容
+		options.名称
+
+
+URL支持正则表达式，利用路径的变化请求不同资源	
+	用()来表示正则模板
+	app = Application(handlers=[('/(day[0-9]+)',IndexHandler),
+													('/java/(day[0-9]+)/(input[0-9]+)',JavaHandler)]
+	
+	在view函数中可以接受正则匹配内容												
+	def get(self, day，input):
+        self.write('Hello Python')		
+
+利用参数请求不同资源    get		
+		浏览器允许多个传参名相同:/python?day=1&day=2&day=3
+		
+		self.get_query_argument(name, default=_ARG_DEFAULT, strip=True)
+			返回 value
+			name : 参数名
+			default : 默认值,用户不提供参数不设置会报错。
+			strip : 去参数两端的空白字符，默认去除
+			如果参数不止一次出现在url中，则返回最后一个值
+			
+		self.get_query_arguments(name,  strip=True)
+			用户不提供参数会返回空列表
+			以列表类型返回传参中name的所有值
+		
+利用参数请求不同资源    post
+		day = self.get_body_argument('day',default='0000000',strip=False)
+        self.write('Hello Python'+day)
+        day = self.get_body_arguments('day',strip=False)
+        print(day)
+		
+		参数同上,在请求body中取值
+
+其他
+	get_argument()  等同get_query_argument +get_body_argument
+	get_arguments() 同理
+	适用场景: 在post请求中，请求行中也有参数的情况
+	
+	POST   /python?day=1&day=2&day=3   http1.1
+	header={}
+	\r\n\r\n
+	body={day:1,day:2,day:3}
+
+
+重定向,为GET方式访问，支持参数的传递
+	self.redirect('/python?day=1')
+
+
+文件提交，表单要设置enctype=multipart/form-data
+	request 是 RequestHandler对象的一个属性，引用的HttpServerRequest对象
+	该对象封装了与请求相关的所有内容print(self.request)
+	其files属性引用着用户通过表单上传的文件，{} 结构
+	
+	self.request.files={'input_name1':[{'content_type':'image/jpeg',  #文件类型
+															'body':b'\....',   #文件二进制内容
+															'filename':'文件1名'  #原文件名
+															},{文件2},{文件3},,,,],
+								 'input_name2':,,,,,,,,,,,,,,,}
+
+	img = self.request.files['input_name1']
+	for a in img:
+		content_type = a['content_type']
+		filename = a['filename']
+		body = a['body']
+		with open(path+filename,'wb') as f:
+			f.write(body)
+
+
+
+------------------------------------------------------
+获取请求头中的内容
+	head = self.request.headers
+	
+	Content-Type = head.get('Content-Type',None)
+	.............
+
+获取请求体中的内容
+	bodybyte = self.request.body
+	文本处理
+	bodystr = bodybyte.decode('utf8')
+	json处理
+	jsonobj = json.loads(bodystr)
+	data = jsonobj.get('name')
+	
+self.request内容
+	HTTPServerRequest(protocol='http', 
+									host='127.0.0.1:9999', 
+									method='GET', 
+									uri='/python', 
+									version='HTTP/1.1',
+									remote_ip='127.0.0.1', 
+									headers={'Host': '127.0.0.1:9999', 
+													'Connection': 'keep-alive', 
+													'Upgrade-Insecure-Requests': '1', 
+													'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+													'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 
+													'Referer': 'http://127.0.0.1:9999/',
+													'Accept-Encoding': 'gzip, deflate, br', 
+													'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8', 
+													'If-None-Match': '"54f9ccd3925e59bb73ae8b4103c8569b750cedb1"'
+													})
+
+method
+HTTP请求方法，例如“GET”或“POST”
+
+uri  请求的uri。
+
+path  请求的路径部分 uri
+
+query  请求的查询部分 uri
+
+version
+请求中指定的HTTP版本，例如“HTTP / 1.1”
+
+headers
+HTTPHeaders请求标头的类似字典的对象。行为类似于不区分大小写的字典，其中包含重复标题的其他方法。
+
+body
+请求主体（如果存在）作为字节字符串。
+
+remote_ip
+客户端的IP地址为字符串。如果HTTPServer.xheaders设置，将传递由X-Real-Ip或X-Forwarded-For标头中的负载平衡器提供的真实IP地址。
+
+版本3.1中已更改：X-Forwarded-For现在支持列表格式。
+
+protocol
+使用的协议，“http”或“https”。如果HTTPServer.xheaders 已设置，将通过负载均衡器传递协议（如果通过X-Scheme标头报告）。
+
+host
+请求的主机名，通常取自Host标头。
+
+arguments
+参数属性中提供了GET / POST参数，它将参数名称映射到值列表（以支持单个名称的多个值）。名称是类型str，而参数是字节字符串。请注意，这与RequestHandler.get_argument将参数值作为unicode字符串返回不同 。
+
+query_arguments
+格式相同arguments，但仅包含从查询字符串中提取的参数。
+
+版本3.2中的新功能。
+
+body_arguments
+格式相同arguments，但仅包含从请求正文中提取的参数。
+
+版本3.2中的新功能。
+
+files
+文件上传可在files属性中找到，该属性将文件名映射到列表中HTTPFile。
+
+connection
+HTTP请求附加到单个HTTP连接，可以通过“connection”属性访问。由于连接通常在HTTP / 1.1中保持打开，因此可以在单个连接上顺序处理多个请求。
+
+版本4.0中已更改：已移至tornado.httpserver.HTTPRequest。
+
+supports_http_1_1（）[来源]
+如果此请求支持HTTP / 1.1语义，则返回True。
+
+从4.0版开始不推荐使用：应用程序不太可能需要这些信息HTTPConnection。如果您仍然需要它，请version直接访问该属性。此方法将在Tornado 6.0中删除。
+
+cookies
+Cookie.Morsel对象的字典。
+
+
+
+
+
+finish()  当请求方法(get方法或post方法)执行完毕后把self.write()方法写入缓存区的
+		内容推送到服务器发送给浏览器，是已经写好的内置方法
+		finish()有特定功能，不建议重写
+
+		class IndexHandler(RequestHandler):
+			def initialize(self，*args,**kwargs):	#在请求方法调用之前自动调用，
+				pass
+		
+			def get(self):
+				self.write('Hello World')
+				self.write('Hello World')
+				self.write('Hello World')
+			def post(self):
+				pass
+				
+			def on_finish(self:)		#自动在请求方法之后,finish方法之前调用
+				pass							#建议需求写在这个方法里
+				
+			def finish(self,chunk=None):
+				pass
+			
+
+
+设置响应头
+	
+	def get(self):
+		self.write('Hello World')
+		self.write('Hello World')
+		self.write('Hello World')
+		self.set_status(200,'ok')	#设置响应状态码,和描述，已认证状态码(100~500)
+												可以省略描述，服务器会自动补全,自定义(888)，需要指定描述参数
+												
+		self.set_header({'myheader':'myheader'})	#设置响应头方法一
+		
+	def set_default_header(self):		#设置响应头方法二(自动执行,同名响应头方法一覆盖方法二)
+		self.set_header({'myheader':'myheader'})
+		self.set_header({'myheader':'myheader'})
+		
+
+
+
+PROJECTO5-DAY04    tornado 02-4 start
+	
+
+
+错误响应设置
+	def get(self):
+		self.write('Hello World')
+		self.write('Hello World')
+		
+		self.send_error(200)		不提供参数默认500,必须是已定义的状态码
+		
+	#RequestHandler方法，自定义此方法覆盖父类方法
+	def  write_error(self, status_code, **kwargs):	#当程序出错或调用send_error(200)	
+		if status_code==200:											方法时,会自动调用此方法
+			self.write('xxxx')		#前端显示的错误信息
+		else:
+			super().write_error(status_code, **kwargs)		#只处理200,其它调用父类方法
+			
+	
+
+方法执行顺序
+	set_default_header()		1
+	initialize()							2
+	post()								3
+	
+	write_error()						4  发生错误或send_error()调用时才调用
+	set_default_header()			并重新定义响应头,刷新响应信息
+	
+	on_finish()						5
+	finish()								6
+
+
+
+
+
+返回json
+	可以直接返回字典,响应头自动生成Content-Type:application/json;charset=utf-8;
+	self.write({'key':'velues'})
+	
+	通过json.dumps(dict)转换发送过去的响应头为Content-Type:text/html;
+
+
+页面跳转
+	self.redirect('/')  #只能以get请求跳转，可以拼接参数
+
+
+前端标签,
+<fieldset>
+	<legend>aaaa</legend>
+	---aaaa-----------------------
+	|                                             |
+	|                                             |
+	|                                             |
+	-------------------------------
+
+模板
+	  1. 先建立一个存放模板文件的文件夹mytemplates,然后在其中写html
+	
+	  2. 注册路径  ：app = Application([('/',IndexHandler)],
+						                                     template_path='mytemplates')
+		#	template_path=path  相对路径或绝对路径
+			建议写动态访问os.path.join(os.path.dirname(__file__),'mytemplates')
+															 
+	  3. 在请求方法中   self.render('index.html')
+
+
+	标签语法
+	def fun(a,b):
+		return a+b
+	
+		self.render('index.html',var=1,var1=2,fun=self.fun)
+	
+	变量和函数渲染,tornado中模板中的变量必须要赋值，不能为空，报错
+		{{var}}
+		{{var1+var2}}
+		{{list[0]}}
+		{{dict['key']}}
+		{{obj.name}}
+		{{str.strip()}}
+		{{list.join()}}
+		{{fun(100,200)}}
+	
+	for 循环
+		{%for x in list%}
+			{{x['name']}}
+		{%end%}
+		
+		{%for x,y in dict.iter()%}
+			{{x*2}}
+			{{y.split()}}
+		{%end%}
+		
+	if  语句
+		{%if 表达式1%}
+		{%elif 表达式2%}
+		{%else%}
+		{%end%}
+
+
+静态文件
+	1. 先创建文件夹 mystatics,将静态文件放入其中
+	2. 注册路径  ：app = Application([('/',IndexHandler)],
+						                                     template_path='mytemplates',
+															 static_path='mystatics')
+		#	static_path=path  相对路径或绝对路径
+			建议写动态访问os.path.join(os.path.dirname(__file__),'mystatics')
+															 
+	3. 在模板中 src = "/static/"+{{资源路径}}
+		或    {{static_url('资源路径')}}
+	
+
+模板继承
+	{%extends index.html%}
+	{%block title%}
+	{%end%}
+
+模板模块 moudle 
+	1. template.py中
+		{%module mydoule()%}	#MyModules类返回的内容会加载到这
+	
+	
+	2.  view.py中
+		class MyModules(UIModule):
+			def render(self,*args,**kwargs):
+				self.request #request属性提供参数，不能使用 RequestHandler类的方法
+				msg = self.request.query
+				return self.render_string('module/login.html',params=msg)
+				# render_string('path') 方法会提取指定html文件的全部内容(只写局部就好)
+	
+	3.  app = Application([('/',IndexHandler)],
+						        template_path='mytemplates',
+								static_path='mystatics',
+								ui_modules={'mydoule':MyModules,
+													'my....':My....,})
+
+
+转义	
+
+	result= <script></script>
+	
+	Tornado会把带有<> ' ' 等字符自动转义为字符实体&lt;&gt;
+	防止 ssL攻击
+
+	关闭转义
+	
+	1. autoescape=None ,作用于app全部作用域
+		app = Application([('/',IndexHandler)],
+						        template_path='mytemplates',
+								static_path='mystatics',
+								ui_modules={'mydoule':MyModules,
+													'my....':My....,},
+								autoescape=None)
+	
+	2. 指定页面不转义
+		在指定的html页面中顶部位置 加 {%autoescape None%}
+		{{result}}
+		
+	3. 指定不转义代码段
+			{% raw  result%}
+			{{result}}
+
+数据库
+	
+	数据库可视化工具
+		Navicat
+		DataGrid
+		SqlYog
+	
+	在pyCharm 右边有个 database 可以连接操作数据库
+	或 view 菜单 中的 tool Windows选项中database ，
+	 + 为增加 row  ,
+	 有修改上面会出现绿色箭头,点击即提交
+	 。。。
+	 
+	
+	在数据库建好库表后 用pymysql操作 *^*
+	
+	
+	
+	RequestHandler 对象中 application 属性引用的app对象	
+		
+		
+		
+cookie和session
+	
+	def  get(self,*args,**kwargs):
+	
+		self.get_cookie(key)		获取cookie
+		self.set_cookie(key,value)	即可设置,value中间不能有空格
+			# expires_days=10 设置过期天数
+			
+	Tornado没有session机制，需要自定义	
+		
+		
+		
+		
+		
+		
+
+
+
+
+
