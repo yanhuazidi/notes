@@ -202,4 +202,3 @@ if  time.time() - time.mktime(purchase_order.quotation_datatime.timetuple()) < 6
 ```
 
 
-
