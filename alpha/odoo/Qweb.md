@@ -275,9 +275,9 @@ call指令的主体可以是任意复杂的(不仅仅是set指令)，它的呈�
 
 独家指令
 
-资产包
+资产组合
 
-​	"智能记录"字段格式化
+"智能记录  smart records"字段格式化
 
 `t-field`指令只能在对“智能”记录(`browse`方法的结果)执行字段访问(a.b)时使用。它能够根据字段类型自动格式化，并集成在网站的富文本版本中。
 
@@ -317,50 +317,35 @@ response = http.request.render('my-template', {
 
 #### View-based
 
-在更深的层次上，比之前的助手是渲染方法的ir.ui.view:
+在比上一个助手更深的层次上，是ir.ui.view上的呈现方法：
 
-render(*cr, uid, id\[, values]\[, engine='ir.qweb][, context]*)
-
-根据数据库id或外部id呈现QWeb视图/模板。模板自动从ir.ui加载。查看记录。
+```python
+render(cr, uid, id[, values][, engine='ir.qweb'][, context])
+#按数据库ID或外部ID呈现QWeb视图/模板。模板自动从ir.ui.view记录加载。
+```
 
 在渲染上下文中设置一些默认值:
 
-request
+`request`		当前WebRequest对象(如果有的话)
 
-当前WebRequest对象(如果有的话)
+`debug`			当前请求(如果有)是否处于调试模式
 
-debug
+[`quote_plus`](https://werkzeug.palletsprojects.com/en/0.15.x/urls/#werkzeug.urls.url_quote_plus)		url编码效用函数
 
-当前请求(如果有)是否处于调试模式
+[`json`](https://docs.python.org/3/library/json.html#module-json)			对应的标准库模块
 
-[`quote_plus`](https://werkzeug.palletsprojects.com/en/0.15.x/urls/#werkzeug.urls.url_quote_plus)
+[`time`](https://docs.python.org/3/library/time.html#module-time)				对应的标准库模块
 
-url编码效用函数
+[`datetime`](https://docs.python.org/3/library/datetime.html#module-datetime)		对应的标准库模块
 
-[`json`](https://docs.python.org/3/library/json.html#module-json)
+[relativedelta](https://labix.org/python-dateutil#head-ba5ffd4df8111d1b83fc194b97ebecf837add454)    参见模块
 
-对应的标准库模块
+`keep_query`	keep_query帮助函数
 
-[`time`](https://docs.python.org/3/library/time.html#module-time)
-
-对应的标准库模块
-
-[`datetime`](https://docs.python.org/3/library/datetime.html#module-datetime)
-
-对应的标准库模块
-
-[relativedelta](https://labix.org/python-dateutil#head-ba5ffd4df8111d1b83fc194b97ebecf837add454)
-
-看到模块
-
-keep_query
-
-keep_query帮助函数
-
-Parameters
+参数:
 
 - **values** – 要传递给QWeb进行呈现的上下文值
-- **engine** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – 用于呈现的Odoo模型的名称，可以用于在本地扩展或自定义QWeb(通过创建一个基于ir的“new”QWeb)。qweb改变)
+- **engine** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – 要用于渲染的odoo模型的名称，可用于在本地扩展或自定义qweb（通过创建基于ir.qweb的“新”qweb，并进行修改）
 
 
 
@@ -370,7 +355,7 @@ Parameters
 
 定义模板
 
-`t-name`指令只能放在模板文件的顶层(直接将子文件指向文档根):
+`t-name`指令只能放在模板文件的顶层（将子级指向文档根目录）：
 
 ```xml
 <templates>
@@ -380,9 +365,9 @@ Parameters
 </templates>
 ```
 
-它不接受其他参数，但是可以与元素或任何其他元素一起使用。对于元素，应该有一个单独的子元素。
+它不需要其他参数，但可以与<t>元素或任何其他元素一起使用。对于<t>元素，<t>应该有一个子元素。
 
-模板名称是一个任意的字符串，尽管当多个模板相关时(例如称为子模板)，通常使用点分隔的名称来表示层次关系。
+模板名称是一个任意字符串，尽管当多个模板相关时（例如，称为sub-templates），通常使用点分隔名称来表示层次关系。
 
 
 
