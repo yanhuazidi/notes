@@ -6,11 +6,14 @@
 
 ### actions定义了系统对于用户的操作的响应 ( 登录、按钮、选择项目等 )
 
-action可以保存在数据库或在按钮方法中以数据字典的形式返回。
+`action`可以存储在数据库中，也可以作为字典直接返回，例如按钮方法。
 
 每个action有两个必选属性：
 
-- `type`		当前操作的类别，确定可以使用哪些字段以及如何解释操作
+- `type`		当前操作的类别，决定可以使用哪些字段以及如何解释该操作。
+
+  常用的有 `ir.actions.act_window`,,,
+
 - `name`		简短的用户可读的操作描述，可以显示在客户端界面
 
 
@@ -62,7 +65,7 @@ action可以保存在数据库或在按钮方法中以数据字典的形式返�
 
 保存在数据库里窗口action有几个不同的字段，客户端应该忽略这些字段，主要用于组合视图列表:
 
-- view_mode -- 以逗号分隔的视图类型列表，所有类型的视图会被展示出来,出现在生成的视图列表中(至少有一个错误的view_id)
+- view_mode -- 以逗号分隔的视图类型列表，所有类型的视图会被展示出来,出现在生成的视图列表中(至少有一个view_id)
 - view_ids -- 视图对象的一系列的字段，用于定义视图的默认内容
 - view_id -- 将指定的view加入到视图中，以防不被view_ids所包含,添加到views列表中的特定视图，以防其类型是view_mode列表的一部分，而view_id中的某个视图还没有填充它
 
@@ -105,7 +108,9 @@ action可以保存在数据库或在按钮方法中以数据字典的形式返�
 
 
 
-## 服务器Action (`ir.actions.server`)
+## 服务器Action 
+
+###  `ir.actions.server`
 
 允许从任何有效的操作位置触发复杂的服务器代码。需要有两个两个字段与客户相关:
 
@@ -115,11 +120,15 @@ action可以保存在数据库或在按钮方法中以数据字典的形式返�
 - `model_id` -- 与action相关联的model，在 evaluation contexts中可用
 - `condition` (可选) -- 使用服务端的  evaluation contexts 来执行python代码，如果是False则阻止action执行，默认值是True
 
-有效动作类型是可以随意扩展的，默认的动作类型：
+有效动作类型是可以随意扩展的，默认的动作类型**：
 
-- `code` --  当调用action时执行的python代码
+### `code`
 
-默认且最灵活的服务器操作类型，使用操作的计算上下文执行任意Python代码。
+默认和最灵活的服务器操作类型，使用操作的评估上下文执行任意的python代码。仅使用一个特定类型的字段：
+
+code
+
+当调用action时执行的python代码
 
 ```xml
 <record model="ir.actions.server" id="print_instance">
@@ -153,7 +162,10 @@ action可以保存在数据库或在按钮方法中以数据字典的形式返�
 
 这往往是惟一从数据文件创建的操作类型，除了multi之外，从UI定义其他类型比从Python代码更简单，但不是从数据文件。
 
-- `object_create`  从头创建一条新记录(通过create())或复制一条现有记录(通过copy())
+###  `object_create`  
+
+从头创建一条新记录(通过create())或复制一条现有记录(通过copy())
+
 - `use_create`
 
 >1. `new`	 基于指定的 model_id指定的模型中创建一条记录
@@ -175,7 +187,10 @@ action可以保存在数据库或在按钮方法中以数据字典的形式返�
 - ref_object -- 当use_create为copy_other时用于指定创建记录时引用的记录
 - link_new_record -- 是否用`link_field_id`将新记录和当前记录进行many2one关联，默认`False`
 - link_field_id -- 指定当前记录与新记录进行many2one关联的字段
-- object_write -- 与object_create相似，只是只修改当前记录而不创建新记录
+
+### `object_write`
+
+与object_create相似，只是只修改当前记录而不创建新记录
 
 - `use_write`
 
@@ -184,14 +199,15 @@ action可以保存在数据库或在按钮方法中以数据字典的形式返�
 >- `expression`  修改更新到通过crud_model_id 以及 write_expression筛选过后的记录
 
 - `write_expression `返回一条记录或对象id的python表达式，当将use_write设置为expression时使用，以便决定应该修改哪条记录`fields_lines`
-
 - `fields_lines`,`crud_model_id`,`ref_object`与`object_create`一致
 
-- `multi`将通过`child_ids` many2many关系定义的action一个个执行，如果有action自己返回action，最后一个action被返回给客户端作为将前multi action的下一个action
-- `trigger` 发送一个信号给工作流
-- `wkf_transition_id` - 用于触发的与workflow.transition有Many2one关系的id
-- `use_relational_model` - 如果是`base`（默认），则触发当前记录的维护信号；如果是`relational`，则触发通过`wkf_model_id` 和 `wkf_field_id`筛选出来的当前记录的字
-- `client_action`用于直接返回使用action_id定义的其他操作。简单地将该操作返回给客户机执行。
+### `multi`
+
+将通过`child_ids` many2many关系定义的action一个个执行，如果有action自己返回action，最后一个action被返回给客户端作为将前multi action的下一个action
+
+### `client_action`
+
+直接返回使用action_id定义的其他操作的间接方向。只需将该操作返回给客户端执行即可。
 
 
 
