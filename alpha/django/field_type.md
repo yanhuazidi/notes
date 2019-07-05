@@ -402,7 +402,489 @@ mageField实例在数据库中创建为varchar列，默认最大长度为100个�
 
 当localalize为False或TextInput为False时，此字段的默认表单小部件是NumberInput。
 
-### `GenericIPAddressField`[¶](https://docs.djangoproject.com/zh-hans/2.2/ref/models/fields/#genericipaddressfieldd
 
 
+## GenericIPAddressField
+
+*class* `GenericIPAddressField`**(***protocol='both'***,** *unpack_ipv4=False***,** ***options***)**
+
+字符串格式的IPv4或IPv6地址(例如192.0.2.30或2a02:42fe::4)。该字段的默认表单小部件是TextInput。
+
+IPv6地址标准化遵循RFC 4291#section-2.2 section 2.2，包括使用该部分第3段中建议的IPv4格式，如::ffff:192.0.2.0。例如，2001:0::0:01将被规范化为2001::1，并且::ffff:0a0a:0a0a::ffff:10.10.10.10。所有字符都转换为小写。
+
+`GenericIPAddressField.protocol`
+
+限制指定协议的有效输入。接受的值是“both”(默认值)、“IPv4”或“IPv6”。匹配不区分大小写。
+
+`GenericIPAddressField.unpack_ipv4`
+
+解压缩IPv4映射地址，如::ffff:192.0.2.1。如果启用此选项，该地址将解压缩到192.0.2.1。默认是禁用的。只能在协议被设置为“both”时使用。
+
+如果允许使用空值，则必须允许使用空值，因为空值存储为null。
+
+
+
+## TextField
+
+一个大的文本字段。该字段的默认表单小部件是Textarea。
+
+如果指定max_length属性，它将反映在自动生成表单字段的Textarea小部件中。然而，在模型或数据库级别并没有强制执行。使用CharField
+
+
+
+## TimeField
+
+*class* `TimeField`**(***auto_now=False***,** *auto_now_add=False***,** ***options***)**
+
+时间，在Python中用datetime表示。时间的实例。接受与DateField相同的自动填充选项。
+
+该字段的默认表单小部件是TextInput。管理员添加了一些JavaScript快捷方式。
+
+
+
+## URLField
+
+*class* `URLField`**(***max_length=200***,** ***options***)**
+
+URL的CharField，由URLValidator验证。
+
+该字段的默认表单小部件是TextInput。
+
+与所有CharField子类一样，URLField接受可选的max_length参数。如果没有指定max_length，则使用默认值200。
+
+
+
+## UUIDField
+
+用于存储通用惟一标识符的字段。使用Python的UUID类。在PostgreSQL上使用时，它以uuid数据类型存储，否则以char(32)存储。
+
+对于primary_key，通用惟一标识符是AutoField的一个很好的替代方案。数据库不会为您生成UUID，所以建议使用default:
+
+```python
+import uuid
+from django.db import models
+
+class MyUUIDModel(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # other fields
+```
+
+注意，一个可调用的(省略括号)被传递给default，而不是UUID的实例。
+
+
+
+## 关系领域
+
+
+
+## ForeignKey
+
+*class* `ForeignKey`**(***to***,** *on_delete***,** ***options***)**
+
+一个多对一的关系。需要两个位置参数:与模型相关的类和on_delete选项。
+
+要创建递归关系(对象本身具有多对一关系)，请使用
+
+`models.ForeignKey('self', on_delete=models.CASCADE)`.
+
+如果需要在尚未定义的模型上创建关系，可以使用模型的名称，而不是模型对象本身:
+
+```python
+from django.db import models
+
+class Car(models.Model):
+    manufacturer = models.ForeignKey(
+        'Manufacturer',
+        on_delete=models.CASCADE,
+    )
+    # ...
+
+class Manufacturer(models.Model):
+    # ...
+    pass
+```
+
+当抽象模型被子类化为具体模型，且与抽象模型的app_label无关时，抽象模型上以这种方式定义的关系将被解析:
+
+```python
+from django.db import models
+
+class AbstractCar(models.Model):
+    manufacturer = models.ForeignKey('Manufacturer', on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+```
+
+```python
+from django.db import models
+from products.models import AbstractCar
+
+class Manufacturer(models.Model):
+    pass
+
+class Car(AbstractCar):
+    pass
+
+# Car.manufacturer will point to `production.Manufacturer` here.
+```
+
+要引用在另一个应用程序中定义的模型，可以显式地指定带有完整应用程序标签的模型。例如，如果上面的制造商模型是在另一个名为production的应用程序中定义的，则需要使用:
+
+```python
+class Car(models.Model):
+    manufacturer = models.ForeignKey(
+        'production.Manufacturer',
+        on_delete=models.CASCADE,
+    )
+```
+
+这种类型的引用称为延迟关系，在解决两个应用程序之间的循环导入依赖关系时非常有用。
+
+在外键上自动创建数据库索引。您可以通过将db_index设置为False禁用此功能。如果您要创建一个外键来保持一致性而不是连接，或者要创建一个替代索引，比如部分索引或多列索引，那么您可能希望避免索引的开销。
+
+### 代表数据库
+
+在后台，Django将“_id”附加到字段名，以创建它的数据库列名。在上面的例子中，汽车模型的数据库表将有一个manufacturer_id列。(您可以通过指定db_column显式地更改这一点)但是，您的代码永远不必处理数据库列名，除非您编写自定义SQL。您总是要处理模型对象的字段名。
+
+#### Arguments
+
+外键接受定义关系如何工作的细节的其他参数。
+
+`ForeignKey.on_delete`
+
+当一个由外键引用的对象被删除时，Django将模拟on_delete参数指定的SQL约束的行为。例如，如果你有一个可空的外键，并且你想在被引用的对象被删除时将其设置为空:
+
+```python
+user = models.ForeignKey(
+    User,
+    models.SET_NULL,
+    blank=True,
+    null=True,
+)
+```
+
+on_delete不会在数据库中创建SQL约束。稍后可能实现对数据库级联选项的支持。
+
+on_delete的可能值可以在django.db.models中找到:
+
+- CASCADE
+
+  级联删除。Django模拟DELETE级联上的SQL约束的行为，并删除包含外键的对象。
+
+  elete()不会调用相关的模型，但是会为所有被删除的对象发送pre_delete和post_delete信号。
+
+- PROTECT
+
+  通过引发ProtectedError (django.db.IntegrityError的子类)防止删除引用的对象。
+
+- SET_NULL
+
+  设置外键为空;这只有在null为真时才有可能。
+
+- SET_DEFAULT
+
+  将外键设置为其默认值;必须为外键设置默认值。
+
+- SET()
+
+  将外键设置为传递给Set()的值，或者如果传入一个可调用项，则设置调用它的结果。在大多数情况下，传递一个可调用函数是必要的，以避免在导入模型时执行查询。
+
+  ```python
+  from django.conf import settings
+  from django.contrib.auth import get_user_model
+  from django.db import models
+  
+  def get_sentinel_user():
+      return get_user_model().objects.get_or_create(username='deleted')[0]
+  
+  class MyModel(models.Model):
+      user = models.ForeignKey(
+          settings.AUTH_USER_MODEL,
+          on_delete=models.SET(get_sentinel_user),
+      )
+  ```
+
+- DO_NOTHING
+
+  采取任何行动。如果数据库后端强制执行引用完整性，这将导致IntegrityError，除非手动向数据库字段添加SQL ON DELETE约束。
+
+`ForeignKey.limit_choices_to`
+
+当使用ModelForm或admin呈现该字段时，为该字段的可用选项设置一个限制(默认情况下，queryset中的所有对象都可用来选择)。可以使用字典、Q对象或返回字典或Q对象的可调用对象。
+
+```python
+staff_member = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    limit_choices_to={'is_staff': True},
+)
+```
+
+使ModelForm上对应的字段只列出is_staff=True的用户。这可能对Django管理很有帮助。
+
+例如，当与Python datetime模块一起使用时，可调用表单可以很有帮助，可以根据日期范围限制选择。例如:
+
+```python
+def limit_pub_date_choices():
+    return {'pub_date__lte': datetime.date.utcnow()}
+
+limit_choices_to = limit_pub_date_choices
+```
+
+如果limit_choices_to是或返回一个Q对象，这对于复杂的查询非常有用，那么只有当模型的ModelAdmin中的raw_id_fields中没有列出该字段时，它才会对admin中可用的选项产生影响。
+
+如果将callable用于limit_choices_to，则每次实例化新表单时都会调用它。当模型被验证时，也可以调用它，例如通过管理命令或管理员。管理员构造queryset，以便在各种边缘情况下多次验证表单输入，因此您的可调用项可能被多次调用。
+
+`ForeignKey.related_name`
+
+要用于从相关对象返回到此对象的关系的名称。它也是related_query_name(用于目标模型的反向过滤器名称)的默认值。有关详细说明和示例，请参阅相关对象文档。注意，在定义抽象模型上的关系时，必须设置此值;当你这样做的时候，一些特殊的语法是可用的。
+
+如果希望Django不创建向后关系，可以将related_name设置为'+'或以'+'结尾。例如，这将确保用户模型不会与该模型有反向关系:
+
+```python
+user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name='+',
+)
+```
+
+`ForeignKey.related_query_name`
+
+要用于目标模型的反向筛选器名称的名称。默认值为related_name，如果设置为default_related_name，则默认值为:
+
+```python
+# Declare the ForeignKey with related_query_name
+class Tag(models.Model):
+    article = models.ForeignKey(
+        Article,
+        on_delete=models.CASCADE,
+        related_name="tags",
+        related_query_name="tag",
+    )
+    name = models.CharField(max_length=255)
+
+# That's now the name of the reverse filter
+Article.objects.filter(tag__name="important")
+```
+
+像related_name一样，related_query_name通过一些特殊的语法支持应用程序标签和类插值。
+
+`ForeignKey.to_field`
+
+关系所指向的相关对象上的字段。默认情况下，Django使用相关对象的主键。如果引用不同的字段，则该字段必须具有unique=True。
+
+`ForeignKey.db_constraint`
+
+控制是否应在数据库中为该外键创建约束。默认值为True，这几乎肯定是您想要的;将此设置为False对数据完整性非常不利。也就是说，下面是一些你可能想要这样做的场景:
+
+- 您有无效的遗留数据。
+
+- 您正在分片数据库。
+
+如果将其设置为False，则访问不存在的相关对象将引发其DoesNotExist异常。
+
+`ForeignKey.swappable`
+
+如果此外键指向可切换模型，则控制迁移框架的反应。如果为真——默认值——那么如果外键指向的模型与当前设置值匹配。AUTH_USER_MODEL(或另一个可切换的模型设置)将使用对设置的引用(而不是直接对模型的引用)将关系存储在迁移中。
+
+只有当您确信您的模型应该始终指向插入模型时，您才希望将其重写为False—例如，如果它是专为您的自定义用户模型设计的概要文件模型。
+
+将它设置为False并不意味着你可以引用一个可切换模型即使是换出——假只是意味着迁移用此ForeignKey总是参考的模型指定(这将会失败如果用户试图运行一个用户模型你不支持,例如)。
+
+如果有疑问，让它默认为True。
+
+
+
+## ManyToManyField
+
+*class* `ManyToManyField`**(***to***,** ***options***)**
+
+多对多的关系。需要一个位置参数:与模型相关的类，它的工作原理与使用外键完全相同，包括递归关系和延迟关系。
+
+可以使用字段的RelatedManager添加、删除或创建相关对象。
+
+### 代表数据库
+
+在幕后，Django创建了一个中间连接表来表示多对多关系。默认情况下，这个表名是使用多对多字段的名称和包含它的模型的表名生成的。由于一些数据库不支持超过一定长度的表名，这些表名将被自动截断，并使用唯一性散列，例如author_books_9cdf。您可以使用db_table选项手动提供联接表的名称。
+
+#### Arguments
+
+ManyToManyField接受一组额外的参数(都是可选的)，这些参数控制关系的工作方式。
+
+`ManyToManyField.related_name`
+
+Same as [`ForeignKey.related_name`](https://docs.djangoproject.com/zh-hans/2.2/ref/models/fields/#django.db.models.ForeignKey.related_name).
+
+`ManyToManyField.related_query_name`
+
+Same as [`ForeignKey.related_query_name`](https://docs.djangoproject.com/zh-hans/2.2/ref/models/fields/#django.db.models.ForeignKey.related_query_name).
+
+`ManyToManyField.limit_choices_to`
+
+Same as [`ForeignKey.limit_choices_to`](https://docs.djangoproject.com/zh-hans/2.2/ref/models/fields/#django.db.models.ForeignKey.limit_choices_to).
+
+limit_choices_to在使用through参数指定自定义中间表的ManyToManyField上使用时没有效果。
+
+`ManyToManyField.symmetrical`
+
+仅用于定义自我上的多个任意域。考虑以下模型:
+
+```python
+from django.db import models
+
+class Person(models.Model):
+    friends = models.ManyToManyField("self")
+```
+
+当Django处理这个模型时，它识别出它本身有一个ManyToManyField，因此，它没有向Person类添加person_set属性。相反，ManyToManyField被认为是对称的——也就是说，如果我是你的朋友，那么你就是我的朋友。
+
+如果您不希望在与自我的多对多关系中对称，请将对称设置为False。这将迫使Django为反向关系添加描述符，从而允许许多tomanyfield关系是非对称的。
+
+`ManyToManyField.through`
+
+Django将自动生成一个表来管理多对多关系。但是，如果希望手动指定中间表，可以使用through选项指定表示要使用的中间表的Django模型。
+
+此选项最常见的用法是，当您希望将额外数据与多对多关系关联时。
+
+如果不指定显式透模型，仍然可以使用隐式透模型类直接访问为保存关联而创建的表。它有三个字段来链接模型。
+
+如果源模型和目标模型不同，则生成以下字段:
+
+- `id`:关系的主键。
+- `<containing_model>_id`: 声明“ManyToManyField”的模型的“id”。
+- `<other_model>_id`: 模型的“id”指的是模型的“id”。
+
+如果“ManyToManyField”指向同一个模型，则生成以下字段:
+
+- `id`: 关系的主键。
+- `from_<model>_id`: 指向模型的实例的“id”(即源实例)。
+- `to_<model>_id`: 关系指向的实例的“id”(即目标模型实例)。
+
+该类可用于查询给定模型实例的相关记录，就像普通模型一样。
+
+`ManyToManyField.through_fields`
+
+仅在指定自定义中介模型时使用。Django通常会决定使用中介模型的哪些字段来自动建立多对多关系。但是，考虑以下模型:
+
+```python
+from django.db import models
+
+class Person(models.Model):
+    name = models.CharField(max_length=50)
+
+class Group(models.Model):
+    name = models.CharField(max_length=128)
+    members = models.ManyToManyField(
+        Person,
+        through='Membership',
+        through_fields=('group', 'person'),
+    )
+
+class Membership(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    inviter = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="membership_invites",
+    )
+    invite_reason = models.CharField(max_length=64)
+```
+
+成员关系对Person (Person和inviter)有两个外键，这使得关系很模糊，Django不知道使用哪个外键。在本例中，必须使用上面的示例显式指定Django应该使用哪些外键。
+
+通过_fields接受一个2元组('field1'， 'field2')，其中field1是模型的外键的名称ManyToManyField是在(本例中是group)上定义的，而field2是目标模型的外键的名称(本例中是person)。
+
+当中介模型上有多个外键指向参与多对多关系的模型中的任何一个(甚至两个)时，必须指定through_fields。当使用中介模型并且模型有两个以上的外键时，或者您希望显式地指定应该使用哪两个Django时，这也适用于递归关系。
+
+使用中介模型的递归关系总是被定义为非对称关系——也就是说，对称=False——因此，存在“源”和“目标”的概念。在这种情况下，“field1”将被视为关系的“源”，而“field2”将被视为“目标”。
+
+`ManyToManyField.db_table`
+
+为存储多对多数据而创建的表的名称。如果没有提供此选项，Django将根据以下名称假定一个默认名称:定义关系的模型表和字段本身的名称。
+
+`ManyToManyField.db_constraint`
+
+控制是否应在数据库中为中介表中的外键创建约束。默认值为True，这几乎肯定是您想要的;将此设置为False对数据完整性非常不利。也就是说，下面是一些你可能想要这样做的场景:
+
+- 您有无效的遗留数据。
+
+- 您正在分片数据库。
+
+同时传递db_constraint和through是一个错误。
+
+`ManyToManyField.swappable`
+
+如果这个ManyToManyField指向可切换模型，则控制迁移框架的反应。如果它是真的——默认值——那么如果ManyToManyField指向的模型匹配当前设置的值。AUTH_USER_MODEL(或另一个可切换的模型设置)将使用对设置的引用(而不是直接对模型的引用)将关系存储在迁移中。
+
+只有当您确信您的模型应该始终指向插入模型时，您才希望将其重写为False—例如，如果它是专为您的自定义用户模型设计的概要文件模型。
+
+如果有疑问，让它默认为True。
+
+ManyToManyField不支持验证器。null没有效果，因为没有办法在数据库级别上要求关系。
+
+
+
+## OneToOneField
+
+*class* `OneToOneField`**(***to***,** *on_delete***,** *parent_link=False***,** ***options***)**
+
+一个一对一的关系。从概念上讲，这类似于一个具有unique=True的外键，但是关系的“反向”部分将直接返回一个对象。
+
+这对于以某种方式“扩展”另一个模型的模型的主键是最有用的;通过添加一个隐式多表继承实现一对一的关系从子模型到父模型,例如。
+
+需要一个位置参数:与模型相关的类。这与对ForeignKey的操作完全相同，包括所有关于递归和延迟关系的选项。
+
+如果没有为OneToOneField指定related_name参数，Django将使用当前模型的小写名称作为默认值。
+
+用下面的例子:
+
+```python
+from django.conf import settings
+from django.db import models
+
+class MySpecialUser(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    supervisor = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='supervisor_of',
+    )
+```
+
+您得到的用户模型将具有以下属性:
+
+```
+>>> user = User.objects.get(pk=1)
+>>> hasattr(user, 'myspecialuser')
+True
+>>> hasattr(user, 'supervisor_of')
+True
+```
+
+如果相关表中的条目不存在，则在访问反向关系时引发DoesNotExist异常。例如，如果用户没有MySpecialUser指定的管理器:
+
+```
+>>> user.supervisor_of
+Traceback (most recent call last):
+    ...
+DoesNotExist: User matching query does not exist.
+```
+
+此外，OneToOneField接受所有外键接受的额外参数，外加一个额外参数:
+
+`OneToOneField.parent_link`
+
+当为True并在继承自另一个具体模型的模型中使用时，表示该字段应该用作返回父类的链接，而不是通常通过子类化隐式创建的额外的OneToOneField。
+
+关OneToOneField的使用示例，请参见一对一关系。
+
+
+
+## API参考
 
