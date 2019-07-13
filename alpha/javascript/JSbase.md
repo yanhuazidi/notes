@@ -929,6 +929,223 @@ eg:
 
 
 
+### this
+
+**判断 this 指向谁，看执行时而非定义时，只要函数(function)没有绑定在对象上调用，它的 this 就是 window**
+
+- this 是指向类的当前实例，this 不能赋值。这前提是说 this 不能脱离 类/对象 来说，也就是说 this 是面向对象语言里常见的一个关键字。
+
+- 当你使用 this 时，你应该是在使用对象/类 方式开发，否则 this 只是函数调用时的副作用。
+
+#### JS 里的 this
+
+- 在 function 内部被创建
+- 指向调用时所在函数所绑定的对象（拗口）
+- this 不能被赋值，但可以被 call/apply  改变
+
+1. this 和构造器
+
+    this 应该挂属性/字段，方法都应该放在原型上。
+
+   ```javascript
+   function Tab(nav, content) {
+       this.nav = nav
+       this.content = content
+   }
+   Tab.prototype.getNav = function() {
+       return this.nav;
+   };
+   Tab.prototype.setNav = function(nav) {
+       this.nav = nav;
+   ```
+
+2. this 和对象
+
+   JS 中的对象不用类也可以创建，有人可能奇怪，类是对象的模板，对象都是从模板里 copy 出来的，没有类怎么创建对象？ JS 的确可以，并且你完全可以写上万行功能代码而不用写一个类。话说 OOP 里说的是面向对象编程，也没说面向类编程，是吧 ^_^ 。
+
+   ```javascript
+   var tab = {
+       nav: '',
+       content: '',
+       getNav: function() {
+           return this.nav;
+       },
+       setNav: function(n) {
+           this.nav = n;
+       }
+   }
+   tab.getNav()//this指向tab对象
+   fun = tab.getNav
+   fun()//this指向window对象
+   ```
+
+3. this 和函数
+
+   this 和独立的函数放在一起是没有意义的，前面也提到过 this 应该是和面向对象相关的。纯粹的函数只是一个低级别的抽象，封装和复用。
+
+   ```javascript
+   function showMsg() {
+       alert(this.message)
+   }
+   showMsg() // undefined
+   //this指向window
+   ```
+
+   ```javascript
+   function showMsg() {
+       alert(this.message)
+   }
+   var m1 = {
+       message: '输入的电话号码不正确'
+   }
+   var m2 = {
+       message: '输入的身份证号不正确'
+   }
+   showMsg.call(m1) // '输入的电话号码不正确'
+   showMsg.call(m2) // '输入的身份证号不正确'
+   //用这种方式可以节省一些代码量，比如当两个 类/对象 有一共相似的方法时，不必写两份，只要定义一个，然后将其绑定在各自的原型和对象上。
+   ```
+
+4. 全局环境的 this
+
+    this 是 “**指向调用时所在函数所绑定的对象**”
+
+   浏览器环境中非函数内 this 指向 window:
+
+   ```javascript
+   alert(window=== this) // true
+   ```
+
+   因此你会看很很多开源 JS lib 这么写
+
+   ```javascript
+   (function() {})(this);
+   (function() {}).call(this);
+   //大意是把全局变量 window 传入匿名函数内缓存起来，避免直接访问。至于为啥要缓存，这跟 JS 作用域链有关系，读取越外层的标识符性能会越差。
+   ```
+
+   浏览器中，非函数内直接使用 var 声明的变量默认为全局变量，且默认挂在 window 上作为属性。
+
+   判断 this 指向谁，看执行时而非定义时，只要函数(function)没有绑定在对象上调用，它的 this 就是 window。
+
+5. this 和 DOM/事件
+
+   前面说过 this 是指向当前类的实例对象，对于这些 tag 类来说，它们的很多方法内部用到的 this 是指向自己的。
+
+   ```html
+   <!-- this 指向 div -->
+   <div onclick="alert(this)"></div>
+   <div id="nav"></div>
+   <script>
+       nav.onclick = function() {
+           alert(this) // 指向div#nav
+       }
+   </script>
+   <!-- 在给元素节点添加事件的时候，其响应函数（handler）执行时的 this 都指向 Element 节点自身。 -->
+   ```
+
+   jQuery 也保持了和标准一致，但却让人迷惑，按 “**this 指向调用时所在函数所绑定的对象**” 这个定义，jQuery 事件 handler 里的 this，应该指向 jQuery 对象，而非 DOM 节点。因此你会发现在用 jQuery 时，经常需要把事件 handler 里的 element 在用 $ 包裹下变成 jQuery 对象后再去操作。比如
+
+   ```javascript
+   $('#nav').on('click', function() {
+       var $el = $(this) // 再次转为 jQuery 对象，如果 this 直接为 jQuery 对象更好
+       $el.attr('data-x', x)
+       $el.attr('data-x', x)
+   })
+   ```
+
+   
+
+   注意:
+
+   ```html
+   <div id="nav" onclick="getId()">ddd</div>
+   <script>
+       function getId() {
+           alert(this.id)
+       }
+   </script>
+   ```
+
+   点击 div 后，为什么 id 是 undefined，不说是指向的 当前元素 div 吗？ 如果记住了前面提到的一句话，就很清楚为啥是 undefined，把这句话再贴出来。
+
+   > **判断 this 指向谁，看执行时而非定义时，只要函数(function)没有绑定在对象上调用，它的 this 就是 window**
+
+   这里函数 getId 调用时没有绑定在任何对象上，可以理解成这种结构
+
+   ```javascript
+   div.onclick = function() {
+       getId()
+   }
+   //getId 所处匿名函数里的 this 是 div，但 getId 自身内的 this 则不是了。
+   ```
+
+6. this 可以被 call/apply 改变
+
+   call/apply 是函数调用的另外两种方式，两者的第一个参数都可以改变函数的上下文 this。call/apply 是 JS 里动态语言特性的表征。动态语言通俗的定义
+
+   >程序在运行时可以改变其结构，新的函数可以被引进，已有的函数可以被删除，即程序在运行时可以发生结构上的变化
+
+   JS 里的 call/apply 在任何一个流行的 lib 里都会用到，但几乎就是两个作用
+
+   1. 配合写类工具实现OOP，如 [mootools](https://github.com/mootools/mootools-core/blob/master/Source/Class/Class.js), [ClassJS](https://github.com/darlanalves/ClassJS/blob/master/src/class/class.js), [class.js](https://github.com/snandy/class/blob/master/src/class.js),
+   2. 修复DOM事件里的 this，如 [jQuery](https://github.com/jquery/jquery/blob/master/src/event.js), [events.js](https://github.com/kbjr/Events.js/blob/master/events.js)
+
+7. me/self/that/_this 暂存 this
+
+   如果采用 OOP 方式写 JS 代码，无可避免的会用到 this，方法内会访问类的内部属性（字段），也可能会调用类的另一个方法。当类的方法内又有一个 function 时，比如浏览器端开发经常遇见的给 DOM 元素添加事件，这时如果事件处理器（handler）中的想调用类的一个方法，此时 handler 内的 this 是 dom 元素而非类的当前对象。这个时候，需要把 this 暂存，开发者发挥着自己的聪明才智留下了几种经典的命名 me, self, that, _this。如
+
+   `var self = this`
+
+7. ES5 中新增的 bind 和 this
+
+   call/apply 在 JS 里体现动态语言特性及动态语言的流行原因，其在 JS 用途如此广泛。ES5发布时将其采纳，提了一个更高级的方法 [bind](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)。
+
+   ```javascript
+   var modal = {
+       message: 'This is A'
+   }
+    
+   function showMsg() {
+       alert(this.message)
+   }
+    
+   var otherShowMsg = showMsg.bind(modal)
+   otherShowMsg() // 'This is A'
+   ```
+
+   bind 只是 call/apply 的高级版，其它没什么特殊的。
+
+8. ES6 箭头函数(arrow function) 和 this
+
+   箭头函数的一个重要特征就是颠覆了上面的一句话，再贴一次
+
+   > **判断 this 指向谁，看执行时而非定义时，只要函数(function)没有绑定在对象上调用，它的 this 就是 window**
+
+   箭头函数的特征就是，定义在哪，this 就指向那。即箭头函数定义在一个对象里，那箭头函数里的 this 就指向该对象。如下
+
+   ```javascript
+   var book = {
+       author: 'John Resig',
+       init:  function() {
+           document.onclick = ev => {
+               alert(this.author) ; // 这里的 this 不是 document 了
+           }
+       }
+   };
+   book.init()
+   ```
+
+   对象 book 里有一个属性 author， 有一个 init 方法， 给 document 添加了一个点击事件，如果是传统的函数，我们知道 this 指向应该是 document，但箭头函数会指向当前对象 book。
+
+   箭头函数让 JS 回归自然和简单，函数定义在哪它 this 就指向哪，定义在对象里它指向该对象，定义在类的原型上，就指向该类的实例，望文知意这样更容易理解。
+
+### 总结： 
+
+函数的上下文 this 是 JS 里不太好理解的，在于 JS 函数自身有[多种用途](http://www.cnblogs.com/snandy/p/4763324.html)。目的是实现各种语言范型（面向对象，函数式，动态）。this 本质是和面向对象联系的，和写类，对象关联一起的， 和“函数式”没有关系的。如果你采用过程式函数式开发，完全不会用到一个 this。 但在浏览器端开发时却无可避免的会用到 this，这是因为浏览器对象模型（DOM）本身采用面向对象方式开发，Tag 实现为一个个的类，类的方法自然会引用类的其它方法，引用方式必然是用 this。当你给DOM对象添加事件时，回调函数里引用该对象就只能用 this 了。
+
+
+
 ### 内置对象(通用):
    Object Array  String  Number  RegExp   Math  Date...
 
@@ -1044,13 +1261,8 @@ per.sky();
 
 
 
-### this 关键字
-
-​    在对象中始终代表当前对象
-
-
-
 ## JavaScript 全局对象
+
 ​    全局属性和函数可用于所有内建的 JavaScript 对象。
 
 ### 全局对象描述
