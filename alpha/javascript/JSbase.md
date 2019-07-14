@@ -1231,13 +1231,13 @@ var newObject = new 构造方法(oldObject);
 
 ### 检测属性
 
-    1. in 关键字    是否在其中 返回boolean
-      
-      ```javascript
-      var a = {123:'123','key':'value'}
-      console.log(123 in a);  //true
-      console.log('key' in a);  //true
-      ```
+1. in 关键字    是否在其中 返回boolean
+
+```javascript
+var a = {123:'123','key':'value'}
+console.log(123 in a);  //true
+console.log('key' in a);  //true
+```
 
    2. 对象.hasOwnProperty('属性') 返回 boolean
 
