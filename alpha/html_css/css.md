@@ -40,7 +40,7 @@
    使用 :
 
    	1. 定义外部的样式表文件 以.css为后缀
-           
+   
     2. 在HTML文档中使用
 
           `<link rel="stylesheet" href="url" type="text/css">`
@@ -88,7 +88,7 @@
 
 ​	`<div id="box"></div>`
 
-### class 类选择器
+### 类选择器
 
 根据元素的class属性值匹配元素，可以复用,以同名的类为单位统一设置样式
 
@@ -98,7 +98,7 @@
                 样式
             }
 
-**特殊用法**
+**结合元素选择器**
 
 标签选择器与类选择器结合使用
 
@@ -108,9 +108,28 @@
 
 标签名必须放在前面
 
+**多类选择器**
+
 class 属性值可以出现多个，使用空格隔开
 
-class="c1 c2 c3"
+`class="c1 c2 c3"`
+
+通过把两个类选择器链接在一起，仅可以选择*同时包含这些类名*的元素（类名的顺序不限）。
+
+如果一个多类选择器包含类名列表中没有的一个类名，匹配就会失败。请看下面的规则：
+
+```css
+.important.urgent {background:silver;}
+```
+
+它能匹配以下元素：
+
+```css
+<p class="important urgent">
+<p class="important urgent warning">
+```
+
+
 
 ### 群组选择器
 
@@ -127,21 +146,45 @@ class="c1 c2 c3"
 
 特点: 匹配满足要求的所有后代元素
 
-语法: 
+**语法:** 
             选择器1 选择器2{
                 样式
             }
 选择器1表示父元素
 选择器2表示子元素或后代元素，包含直接间接后代元素
 
+
+
 ### 子代选择器
 
 只匹配父元素中的直接子元素
 
-语法:
+**语法:**
             选择器1>选择器2{
                 样式
             }
+
+### 相邻兄弟选择器
+
+可选择紧接在另一元素后的元素，且二者有相同父元素。
+
+```css
+h1 + p {margin-top:50px;}
+```
+
+这个选择器读作：“选择紧接在 h1 元素后出现的段落，h1 和 p 元素拥有共同的父元素”。
+
+相邻兄弟选择器使用了加号（+），即相邻兄弟结合符（Adjacent sibling combinator）。
+
+**注释：**与子结合符一样，相邻兄弟结合符旁边可以有空白符。
+
+```css
+li + li {font-weight:bold;}
+```
+
+上面这个选择器只会把列表中的第二个和第三个列表项变为粗体。第一个列表项不受影响。
+
+
 
 ### 伪类选择器
 
@@ -203,12 +246,122 @@ input:focus{
 
 表示表单控件-按钮的选中状态
 
+
+
 ### 属性选择器
 
-根据属性名和属性值匹配元素
+**简单属性选择**
 
-`[type="text"]{}`
-            
+把包含标题（title）的所有元素变为红色
+
+```css
+*[title] {color:red;}
+```
+
+还可以根据多个属性进行选择，只需将属性选择器链接在一起即可。
+
+将同时有 href 和 title 属性的 HTML 超链接的文本设置为红色
+
+```css
+a[href][title] {color:red;}
+```
+
+**根据具体属性值选择**
+
+```css
+a[href="http://www.w3school.com.cn/about_us.asp"] {color: red;}
+```
+
+注意，这种格式要求必须与属性值完全匹配。
+
+如果属性值包含用空格分隔的值列表，匹配就可能出问题。
+
+请考虑一下的标记片段：
+
+```html
+<p class="important warning">This paragraph is a very important warning.</p>
+```
+
+如果写成 `p[class="important"]`，那么这个规则不能匹配示例标记。
+
+要根据具体属性值来选择该元素，必须这样写：
+
+```css
+p[class="important warning"] {color: red;}
+```
+
+**根据部分属性值选择**
+
+如果需要根据属性值中的词列表的某个词进行选择，则需要使用波浪号（~）。
+
+假设您想选择 class 属性中包含 important 的元素，可以用下面这个选择器做到这一点：
+
+```css
+p[class~="important"] {color: red;}
+/*p.important 和 p[class="important"] 应用到 HTML 文档时是等价的。
+那么，为什么还要有 "~=" 属性选择器呢？因为它能用于任何属性，而不只是 class。*/
+```
+
+**子串匹配属性选择器**
+
+| 类型         | 描述                                       |
+| :----------- | :----------------------------------------- |
+| [abc^="def"] | 选择 abc 属性值以 "def" 开头的所有元素     |
+| [abc$="def"] | 选择 abc 属性值以 "def" 结尾的所有元素     |
+| [abc*="def"] | 选择 abc 属性值中包含子串 "def" 的所有元素 |
+
+**特定属性选择类型**
+
+```css
+*[lang|="en"] {color: red;}
+```
+
+上面这个规则会选择 lang 属性等于 en 或以 en- 开头的所有元素。
+
+
+
+| 选择器                                                       | 描述                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [[*attribute*\]](http://www.w3school.com.cn/cssref/selector_attribute.asp) | 用于选取带有指定属性的元素。                                 |
+| [[*attribute*=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value.asp) | 用于选取带有指定属性和值的元素。                             |
+| [[*attribute*~=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_contain.asp) | 用于选取属性值中包含指定词汇的元素。                         |
+| [[*attribute*\|=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_start.asp) | 用于选取带有以指定值开头的属性值的元素，该值必须是整个单词。 |
+| [[*attribute*^=*value*\]](http://www.w3school.com.cn/cssref/selector_attr_begin.asp) | 匹配属性值以指定值开头的每个元素。                           |
+| [[*attribute*$=*value*\]](http://www.w3school.com.cn/cssref/selector_attr_end.asp) | 匹配属性值以指定值结尾的每个元素。                           |
+| [[attribute*=value\]](http://www.w3school.com.cn/cssref/selector_attr_contain.asp) | 匹配属性值中包含指定值的每个元素。                           |
+
+
+
+### 伪元素选择器
+
+`:before` 和 `:after` 的主要作用是在元素内容前后加上指定内容
+
+```css
+p:before{
+   content: 'Hello';
+   color: red;
+}
+p:after{
+    content: 'Tom';
+    color: red;
+}
+```
+
+ 效果如图：
+
+![img](https://images2015.cnblogs.com/blog/816691/201701/816691-20170105220709050-1981262896.png)     
+
+```css
+ul.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: "/\00a0";
+}
+```
+
+每两个li的组合，第二个li之前加上该css
+
+
 
 ### 选择器的优先级
 
@@ -219,6 +372,8 @@ input:focus{
 类选择器/伪类选择器  10
 ID选择器       100
 行类样式     1000
+
+
 
 **组合选择器**
 
@@ -370,7 +525,7 @@ CSS中认为所有的元素都是矩形区域, 边框是围绕元素内容出现
 
 1. `border-radius:20px;`
 					一个值表示四个角都以20px做圆角
-			
+	
 2. `border-radius:20px 40px;`
 
      取两个值，按照上右下左顺时针方向设置圆角，从左上角开始依次取值，在给两个值的情况下，上下保持一致，左右保持一致
@@ -1030,6 +1185,42 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
 
 
+### 弹性盒子
+
+弹性盒子由弹性容器(Flex container)和弹性子元素(Flex item)组成。
+弹性容器通过设置 display 属性的值为 flex 或 inline-flex将其定义为弹性容器。
+弹性容器内包含了一个或多个弹性子元素。
+**注意：** 弹性容器外及弹性子元素内是正常渲染的。弹性盒子只定义了弹性子元素如何在弹性容器内布局。
+弹性子元素通常在弹性盒子内一行显示。默认情况每个容器只有一行。
+以下元素展示了弹性子元素在一行内显示，从左到右:
+
+```css
+.flex-container {
+    display: -webkit-flex;
+    display: flex;
+    width: 400px;
+    height: 250px;
+    background-color: lightgrey;
+}
+ 
+.flex-item {
+    background-color: cornflowerblue;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+```
+
+
+
+
+
+
+
+
+
+
+
 ## 元素显示
 
 ### 设置元素显示与隐藏
@@ -1047,9 +1238,22 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 取值 : 
 
 1. `inline`行内元素
+
 2. `block`  块元素
+
 3. `inline-block` 行内块元素
+
 4. `none`  元素隐藏,在文档中不占位
+
+5. `table`
+
+6. `table-cell`
+
+   
+
+7. 
+
+   
 
 ### 元素透明度设置
 
@@ -1118,6 +1322,7 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
    取值 :
 
    	1. `outside`在内容框外部
+   
     	2. `inside` 显示在内容框内部
 
 **简写属性**
@@ -1158,8 +1363,9 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
 1. `translate(x,y)`
          
+  
          x,y分别表示元素在X轴上和Y轴上的平移距离，取像素值，可正可负，区分平移方向
-         
+    
 2. `translate(x)`
 
       一个值表示沿X轴平移

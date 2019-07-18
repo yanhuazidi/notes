@@ -1,212 +1,233 @@
+`
+
+[TOC]
 
 
-王伟超  wangweichao@
-
-1. 什么是爬虫
-    1. 定义: 网络蜘蛛 ，网络机器人，抓取网络数据的程序
-    2. 总结：用 Python 程序模仿人类去访问网站，模仿的越逼真越好
-    3. 爬取数据的目的: 通过有效地大量数据分析市场走势，公司决策
-
-2. 企业获取数据的方式
-    1. 公司自有数据
-    2. 第三方数据平台购买
-        数据堂  贵阳大数据交易所
-    3. 爬虫爬取的数据
-        市场上没有的或者价格太高，利用爬虫程序去爬取
-
-3. Python做爬虫的优势
-    请求模块，解析模块丰富成熟，强大的scrapy框架
-    PHP : 对多线程，异步支持不太好
-    JAVA : 代码笨重,代码量很大
-    C/C++ : 虽然效率高，但是代码成型很慢
-
-4. 爬虫分类
-    1. 通用网络爬虫(搜索引擎用,遵守robots协议)
-        https//www.taobao.com/robots.txt 查看协议内容
-        
-      1. 搜索引擎如何获取 1 个新网站的 URL
-        1. 网站主动向搜索引擎提供(百度站长平台)
-        2. 和 DNS服务商(万网)合作，快速收录新网站
-
-    2. 聚焦网络爬虫
-        自己写的爬虫程序 : 面向需求的爬虫
-
-5. 数据爬取步骤
-    1. 确定要爬取的 URL 地址
-    2. 向网站发请求获取相应的 HTML 页面
-    3. 提取 HTML 页面中有用的数据
-        1. 所需数据，保存
-        2. 页面中新的 URL ，继续第2步
-
-6. Anaconda 和 Spyder
-    1. Anaconda : 科学计算的集成开发环境(Python,iPython,大量的库)
-    2. Spyder ：开发工具(环境)
-        常用快捷键
-            1. 注释/取消注释 : Ctrl +1
-            2. 保存 :   Ctrl + s
-            3. 运行程序  :      F5
-            4. TAB 自动补全
-
-7. Chrome 浏览器插件
-    1. 安装插件步骤
-        1. 浏览器右上角 - 更多工具 - 扩展程序
-        2. 点开右上角 - 打开开发者模式
-        3. 把插件拖拽到浏览器页面，释放鼠标点击添加扩展
-
-8. WEB 回顾
-    1、 HTTP 和 HTTPS
-
-        HTTP : 80
-        HTTPS : 443 ,HTTP升级版，加了一个安全套接层
-
-    2. GET 和 POST
-        1. GET ：查询参数会在 URL 地址上显示
-        2. POST ：查询参数和需要提交的数据隐藏在 From 表单中，不会在 URL 地址中
-    
-    3. URL ： 统一资源定位符
-        协议  域名/ip地址   资源地址   锚点
-
-    4. User-Agent
-        记录了用户的浏览器、操作系统等
 
 
-    Mozilla Firefox : (Gecko)
-    IE : Trident
-    Apple : Webkie(like KHTML)
-    Google : Chrome(like Webkit)
-    其他浏览器都是模仿 IE/Chrome
+## 爬虫分类
 
-9. 爬虫请求模块
-    1.版本
-         Python3: urllib.request 标准库模块
-    2. 常用方法
-        1. urllib.request.urlopen('URL地址')
-          作用: 向网站发起1个请求，并获取响应
-          字节流 = response.read()
-          字符串 = response.read().decode('utf-8')
+### 通用网络爬虫
 
-        2. urllib.request.Request(url,headers)
-            参数:
-                1. url
-                2. headers = {'User-Agent':'....'}
+搜索引擎用,遵守robots协议
+https//www.taobao.com/robots.txt 查看协议内容
+
+搜索引擎如何获取 1 个新网站的 URL
+1. 网站主动向搜索引擎提供(百度站长平台)
+2. 和 DNS服务商(万网)合作，快速收录新网站
+
+### 聚焦网络爬虫
+自己写的爬虫程序 : 面向需求的爬虫
 
 
-            1. 使用流程
-                1. 利用 Request()方法来构建请求对象
-                2. 利用 urlopen()方法获取响应对象
-                3. 利用响应对象的 read().decode('utf-8')获取内容
 
-        3. 响应对象(response)的方法
-            1. response.read().读取服务器响应的内容
-            2. response.getcode() : 访问 HTTP 的响应码
-                200 : 成功
-                4xx : 服务器页面出错
-                5xx : 服务器出错
-            3. response.geturl()
-                返回实际数据的 URL 地址
-        
-    3. urllib.parse 模块 : URL 编码模块
-        from urllib.parse import quote,unquote,urlencode
+## Anaconda 和 Spyder
 
-        非 ascii 字符 url处理
+### Anaconda :
 
-        编码
-            1. urlencode(字典) : {'wd':"vlue"}，多个键值对会在中间自动加 & 
-                str= urllib.parse.urlencode({'wd':"美女"})
-                print(str)  # "wd=%E6%8C%96%E6%8E%98"
+科学计算的集成开发环境(Python,iPython,大量的库)
 
-            2. quote(字符串)
-                text = "丽江"
-                str = quote(text,'utf-8')
-                print(str)  # "%E6%8C%96%E6%8E%98"
-        
-        解码
-            3. unquote(已编码字符串)
-                str = "%E6%8C%96%E6%8E%98"
-                print(unquote(str,'utf-8'))  # "丽江"
+### Spyder 
+常用快捷键
+
+    1. 注释/取消注释 : Ctrl +1
+    2. 保存 :   Ctrl + s
+    3. 运行程序  :      F5
+   4. TAB 自动补全
 
 
-    保存文件
-        with open('美女.html','w',encoding='utf-8') as f:
-            f.write(html)
 
-    4. 练习 : 百度贴吧数据抓取
-        要求: 
-            1 . 输入要抓取的贴吧名称
-            2. 输入贴吧的起始页和终止页
-            3. 把每一页的内容保存到本地
-                第一页.html ....
+## Chrome 浏览器插件
 
-        2 . 步骤
-            1. 找 URL 规律，拼接 URL
-                第一页: https://tieba.baidu.com/f?kw=%C3%C0%C5%AE
-                第二页: https://tieba.baidu.com/f?kw=%C3%C0%C5%AE&pn=50
-                第三页: .....
+**安装插件步骤**
 
-            2. 获取网页内容(发请求获取响应内容)
-
-            3. 解析数据
-
-            4. 保存数据
-
-10. 请求方式及实例
-    1. GET
-        特点 : 查询参数在 URL 地址中显示
-        案例 : 百度贴吧
-
-    2. POST(在Request()方法中添加data参数)
-        req = urllib.request.Request(url,data,headers)
-        1. 特点 : URL 地址无变化，数据是在 Form 表单中
-        2. data : 表单数据要以 bytes 类型提交，不能是 string
-        3. 处理表单数据为 bytes 数据类型
-            1. 把 from 表单数据定义为 1 个大字典
-            2. urlencode(data).encode('utf-8')
-                先编码得到字符串，再转码得到bytes数据类型
-
-    3. json 模块
-        1. json.loads(json格式的字符串)
-            把 json 格式的字符串转换为 Python中的字典
-    
-11. 正则表达式(re)
-    1. re 使用流程1
-        1. 创建编译对象
-            p = re.compile(r'正则表达式')
-        
-        2. 匹配字符串 : rList = p.findall(html)
-
-    2. re 使用方法2
-        rList = re.findall(r'正则表达式',html)
-
-数据的分类
-    1. 结构化的数据
-        特点: 有固定的格式，如 : HTML XML JSON
-
-    2. 非结构化数据
-        如: 图片，音频，视频 这类数据一般存储为二进制
+1. 浏览器右上角 - 更多工具 - 扩展程序
+2. 点开右上角 - 打开开发者模式
+3. 把插件拖拽到浏览器页面，释放鼠标点击添加扩展
 
 
-csv 模块使用流程(Excal表格文件)
-    import csv
+
+## User-Agent
+记录了用户的浏览器、操作系统等
+
+- Mozilla Firefox : (Gecko)
+- IE : Trident
+- Apple : Webkie(like KHTML)
+- Google : Chrome(like Webkit)
+- 其他浏览器都是模仿 IE/Chrome
+
+
+
+## urllib标准库(Python3)
+
+### 请求模块
+
+`from urllib import request`
+
+1. `urllib.request.urlopen(URL[,data][,timeout])`
+
+   作用: 向网站发起1个请求，并获取响应
+
+   ```python
+   with request.urlopen('https://api.douban.com/v2/book/2129650') as f:
+       data = f.read()
+       print('Status:', f.status, f.reason)
+       for k, v in f.getheaders():
+           print('%s: %s' % (k, v))
+       print('Data:', data.decode('utf-8'))
+   ```
+
+2. `urllib.request.Request(url[, data=None][, headers={}][, origin_req_host=None][, unverifiable=False][, method=None])`
+
+   参数:
+
+   - `url`
+
+     ```python
+     str  'https://api.douban.com/v2/book/2129650'
+     ```
+
+   - `data`(post请求)
+
+     data = `urlencode(dict).encode('utf-8')`
+     先编码得到字符串，再转码得到bytes数据类型
+
+   - `headers`
+
+     ```python
+     {'User-Agent':'....'}`
+     ```
+
+   返回值
+
+   ​	请求对象
+
+   
+
+   模拟浏览器发送GET请求，就需要使用`Request`对象，通过往`Request`对象添加HTTP头，我们就可以把请求伪装成浏览器
+
+   ```python
+   from urllib import request
+   req = request.Request('http://www.douban.com/')
+   req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+   with request.urlopen(req) as f:
+       print('Status:', f.status, f.reason)
+       for k, v in f.getheaders():
+           print('%s: %s' % (k, v))
+       print('Data:', f.read().decode('utf-8'))
+   ```
+
+
+
+**响应对象(response)**
+
+`<class 'http.client.HTTPResponse'>`
+
+1. `response.read()`读取服务器响应的内容
+
+   字节流 = `response.read()`
+
+   字符串 = `response.read().decode('utf-8')`
+
+2. `response.geturl()`   返回实际数据的 URL 地址
+
+3. `response.getheaders()`   返回响应头
+
+   ```python
+   [('Server', 'nginx'), ('Content-Type', 'text/html; charset=utf-8'), ('X-Frame-Options', 'SAMEORIGIN'), ('X-Clacks-Overhead', 'GNU Terry Pratchett'), ('Content-Length', '47397'), ('Accept-Ranges', 'bytes'), ('Date', 'Mon, 01 Aug 2016 09:57:31 GMT'), ('Via', '1.1 varnish'), ('Age', '2473'), ('Connection', 'close'), ('X-Served-By', 'cache-lcy1125-LCY'), ('X-Cache', 'HIT'), ('X-Cache-Hits', '23'), ('Vary', 'Cookie'), ('Strict-Transport-Security', 'max-age=63072000; includeSubDomains')]
+   ```
+
+4. `response.getheader(name)`  获指定取响应头信息
+
+5. `response.status`   响应状态码
+
+6. `response.reason`   响应状态码描述
+
+7. `readinto()`
+
+8. `fileno()` 
+
+9. `msg`
+
+10. `version`
+
+11. `debuglevel`
+
+12. `closed`
+
+
+
+### URL 编码模块
+
+`from urllib.parse import quote,unquote,urlencode`
+
+#### 非 ascii 字符 url处理
+
+编码
+
+`quote(字符串)`
+
+```python
+text = "丽江"
+str = quote(text,'utf-8')
+print(str)  # "%E6%8C%96%E6%8E%98"
+```
+
+解码
+
+`unquote(已编码字符串)`
+
+
+```python
+str = "%E6%8C%96%E6%8E%98"
+print(unquote(str,'utf-8'))  # "丽江"
+```
+
+#### url 编码
+
+`urlencode(dict)` : 多个键值对会在中间自动加 & 
+
+```python
+str= urllib.parse.urlencode({'wd':"美女"})
+print(str)
+#"wd=%E6%8C%96%E6%8E%98"
+```
+
+
+
+## 数据的分类
+结构化的数据
+
+​        特点: 有固定的格式，如 : HTML XML JSON
+
+非结构化数据
+
+​		如: 图片，音频，视频 这类数据一般存储为二进制
+
+
+
+
+
+## csv 模块(Excal表格文件)
+`import csv`
+
     1. 打开csv文件
-       with open('测试.csv'，'w',newline='') as f:
+       `with open('测试.csv'，'w',newline='') as f:`
+       
+   2. 初始化写入对象
 
-    2. 初始化写入对象
-        writer = csv.writer(f)
+       `writer = csv.writer(f)`
 
     3. 写入数据
-        writer.writerow(列表)
 
+       `writer.writerow(列表)`
 
-处理警告模块
-    import warnings
-
-    过滤警告,'ignore'表示忽略
-    只对此条语句下面执行的警告起作用
-    warnings.filterwarnings('ignore')
 
 
 Anaconda 安装模块
-    
+
+​    
+
     1. 右键以管理员的身份进入 Anaconda Prompt终端
     2. 执行安装命令
         conda install pymongo
@@ -222,12 +243,12 @@ Anaconda 安装模块
 
     2. 添加授权用户
         mysql> grant all privileges on *.* to "用户名"@"%" identified by '123456' with grant option;
-
+    
     3. 防火墙
         sudo ufw status 查看状态
-
+    
         sudo ufw disable 关闭防火墙
-
+    
         或添加规则允许外部访问 3306端口
             sudo ufw allow 3306
     程序中
@@ -239,16 +260,17 @@ Anaconda 安装模块
              self.mydb.commit()
         self.cursor.close()
         self.mydb.close()
-        
-        
+
+
+​        
 远程存入 mongo 数据库
-    
+​    
     防火墙
         sudo ufw status 查看状态
         sudo ufw disable 关闭防火墙
         或添加规则允许外部访问端口
             sudo ufw allow 27017
-
+    
      程序中  
         self.conn = pymongo.MongoClient("176.23.5.140",27017)
         self.db = self.conn["MaoDB"]
@@ -283,21 +305,23 @@ Cookie 模拟登录
         
         cookie : 客户端信息确定用户身份
         session : 服务端信息确定用户身份
-        
-        
+
+
+​        
     2. 使用 cookie 模拟登录人人网
         1. 先登录成功1次，获取到 cookie
         2. 拿着 带有cookie 的headers(去掉压缩键值对) 去抓取需要登录才能看到的页面
-        
-        
-        
+
+
+​        
+​        
 
 requests 模块
     1. 安装 :以管理员身份去打开 Anaconda Prompt conda install requests
     
     2. 常用方法
         1. get(url,headers=headers)
-
+    
             res = requests.get(url,headers=headers)
         
         2. 响应对象的 res 属性
@@ -316,21 +340,23 @@ requests 模块
                 
             5. url   ： 返回实际数据的 URL地址
                 print(res.url)
-        
-    
-        
+
+
+​    
+​        
 get() 方法参数
-    1. 查询参数  params
-        params={}
-        自动对params字典进行编码，自动拼接URL地址，输入搜索内容，再输入第几页
-        params = {
-        'wd':key,
-        'pn':pn,
-            }
-    
+​    1. 查询参数  params
+​        params={}
+​        自动对params字典进行编码，自动拼接URL地址，输入搜索内容，再输入第几页
+​        params = {
+​        'wd':key,
+​        'pn':pn,
+​            }
+​    
         res = requests.get(url,params=params,headers=headers)
-        
-        
+
+
+​        
     2. 使用代理IP  proxies
         1. 获取 IP 地址的网站
             快代理
@@ -355,9 +381,10 @@ get() 方法参数
             origin: "122.224.206.179",
             url: "http://httpbin.org/get"
         }
-        
-    
-    
+
+
+​    
+​    
         3. 私密代理
             1. 格式 
                 proxies = {
@@ -368,8 +395,9 @@ get() 方法参数
     
     4. Web客户端验证  auth
         1. auth = ('用户名','密码')
-        
-        
+
+
+​        
     5. SSL证书认证  verify
     
         1. verify = True(默认认证): 进行CA证书认证
@@ -377,7 +405,7 @@ get() 方法参数
         
         ## 参数为True进行认证，去访问HTTPS 网站(没有进行CA认证)，抛出异常: SSLError 
             只需改为 Flase
-            
+
 
 
 post()方法
@@ -438,7 +466,7 @@ xpath 工具(解析)
             
             或者从获取的节点对象中 for 循环 取一个对象
             用 .text属性取值
-                
+
 
 lxml 库 及xpath使用
     
@@ -455,9 +483,10 @@ lxml 库 及xpath使用
         3. 调用 xpath
             rList = paresHtml.xpath('xpath表达式')
             ## 只要调用了xpath，结果一定是列表
-            
-        
-    
+
+
+​        
+​    
 1. Fiddler抓包工具设置
   1. 设置Fiddler软件
     1. https: Tools - options - HTTPS - ...from browsers only 
@@ -540,7 +569,7 @@ lxml 库 及xpath使用
     1. 抓取目标 : 豆瓣电影 - 排行榜 - 剧情
                  电影名称 评分
     
-      
+  
 1. 豆瓣电影
 
 
@@ -568,13 +597,13 @@ lxml 库 及xpath使用
 			1. 下载安装包并解压 : phantomjs-2.1.1-.
 			2. cd 到解压的路径的 bin 目录下
 			3. 把文件拷贝到  /usr/bin/  目录下
-			
+		
 	3. chromedriver
 		1. 安装
 			1. 查看浏览器版本 
 				浏览器 - 设置 - 帮助 - 关于Google chrome
 					chrome浏览器版本  71.0.3578.98	
-					
+				
 			2. 下载对应的chromedriver.exe版本
 				https://chromedriver.storage.googleapis.com/index.html
 			3. 拷贝 chromedriver.exe 到 Scripts目录下
@@ -601,7 +630,7 @@ lxml 库 及xpath使用
 	driver.save_screenshot('baidu.png')
 	#关闭浏览器
 	driver.quit()			
-			
+	
 4. 浏览器对象(driver)的方法
 	1. driver.get(url) : 发请求，获相应
 	
@@ -626,6 +655,7 @@ lxml 库 及xpath使用
 		点击节点对象
 			element.click()
 		
+	
 	5.多元素查找,返回节点对象列表
 		1. elementList = driver.find_elements_by_id('')
 		2. driver.find_elements_by_name('')
@@ -640,28 +670,28 @@ lxml 库 及xpath使用
 		opt = webdriver.ChromeOptions()
 		opt.set_headless()	消除Chrome界面
 		
-		opt.add_argument("windows-size=1920x3000")  指定窗口大小
-
-		driver = webdriver.Chrome(options=opt)  #chrome浏览器
-
-		driver.get('http://www.renren.com/')
-
-		driver.maximize_window()  以最大窗口打开
-
+	opt.add_argument("windows-size=1920x3000")  指定窗口大小
+		
+	driver = webdriver.Chrome(options=opt)  #chrome浏览器
+		
+	driver.get('http://www.renren.com/')
+		
+	driver.maximize_window()  以最大窗口打开
+		
 		uname = driver.find_element_by_name('email')
 		uname.send_keys('18633615542')
 		pwd = driver.find_element_by_name('password')
-		pwd.send_keys('zhanshen001')
-
+	pwd.send_keys('zhanshen001')
+		
 		time.sleep(1)
 		保留页面截图
 		if driver.find_element_by_name('icode'): #有问题
 			driver.save_screenshot('test/yzm.png')
 			yzm = input('请输入验证码: ')
-			driver.find_element_by_name('icode').send_keys(yzm)
-    
-		driver.find_element_by_id('login').click()
-
+  		driver.find_element_by_name('icode').send_keys(yzm)
+		  
+	driver.find_element_by_id('login').click()
+		
 		time.sleep(1)
 		driver.save_screenshot('test/yes.png')
 		#关闭浏览器
@@ -670,7 +700,7 @@ lxml 库 及xpath使用
 	
 	6. driver 如何执行js脚本
 		driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-		
+	
 5. 斗鱼爬取
 		import time
 
@@ -679,7 +709,7 @@ lxml 库 及xpath使用
 		#opt.set_headless()
 		#driver = webdriver.Chrome(options=opt)  #chrome浏览器
 		driver = webdriver.PhantomJS()
-
+	
 		driver.get('https://www.douyu.com/directory/all')
 		time.sleep(2)
 		while True:
@@ -692,11 +722,11 @@ lxml 库 及xpath使用
 					break
 				continue
 			text.send_keys(int(key))
-
+	
 			button = driver.find_element_by_class_name('shark-pager-submit')
 			button.click()
 			time.sleep(2)
-
+	
 			driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 			time.sleep(3)
 			xpath = "//div[@class='mes']"
@@ -715,17 +745,18 @@ lxml 库 及xpath使用
 		#关闭浏览器
 		driver.quit()
 
-	
+
+​	
 多线程爬虫
-	1. 进程
-		1. 系统中正在运行的一个程序
-		2. 1个CPU核心1次只能执行1个进程，其他进程处于非运行状态
-		3. N个CPU核心可同时执行N个任务
-	2. 线程
-		1. 进程中包含的执行单元，1个进程中可以有多个线程
-		2. 线程使用所属进程空间/资源
-		3. 互斥锁， 防止多个线程同时使用共享资源
-		
+​	1. 进程
+​		1. 系统中正在运行的一个程序
+​		2. 1个CPU核心1次只能执行1个进程，其他进程处于非运行状态
+​		3. N个CPU核心可同时执行N个任务
+​	2. 线程
+​		1. 进程中包含的执行单元，1个进程中可以有多个线程
+​		2. 线程使用所属进程空间/资源
+​		3. 互斥锁， 防止多个线程同时使用共享资源
+​		
 	3. GIL ： 全局解释锁
 		执行通行证，仅此1个，拿到通行证就执行
 		
@@ -734,7 +765,7 @@ lxml 库 及xpath使用
 		2. 多线程 : I/O密集
 			1. 爬虫 : 网络I/O
 			2. 写文件 : 本地磁盘I/O
-			
+
 1. 多线程爬虫
 	1. 队列(from multiprocessing import Queue)
 		UrlQueue = Queue()
@@ -747,6 +778,7 @@ lxml 库 及xpath使用
 		t.start()
 		t.join()
 		
+
 小米应用商城
 		headers = random.choice(hLis)
 		class XiaomiSpider:
@@ -761,7 +793,7 @@ lxml 库 及xpath使用
 				for page in range(20):
 					url = self.baseurl + str(page)
 					self.urlQueue.put(url)
-    
+	
 			def getHtml(self):
 				while True:
 					if not self.urlQueue.empty():
@@ -772,7 +804,7 @@ lxml 库 及xpath使用
 						self.parseQueue.put(html)
 					else:
 						break
-    
+	
 			def getDate(self):
 				while True:
 					try:
@@ -791,19 +823,19 @@ lxml 库 及xpath使用
 									}
 							with open('test/xiaomi.json','a',encoding='utf-8') as f:
 								f.write(str(d)+'\n')
-            
-    def workOn(self):
-        self.getUrl()
-        tList = []
-        for i in range(5):
-            t1 = Thread(target=self.getHtml)
-            t2 = Thread(target=self.getDate)
-            tList.append(t1)
-            tList.append(t2)
-            t1.start()
-            t2.start()
-        for i in tList:
-            i.join()
+	        
+	def workOn(self):
+	    self.getUrl()
+	    tList = []
+	    for i in range(5):
+	        t1 = Thread(target=self.getHtml)
+	        t2 = Thread(target=self.getDate)
+	        tList.append(t1)
+	        tList.append(t2)
+	        t1.start()
+	        t2.start()
+	    for i in tList:
+	        i.join()
 
 
 if __name__=='__main__':
@@ -816,7 +848,7 @@ if __name__=='__main__':
 
 3. BeautifulSoup(解析)
 		详解 :  http://www.cnblogs.com/hanmk/p/8724162.html
-		
+	
 	1. HTML或者XML解析器，依赖于lxml
 	2. 安装 : conda install beautifulsoup4
 	3. 使用流程
@@ -832,7 +864,7 @@ if __name__=='__main__':
 			
 		4.获取文本
 			.get_text()
-			
+	
 	4. 示例
 		from bs4 import BeautifulSoup
 		
@@ -842,7 +874,7 @@ if __name__=='__main__':
 		for r  in rList:
 			Info = r.find('div',attrs={"class":"houseInfo"}).get_text().split('/')
 			print(info[0])
-			
+		
 	5. 支持的解析库
 		1. lxml   :  速度快，文档容错能力强
 		2. html.parser  ： python 标准库，速度一般，文档容错能力一般
@@ -888,7 +920,7 @@ Scrapy框架组成
 					处理引擎与下载器之间的请求及响应
 				2. 蜘蛛中间件(Spider Middlewares)
 					处理爬虫程序输入响应和输出结果以及新的请求
-					
+
 制作Scrapy爬虫项目步骤
 		1. 新建项目
 				scrapy startproject 项目名
@@ -954,7 +986,7 @@ Scrapy框架组成
 					'Baidu.pipelines.BaiduMysqlPipeline' : 100,
 					}
 				## 优先级1-1000,数字越小优先级越高
-				
+
 Pycharm运行Scrapy项目
 		1. 项目写完之后创建begin.py(和scrapy.cfg同目录)
 		2. begin.py
@@ -965,7 +997,7 @@ Pycharm运行Scrapy项目
 			File -> settings -> Project Interpreter -> 右上角...add -> 
 			existinig environment -> 选择你自己Anaconda中python的路径
 			(C:\ProgramData\Anaconda3\python.exe) -> 点击OK
-	
+
 
 
 1. yield回顾
@@ -1009,12 +1041,13 @@ Pycharm运行Scrapy项目
      3. WARNING  警告信息
      4. DEBUG    调试信息
      5. INFO     一般信息
-	 
+	
 6. 保存为csv或json文件
 	1. scrapy crawl tengxun -o Tencent.json
 			json文件编码问题 : 在settings.py中添加
+	
 				FEED_EXPORT_ENCODING = 'utf-8'
-	   
+	
 	2. scrapy crawl tengxun -o Tencent.csv
 		csv文件出现空行的解决方法(修改源文件exporters.py):
 		路径 C:\ProgramData\Anaconda3\Lib\site-packages\scrapy
@@ -1022,9 +1055,9 @@ Pycharm运行Scrapy项目
 			self.stream = io.TextIOWrapper(
 				file,
 				newline = ""  ## 添加此参数
-				
+		
 	6. yield scrapy.Request(url,callback=self.parseHtml)
-			
+	
 7. Daomu
   1. URL : http://www.daomubiji.com/dao-mu-bi-ji-1 
   2. 目标
@@ -1039,7 +1072,7 @@ Pycharm运行Scrapy项目
         链接  '//article/a/@href'[i]
         i += 1
         yield item    
-      
+    
 
 1. 创建项目Daomu
 2. 创建爬虫文件 daomu 
@@ -1069,13 +1102,14 @@ scrapy.Pequest()常用参数
 		默认 False : 检查 allowed_domains
 	
 	6. encoding ： 默认utf-8
-	
-	
+
+
+​	
 下载器中间件(随机User-Agent)
-	1. settings.py(少量的User_Agent切换）
-		1. USER_AGENT = ''
-		2. DEFAULT_REQUEST_HEADERS={}
-	
+​	1. settings.py(少量的User_Agent切换）
+​		1. USER_AGENT = ''
+​		2. DEFAULT_REQUEST_HEADERS={}
+​	
 	2. middlewares.py 设置中间件
 		1. 项目目录中新建useragents.py 存放大量 User_Agent的列表
 		2. middlewares.py  定义相关类
@@ -1090,7 +1124,7 @@ scrapy.Pequest()常用参数
 			DOWNLOADER_MIDDLEWARES = [
 				'项目名.middlewares.类名':200,
 			]
-			
+
 下载器中间件(设置随机代理)
 	1. 新建文件(proxies.py)
 	2. middlewares.py(新建类)
@@ -1104,7 +1138,7 @@ scrapy.Pequest()常用参数
 		python -m pip install --upgrade pip 
 	升级Scrapy
 		pip install --upgrade Scrapy
-		
+	
 6. CrawlSpider类
 	1. Spider的派生类
 		from scrapy.spiders import CrawlSpider
@@ -1133,7 +1167,7 @@ scrapy.Pequest()常用参数
                          meta={"item":item})
 		def parse2():
 			item = response.meta['item']
-			
+	
 8. 分布式部署
 	1. scrapy_redis模块
 		Anaconda Prompt : 
@@ -1145,11 +1179,11 @@ scrapy.Pequest()常用参数
 
 10.实现分布式
   scrapy_redis(重写scrapy调度器)
-  
+
 11. 为什么使用redis
 		1. Redis是非关系型数据库,key-value形式存储,结构灵活
 		2. Redis集合,存储每个request的指纹(加密)
-		
+	
 12. redis安装
 	1. Windows
 		1. 直接下载
@@ -1166,13 +1200,14 @@ scrapy.Pequest()常用参数
 			redis-server
 		3.客户端连接
 			redis-cli -h IP地址
-			
+	
 13. scrapy_redis安装
 		Anaconda Prompt
-		pip install scrapy_redis
-	
 
-  
+		pip install scrapy_redis
+
+
+
 Day08回顾
 1. Scrapy.Request()常用参数
   1. meta
@@ -1232,6 +1267,7 @@ Day08回顾
     scrapy runspider tengxun.py
   3. 进入windows的redis,发送redis_key
     redis-cli -h IP地址
+    
     >>>lpush tengxunspider:start_urls https://hr.tencent.com/...start=0
 2. 验证码处理
   1. OCR(Optical Character Recognition)
@@ -1327,8 +1363,8 @@ Day08回顾
 
 
 
-        
-        
+
+​        
 
 
 
@@ -1336,13 +1372,13 @@ Day08回顾
 
 
 
-    
-            
+
+​            
 
 
-        
+​        
 
-    
+​    
 
 
 

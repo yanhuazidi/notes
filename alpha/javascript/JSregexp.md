@@ -6,11 +6,12 @@
 
 ## 创建正则表达式对象
 
-    1. **直接量语法** 
-        
-        **/pattern/attributes**
-        `var reg = /^\d{6}$/ig;`
-        
+1. **直接量语法** 
+
+   **/pattern/attributes**
+
+   `var reg = /^\d{6}$/ig;`
+
    2. **创建 RegExp 对象的语法**
 
         `new RegExp(pattern, attributes);`
