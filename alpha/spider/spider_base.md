@@ -1,5 +1,3 @@
-`
-
 [TOC]
 
 
@@ -206,14 +204,12 @@ print(str)
 
 
 
-
-
 ## csv 模块(Excal表格文件)
 `import csv`
 
-    1. 打开csv文件
-       `with open('测试.csv'，'w',newline='') as f:`
-       
+1. 打开csv文件
+   `with open('测试.csv'，'w',newline='') as f:`
+
    2. 初始化写入对象
 
        `writer = csv.writer(f)`
@@ -265,12 +261,12 @@ Anaconda 安装模块
 ​        
 远程存入 mongo 数据库
 ​    
-    防火墙
-        sudo ufw status 查看状态
-        sudo ufw disable 关闭防火墙
-        或添加规则允许外部访问端口
-            sudo ufw allow 27017
-    
+​    防火墙
+​        sudo ufw status 查看状态
+​        sudo ufw disable 关闭防火墙
+​        或添加规则允许外部访问端口
+​            sudo ufw allow 27017
+​    
      程序中  
         self.conn = pymongo.MongoClient("176.23.5.140",27017)
         self.db = self.conn["MaoDB"]
@@ -308,9 +304,9 @@ Cookie 模拟登录
 
 
 ​        
-    2. 使用 cookie 模拟登录人人网
-        1. 先登录成功1次，获取到 cookie
-        2. 拿着 带有cookie 的headers(去掉压缩键值对) 去抓取需要登录才能看到的页面
+​    2. 使用 cookie 模拟登录人人网
+​        1. 先登录成功1次，获取到 cookie
+​        2. 拿着 带有cookie 的headers(去掉压缩键值对) 去抓取需要登录才能看到的页面
 
 
 ​        
@@ -353,16 +349,16 @@ get() 方法参数
 ​        'pn':pn,
 ​            }
 ​    
-        res = requests.get(url,params=params,headers=headers)
+​        res = requests.get(url,params=params,headers=headers)
 
 
 ​        
-    2. 使用代理IP  proxies
-        1. 获取 IP 地址的网站
-            快代理
-            全网代理
-            。。。
-            
+​    2. 使用代理IP  proxies
+​        1. 获取 IP 地址的网站
+​            快代理
+​            全网代理
+​            。。。
+​            
         2. 普通代理
             1. 格式 :  proxies = {"协议":"协议://IP:端口"}
             
@@ -385,12 +381,12 @@ get() 方法参数
 
 ​    
 ​    
-        3. 私密代理
-            1. 格式 
-                proxies = {
-                    'http':"协议://用户名:密码@IP:端口"
-                }
-    
+​        3. 私密代理
+​            1. 格式 
+​                proxies = {
+​                    'http':"协议://用户名:密码@IP:端口"
+​                }
+​    
     3. timeout=5  设置超时,5s之后没响应报错
     
     4. Web客户端验证  auth
@@ -398,8 +394,8 @@ get() 方法参数
 
 
 ​        
-    5. SSL证书认证  verify
-    
+​    5. SSL证书认证  verify
+​    
         1. verify = True(默认认证): 进行CA证书认证
         2. verify = Flase  : 不进行认证
         
@@ -689,7 +685,7 @@ lxml 库 及xpath使用
 			driver.save_screenshot('test/yzm.png')
 			yzm = input('请输入验证码: ')
   		driver.find_element_by_name('icode').send_keys(yzm)
-		  
+	
 	driver.find_element_by_id('login').click()
 		
 		time.sleep(1)
@@ -757,9 +753,9 @@ lxml 库 及xpath使用
 ​		2. 线程使用所属进程空间/资源
 ​		3. 互斥锁， 防止多个线程同时使用共享资源
 ​		
-	3. GIL ： 全局解释锁
-		执行通行证，仅此1个，拿到通行证就执行
-		
+​	3. GIL ： 全局解释锁
+​		执行通行证，仅此1个，拿到通行证就执行
+​		
 	4. 应用场景
 		1. 多进程 : 大量的密集的计算
 		2. 多线程 : I/O密集
@@ -1110,16 +1106,16 @@ scrapy.Pequest()常用参数
 ​		1. USER_AGENT = ''
 ​		2. DEFAULT_REQUEST_HEADERS={}
 ​	
-	2. middlewares.py 设置中间件
-		1. 项目目录中新建useragents.py 存放大量 User_Agent的列表
-		2. middlewares.py  定义相关类
-			import useragents
-			import random
-			class RandomUAmiddleware(object):
-					def process_request(self,request,spider):
-						useragent = random.choice(useragents.UA)
-						request.headers['User-Agent']=useragent
-						
+​	2. middlewares.py 设置中间件
+​		1. 项目目录中新建useragents.py 存放大量 User_Agent的列表
+​		2. middlewares.py  定义相关类
+​			import useragents
+​			import random
+​			class RandomUAmiddleware(object):
+​					def process_request(self,request,spider):
+​						useragent = random.choice(useragents.UA)
+​						request.headers['User-Agent']=useragent
+​						
 		3. setting.py
 			DOWNLOADER_MIDDLEWARES = [
 				'项目名.middlewares.类名':200,
