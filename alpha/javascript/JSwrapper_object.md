@@ -117,11 +117,11 @@ JS提供三种包装类型
 
 ​     
 
-
+## Boolean 对象
 
 
 ```
-Boolean 对象
+
         Boolean 对象表示两个值："true" 或 "false"。
 创建 Boolean 对象的语法：
     new Boolean(value);	//构造函数
@@ -143,8 +143,12 @@ Boolean 对象
 
 
 
+
+## Number 对象
+
+
 ```
-Number 对象
+
     Number 对象是原始数值的包装对象。
 创建 Number 对象的语法：
     var myNum=new Number(value);

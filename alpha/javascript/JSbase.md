@@ -617,7 +617,139 @@ for后面三个表达式可以不写或引用其他变量，但必须占位for(;
 循环条件有多个时，以最后一个条件为准, 逗号运算符返回最后一个表达式的值
 ```
 
+##### For/In 循环
 
+JavaScript for/in 语句循环遍历对象的属性：
+
+**实例**
+
+```javascript
+var person={fname:"John",lname:"Doe",age:25}; 
+for (x in person)  // x 为属性名
+{
+    txt=txt + person[x];
+}
+```
+
+**for in** 循环不仅可以遍历对象的属性，还可以遍历数组。
+
+```javascript
+var x
+var nums = [1, 3, 5];
+for (x in nums)
+{
+    document.write(nums[x]+ "<br />");  // x 为数组索引
+}
+```
+
+##### for-of的语法：
+
+**for...of** 是 ES6 新引入的特性。它既比传统的for循环简洁，同时弥补了forEach和for-in循环的短板。
+
+```javascript
+for (var value of myArray) {
+  console.log(value);
+}
+```
+
+循环一个数组(Array):
+
+```javascript
+let iterable = [10, 20, 30];
+for (let value of iterable) {
+  console.log(value);
+}
+// 10
+// 20
+// 30
+```
+
+循环一个字符串：
+
+```javascript
+let iterable = "boo";
+for (let value of iterable) {
+  console.log(value);
+}
+// "b"
+// "o"
+// "o"
+```
+
+循环一个Map:
+
+```javascript
+let iterable = new Map([["a", 1], ["b", 2], ["c", 3]]);
+for (let [key, value] of iterable) {
+  console.log(value);
+}
+// 1
+// 2
+// 3
+for (let entry of iterable) {
+  console.log(entry);
+}
+// [a, 1]
+// [b, 2]
+// [c, 3]
+```
+
+循环一个 Set:
+
+```javascript
+let iterable = new Set([1, 1, 2, 2, 3, 3]);
+for (let value of iterable) {
+  console.log(value);
+}
+// 1
+// 2
+// 3
+```
+
+循环一个 DOM collection
+
+循环一个DOM collections，比如NodeList，之前我们讨论过如何循环一个NodeList，现在方便了，可以直接使用for-of循环：
+
+```javascript
+// Note: This will only work in platforms that have
+// implemented NodeList.prototype[Symbol.iterator]
+let articleParagraphs = document.querySelectorAll("article > p");
+for (let paragraph of articleParagraphs) {
+  paragraph.classList.add("read");
+}
+```
+
+循环一个拥有enumerable属性的对象
+
+for–of循环并不能直接使用在普通的对象上，但如果我们按对象所拥有的属性进行循环，可使用内置的Object.keys()方法：
+
+```javascript
+for (var key of Object.keys(someObject)) {
+  console.log(key + ": " + someObject[key]);
+}
+```
+
+循环一个生成器(generators)
+
+我们可循环一个生成器(generators):
+
+```javascript
+function* fibonacci() { // a generator function
+  let [prev, curr] = [0, 1];
+  while (true) {
+    [prev, curr] = [curr, prev + curr];
+    yield curr;
+  }
+}
+
+for (let n of fibonacci()) {
+  console.log(n);
+  // truncate the sequence at 1000
+  if (n >= 1000) {
+    break;
+  }
+}
+```
 
 #### for循环与while循环比较
 
@@ -1405,7 +1537,7 @@ function* foo(x) {
 }
 ```
 
-generator和函数不同的是，generator由function*定义（注意多出的*号），并且，除了return语句，还可以用yield返回多次.
+generator和函数不同的是，generator由function\*定义（注意多出的\*号），并且，除了return语句，还可以用yield返回多次.
 
 直接调用一个generator和调用函数不一样，fib(5)仅仅是创建了一个generator对象，还没有去执行它
 
@@ -1434,6 +1566,8 @@ for (var x of fib(10)) {
      console.log(x); // 依次输出0, 1, 1, 2, 3, ...
 }
 ```
+
+
 
 
 
