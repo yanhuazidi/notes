@@ -201,7 +201,7 @@ odoo.define('module.Something', ['module.A', 'module.B'], function (require) {
 
 ### 定义模块
 
-odoo.define方法有三个参数：
+`odoo.define`方法有三个参数：
 
 - module name：javascript模块的名称。它应该是一个唯一的字符串。惯例是在odoo模块的名字后面加上一个具体的描述。例如，“web.widget”描述在web插件中定义的模块，该模块导出一个widget类（因为第一个字母大写）。如果名称不唯一，将引发异常并显示在控制台中。
 - 依赖项：第二个参数是可选的。如果给定，它应该是一个字符串列表，每个字符串对应一个JavaScript模块。这描述了在执行模块之前需要加载的依赖项。如果这里没有显式地给出依赖项，那么模块系统将通过对其调用ToString从函数中提取它们，然后使用regexp查找所有Require语句。
