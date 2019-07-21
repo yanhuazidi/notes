@@ -238,3 +238,14 @@ step/step/...
 | or     | 或             | price=9.80 or price=9.70  | 如果 price 是 9.80，则返回 true。如果 price 是 9.50，则返回 false。 |
 | and    | 与             | price>9.00 and price<9.90 | 如果 price 是 9.80，则返回 true。如果 price 是 8.50，则返回 false。 |
 | mod    | 计算除法的余数 | 5 mod 2                   | 1                                                            |
+
+
+
+## xpath定位通用函数整理
+starts-with 顾名思义，匹配一个属性开始位置的关键字
+contains 匹配一个属性值中包含的字符串
+text(） 匹配的是显示文本信息，此处也可以用来做定位用
+//input[starts-with(@name,‘name1’)] 查找name属性中开始位置包含’name1’关键字的页面元素
+
+//input[contains(@name,‘na’)] 查找name属性中包含na关键字的页面元素
+
