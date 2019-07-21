@@ -30,7 +30,7 @@ Version 3.2.2
 `Test.ts`
 
 ```typescript
-const hello : string = "Hello World!" console.log(hello)
+const hello : string = "Hello World!"; console.log(hello)
 ```
 
 以上代码首先通过 **tsc** 命令编译：
@@ -134,9 +134,9 @@ TypeScript 包含的数据类型如下表:
 
 任意值是 TypeScript 针对编程时类型不明确的变量使用的一种数据类型，它常用于以下三种情况。
 
-```typescript
-<p>1、变量的值会动态改变时，比如来自用户的输入，任意值类型可以让这些变量跳过编译阶段的类型检查，示例代码如下：</p>
+1、变量的值会动态改变时，比如来自用户的输入，任意值类型可以让这些变量跳过编译阶段的类型检查，示例代码如下：
 
+```typescript
 let x: any = 1;    // 数字类型
 x = 'I am who I am';    // 字符串类型
 x = false;    // 布尔类型
@@ -305,7 +305,11 @@ var str = '1'  var str2:number = <number> <any> str   //str、str2 是 string �
 
 如果由于缺乏声明而不能推断出类型，那么它的类型被视作默认的动态 any 类型。
 
-var num = 2;    // 类型推断为 number console.log("num 变量的值为 "+num);  num = "12";    // 编译错误 console.log(num);
+```typescript
+var num = 2;    // 类型推断为 number 
+console.log("num 变量的值为 "+num);  
+num = "12";    // 编译错误 console.log(num);
+```
 
 - 第一行代码声明了变量 num 并=设置初始值为 2。 注意变量声明没有指定类型。因此，程序使用类型推断来确定变量的数据类型，第一次赋值为 2，**num** 设置为 number 类型。
 
