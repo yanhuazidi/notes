@@ -6,10 +6,10 @@
 
 ### ubuntu
 
-​	**sudo apt-get install nginx**
+​	`sudo apt-get install nginx`
 
 ​	启动
-​		sudo /etc/init.d/nginx restart
+​	`sudo /etc/init.d/nginx restart`
 
 ## 配置文件
 
@@ -148,7 +148,7 @@ http {
 
 1、几个常见配置项：
 
-- 1.\$remote_addr 与 ​$http_x_forwarded_for 用以记录客户端的ip地址；
+- 1.\$remote_addr 与 $http_x_forwarded_for 用以记录客户端的ip地址；
 - 2.$remote_user ：用来记录客户端用户名称；
 - 3.$time_local ： 用来记录访问时间与时区；
 - 4.$request ： 用来记录请求的url与http协议；

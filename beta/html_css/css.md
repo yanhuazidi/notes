@@ -3,7 +3,7 @@
 
 
 ## CSS
-
+CSS注释 : /*  */
 ### 使用方式:
 
 1. **内联样式/行内样式**
@@ -45,7 +45,10 @@
 
           `<link rel="stylesheet" href="url" type="text/css">`
 
+
+
 ### 样式表的特征：
+
 1. 层叠性
    可以为一个元素设置多个样式，共同起作用
 2. 继承性
@@ -60,9 +63,21 @@
    4. 浏览器默认样式
       如果发生样式冲突，参考优先级决定元素最终样式
 
+   调整优先级  !impprtant规则
+   把!impprtant放在属性值之后，与值之间用空格分开，作用是提升优先级
+   不能加在行内样式上
+            `color:blue !impprtant;`
+
 ## 选择器
 
 选择器作用:  根据不同的选择器，匹配文档中相应的元素，并为其设置样式
+
+通用选择器
+        作用:匹配所有标签
+        *{
+            样式
+        }
+        效率极低，尽量减少使用
 
 ### 标签选择器
 
@@ -97,16 +112,21 @@
 .class属性值{
                 样式
             }
+**分类选择器**
+标签选择器与类选择器结合使用,找到有这个类属性的标签 
 
-**结合元素选择器**
-
-标签选择器与类选择器结合使用
-
-标签名.类名{
+ 标签名.类名{
                     样式
-                }
+ }
 
-标签名必须放在前面
+标签名必须放在前面， `div.class`
+
+特点:
+
+1. 指向更精确
+2. 优先级变高
+
+
 
 **多类选择器**
 
@@ -142,6 +162,8 @@ class 属性值可以出现多个，使用空格隔开
             }
 常见于清除浏览器的默认样式，或设置网页的基本样式
 
+
+
 ### 后代选择器:
 
 特点: 匹配满足要求的所有后代元素
@@ -164,6 +186,8 @@ class 属性值可以出现多个，使用空格隔开
                 样式
             }
 
+
+
 ### 相邻兄弟选择器
 
 可选择紧接在另一元素后的元素，且二者有相同父元素。
@@ -183,6 +207,16 @@ li + li {font-weight:bold;}
 ```
 
 上面这个选择器只会把列表中的第二个和第三个列表项变为粗体。第一个列表项不受影响。
+
+
+
+### 后续兄弟选择器
+
+后续兄弟选择器选取所有指定元素之后的相邻兄弟元素。
+    语法:
+        选择器1~选择器2{
+            样式
+        }
 
 
 
@@ -310,6 +344,7 @@ p[class~="important"] {color: red;}
 | [abc$="def"] | 选择 abc 属性值以 "def" 结尾的所有元素     |
 | [abc*="def"] | 选择 abc 属性值中包含子串 "def" 的所有元素 |
 
+
 **特定属性选择类型**
 
 ```css
@@ -318,60 +353,105 @@ p[class~="important"] {color: red;}
 
 上面这个规则会选择 lang 属性等于 en 或以 en- 开头的所有元素。
 
+| 选择器                   | 描述                                                         |
+| :----------------------- | :----------------------------------------------------------- |
+| [attribute]\[attribute]  | 多属性选择，同时满足                                         |
+| [*attribute*]            | 用于选取带有指定属性的元素。                                 |
+| [*attribute*=*value*\]   | 用于选取带有指定属性和值的元素。                             |
+| [*attribute*~=*value*\]  | 用于选取属性值中包含指定词汇的元素。                         |
+| [*attribute*\|=*value*\] | 用于选取带有以指定值开头的属性值的元素，该值必须是整个单词。 |
+| [*attribute*^=*value*\]  | 匹配属性值以指定值开头的每个元素。                           |
+| [*attribute*$=*value*\]  | 匹配属性值以指定值结尾的每个元素。                           |
+| [attribute*=value\]      | 匹配属性值中包含指定值的每个元素。                           |
 
 
-| 选择器                                                       | 描述                                                         |
-| :----------------------------------------------------------- | :----------------------------------------------------------- |
-| [[*attribute*\]](http://www.w3school.com.cn/cssref/selector_attribute.asp) | 用于选取带有指定属性的元素。                                 |
-| [[*attribute*=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value.asp) | 用于选取带有指定属性和值的元素。                             |
-| [[*attribute*~=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_contain.asp) | 用于选取属性值中包含指定词汇的元素。                         |
-| [[*attribute*\|=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_start.asp) | 用于选取带有以指定值开头的属性值的元素，该值必须是整个单词。 |
-| [[*attribute*^=*value*\]](http://www.w3school.com.cn/cssref/selector_attr_begin.asp) | 匹配属性值以指定值开头的每个元素。                           |
-| [[*attribute*$=*value*\]](http://www.w3school.com.cn/cssref/selector_attr_end.asp) | 匹配属性值以指定值结尾的每个元素。                           |
-| [[attribute*=value\]](http://www.w3school.com.cn/cssref/selector_attr_contain.asp) | 匹配属性值中包含指定值的每个元素。                           |
 
+### 目标伪类选择器
 
+突出显示获得的 html 锚点元素,匹配当前活动的锚点
+
+选择器 : `target{}`
+
+```html
+<style>
+:target{
+     border: 2px solid #D4D4D4;
+     background-color: #e5eecc;
+}
+</style>
+<p><a href="#news1">Jump to New content 1</a></p>
+<p><a href="#news2">Jump to New content 2</a></p>
+<p id="news1"><b>New content 1...</b></p>
+<p id="news2"><b>New content 2...</b></p>
+```
+
+### 结构伪类选择器
+
+- `:first-child`   匹配属于任意元素的父元素的第一个子元素
+- `:last-child`    匹配属于任意元素的父元素的最后一个子元素
+- `:nth-child(n)`  匹配属于任意元素的父元素的第n个子元素,n从1开始
+- `:nth-last-child(n)`	选择任意元素的父元素的倒数第n个子元素
+- `>:first-child`  匹配属于任意元素的第一个子元素
+- `p:first-of-type`	选择的每个 p 元素是其父元素的第一个 p 元素 :first-of-type
+
+### 否定伪类选择器
+
+`:not(selector)`	选择所有selector以外的元素
+
+`p:not(:first-child) 选择P元素所有非第一个子元素的子元素`
 
 ### 伪元素选择器
 
-`:before` 和 `:after` 的主要作用是在元素内容前后加上指定内容
+1. 内容生成
 
-```css
-p:before{
-   content: 'Hello';
-   color: red;
-}
-p:after{
-    content: 'Tom';
-    color: red;
-}
-```
+   `:before`	     在选择的元素之前插入内容(相当于插入一个伪元素)
+   `:after`	     在选择的元素之后插入内容
 
- 效果如图：
+   一般与content 属性一起来指定要插入的内容。
 
-![img](https://images2015.cnblogs.com/blog/816691/201701/816691-20170105220709050-1981262896.png)     
+   ```css
+   p:after 每个<p>元素之后插入内容：
+   { 
+        content:"- Remember this";
+        display:black;
+   }
+   ul.breadcrumb li+li:before {
+       padding: 8px;
+       color: black;
+       content: "/\00a0";
+   }
+   每两个li的组合，第二个li之前加上该css
+   ```
 
-```css
-ul.breadcrumb li+li:before {
-    padding: 8px;
-    color: black;
-    content: "/\00a0";
-}
-```
+2. `:first-letter`	p:first-letter	选择某元素的第一个字母,比:first-line优先
 
-每两个li的组合，第二个li之前加上该css
+   `:first-line`	    p:first-line	选择每个<p> 元素的第一行字符
+
+3. `::selection`{只能写字体颜色和背景颜色}   被框选的内容
+
+4. 取消滚动条
+
+   ```css
+   #divContainer::-webkit-scrollbar {
+        border-width:1px;
+   }
+   ```
 
 
 
 ### 选择器的优先级
 
-选择器的优先级看权重(值),权值越大，优先级越高
+   选择器的优先级
+        选择器的优先级看权重(值),权值越大，优先级越高
 
-基础选择器的权值
-标签选择器   1
-类选择器/伪类选择器  10
-ID选择器       100
-行类样式     1000
+        基础选择器的权值
+            继承样式无权值
+            * 选择器    0
+            标签选择器   1
+            类选择器/伪类选择器  10
+            ID选择器       100
+            行内样式     1000
+            !important  >1000
 
 
 
@@ -391,40 +471,61 @@ div span{   2
 ```
 
 
+尺寸属性：
+        1.属性 :  width     宽度
+                 heigth     高度
+                 max-width/min-width    最大/最小宽度
+                 max-height/min-heigth  最大/最小高度
 
-## 颜色取值
-
-1. 英文单词表示颜色
-
-2. rgb(r,g,b);
-
-   使用红绿蓝三原色表示，每种颜色取值范围0~255
-
-   - red    rgb(255,0,0)
-   - green  rgb(0,255,0)
-   - blue   rgb(0,255,0)
-   - black  rgb(0,0,0)
-   - white  rgb(255,255,255)
-
-3. rgba(r,g,b,a)
-
-   a  表示alpha 透明度 ， 取值0-1
-
-   0  表示透明  1 表示不透明
-
-   使用小数表示半透明 0.5 或 .5
-
-4. 十六进制来表示颜色
-
-   语法:  取值范围  0~9,a~f
-
-   表示颜色 : 以#开头，每两位为一组，代表一种三元色
-
-   rgb(255,0,0) -- #ff0000
-   green           #00ff00
-   blue            #0000ff
+        2.单位 :
+            绝对单位
+                px 默认单位，表示像素
+                cm 厘米
+                mm 毫米
+                pt 磅 1pt = 1/72in
+                in 英寸 inch 1英寸 = 2.54cm
+            相对单位
+                em 相对父元素的倍数
+                rem 相对根元素的倍数(body,html)
+                % 百分比单位，参照父元素对应属性的值获取尺寸
+    
+        页面中可以设置尺寸的元素
+            1. 所有的块级元素
+            2. 所有的行内块: 表单元素(除了单选和复选框)
+            3. 本身具备宽高属性的 table,
+            大部分的行内元素都不许设置宽高尺寸
+    
+    颜色取值:
+        1. 英文单词表示颜色
+            red,green,blue,black,white
+        2. rgb(r,g,b);
+            使用红绿蓝光学三原色表示，每种颜色取值范围0~255
+            red    rgb(255,0,0)
+            green  rgb(0,255,0)
+            blue   rgb(0,255,0)
+            black  rgb(0,0,0)
+            white  rgb(255,255,255)
+    
+        3. rgb(r%,g%,b%) 表示255的百分比  
+    
+        4.rgba(r,g,b,a)
+            a  表示alpha 透明度 ， 取值0-1
+            0  表示透明  1 表示不透明
+            使用小数表示半透明 0.5 或 .5
+    
+        5. 十六进制来表示颜色
+           语法:  取值范围  0~9,a~f
+                 表示颜色 : 以#开头，每两位为一组，代表一种三元色
+                 e.g:
+                    rgb(255,0,0) -- #ff0000
+                    green           #00ff00
+                    blue            #0000ff
+            短十六进制:
+                由三位组成，每一位表示一种三元色,浏览器会自动重复补充为6位十六进制
+                #f00 - #ff0000
 
    
+
 
 
 
@@ -628,13 +729,14 @@ CSS中认为所有的元素都是矩形区域, 边框是围绕元素内容出现
 
 **属性 ：**`box-shadow`
 
-**取值 ：**`offset-x offset-y blur spread color`
+**取值 ：**`offset-x offset-y blur spread color inset`
 
-1. `offset-x` : 阴影的水平偏移距离，取像素值
-2. `offset-y` : 阴影的垂直偏移距离，取像素值
+1. `offset-x` : 阴影的水平偏移距离，取像素值,必须
+2. `offset-y` : 阴影的垂直偏移距离，取像素值,必须
 3. `blur` : 阴影的模糊程度，取像素值，值越大越模糊
 4. `spread` : 阴影的延伸距离（可选），取像素值，可以扩大阴影的范围
 5. `color` : 设置阴影颜色 （默认为黑色）
+6. `inset` : 把默认的外部阴影设置为内部阴影 无值
 
 
 
@@ -803,7 +905,7 @@ margin-bottom
 ### 固定背景图像
 
 属性: `background-attachment`
-
+将背景图固定在网页的某个位置，一直在可视区域中，不会随着网页滚动条改变位置
 取值: 
 
 - scroll   背景图片随页面的其余部分滚动。这是默认
@@ -835,7 +937,12 @@ margin-bottom
     '精灵图'技术，网页开发过程中为了节省资源，减少网络请求
     通常会将一组小图标以一张图片的形式存储，通过一次网络请求加载图片，配合backgrund-position控制图片切换位置
 
-
+5. 定位背景图片
+            background-Origin属性指定了背景图像的位置区域。
+            取值:
+                content-box     从content开始填充 
+                padding-box     从padding开始填充 
+                border-box      从border开始填充  默认
 
 ### 背景图片的尺寸
 
@@ -848,6 +955,101 @@ margin-bottom
 - contain  包含，等比拉伸图片至刚好被元素容纳的最大尺寸,有空隙
 
 
+
+## 背景渐变属性    gradient
+
+CSS3 渐变（gradients）可以让你在两个或多个指定的颜色之间显示平稳的过渡。
+ CSS3 定义了两种类型的渐变（gradients）：
+
+- 线性渐变（Linear Gradients）- 向下/向上/向左/向右/对角方向
+- 径向渐变（Radial Gradients）- 由它们的中心定义
+
+### 线性渐变
+
+**定义:** 为了创建一个线性渐变，你必须至少定义两种颜色结点。颜色结点即你想要呈现平稳过渡的颜色。同时，你也可以  设置一个起点和一个方向（或一个角度）。
+
+**语法 :** `background: linear-gradient(direction | angle, color-stop1, color-stop2, ...);`
+
+**参数:** 
+
+- background : background-image简写
+- linear-gradient : 线性渐变
+- direction方向 : `to top|right|bottom|left|bottom right...;`  缺省为从上至下
+- angle角度   :  0~359 deg;  顺时针方向, to top为 0 deg
+- color : 标准颜色值，可以为透明
+- stop  : % | px    渐变范围,可缺省
+
+```css
+/* 标准的语法 */
+background: linear-gradient(red, blue); 
+background: linear-gradient(to right, red , blue);
+background: linear-gradient(180deg, red, blue);
+background: linear-gradient(to bottom right, red , blue);
+background: linear-gradient(red, green 20%, blue 50%, yellow 80%); //使用多个颜色结点
+```
+
+### 径向渐变
+
+径向渐变由它的中心定义。
+
+**语法 :**`background:(direction, shape size, start-color stop1, stop2..., last-color stopn);`
+
+**参数:** 
+
+- direction : `center(默认),left,right,bottom right...`   此参数不兼容新写法
+                      50% 50% 圆心在元素的相对位置,0% 0% 为 left top
+
+- shape  :   参数定义了形状
+
+  ​			circle 表示圆形
+  ​            ellipse 表示椭圆形。默认值。
+
+- size 参数定义了渐变的大小。它可以是以下四个值：
+
+  closest-side    小
+
+  farthest-side
+
+  closest-corner
+
+  farthest-corner  大 默认
+
+```css
+/* 标准的语法 */    
+background: radial-gradient(red, green, blue); 
+background: radial-gradient(red 5%, green 15%, blue 60%);
+background: radial-gradient(circle, red, yellow, green);
+background: radial-gradient(ellipse  closest-side,red 5%, green 15%, blue 30%);
+background: -webkit-radial-gradient(60% 55%, farthest-corner,blue,green,yellow,black);
+background: -webkit-radial-gradient(bottom right, farthest-corner,blue,green,yellow,black); /* Safari 5.1 - 6.0 */
+```
+
+### 使用透明度（transparent）
+
+CSS3 渐变也支持透明度（transparent），可用于创建减弱变淡的效果。
+
+为了添加透明度，我们使用 rgba() 函数来定义颜色结点。rgba() 函数中的最后一个参数可以是从 0 到 1 的值，它定义了颜色的透明度：0 表示完全透明，1 表示完全不透明。
+
+`background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); /* 标准的语法 */`
+
+重复渐变
+
+- `repeating-linear-gradient()` 函数用于重复线性渐变
+
+  `background: repeating-linear-gradient(red, yellow 10%, green 20%);`
+
+- `repeating-radial-gradient()` 函数用于重复径向渐变
+
+  `background: repeating-radial-gradient(red, yellow 10%, green 15%);`
+
+兼容:这样写不能 to 方向
+
+```css
+background: -webkit-linear-gradient(left, red , blue); /* Safari 5.1 - 6.0 */
+background: -o-linear-gradient(right, red, blue); /* Opera 11.1 - 12.0 */
+background: -moz-linear-gradient(right, red, blue); /* Firefox 3.6 - 15 */
+background: -ms-linear-gradient(right, red, blue); /ie
+```
 
 
 
@@ -915,7 +1117,14 @@ margin-bottom
 
     一般作为italic的替换样式，可以实现斜体效果在某些情况下可以指定倾斜角度
 
+5. 小型大写字母
+            font-variant: small-caps;
+                            normal 默认
 
+        字体属性简写
+            属性 : font
+            取值 : style  variant weight size family; (顺序强制)
+        语法注意:size,family为必填项
 
 ## 文本
 
@@ -927,7 +1136,7 @@ margin-bottom
 ### 水平对齐方式
 
 属性 : `text-align`
-取值 : left(默认) / center / right
+取值 : left(默认) / center / right / justify两端对齐
 
 ### 文本装饰线
 
@@ -938,16 +1147,26 @@ margin-bottom
 2. `overline`  上划线
 3. `line-through` 删除线
 4. `none`  取消装饰线
+        4. 文本首行缩进
+            属性: text-indent 规定文本块中首行文本的缩进。
+                值	描述
+                length px	    定义固定的缩进。默认值：0。
+                %	        定义基于父元素宽度的百分比的缩进。
+                inherit	    规定应该从父元素继承 text-indent 属性的值。
+
+            注意： 负值是允许的。如果值是负数，将第一行左缩进。
 
 ### 行高
 
 属性 : `line-height`
 取值 : 像素值
+无单位数字, 为字体的倍数
 注意: 所有文本在其所属行中都是垂直居中的
-使用场景: 
 
-1. 行高可以用来设置一行文本的垂直居中
-   行高与元素的高度保持一致
+使用场景: 
+                1.行高可以用来设置一行文本的垂直居中
+                    如果行高大于字体本身的大小，该行文本在行高内成垂直居中显示效果
+                    把行高和元素设置同样的高度，就能使数据在元素居中
 
 2. 行高可以实现文本在元素中上下位置的微调
 
@@ -958,6 +1177,21 @@ margin-bottom
    }
    ```
 
+    新文本属性
+        属性	                    描述
+        hanging-punctuation	    规定标点字符是否位于线框之外。
+        punctuation-trim	    规定是否对标点字符进行修剪。
+        text-align-last	        设置如何对齐最后一行或紧挨着强制换行符之前的行。
+        text-emphasis	        向元素的文本应用重点标记以及重点标记的前景色。
+        text-justify	        规定当 text-align 设置为 "justify" 时所使用的对齐方法。
+        text-outline	        规定文本的轮廓。
+        text-overflow	        规定当文本溢出包含元素时发生的事情。
+        text-shadow	            向文本添加阴影。
+        text-wrap	            规定文本的换行规则。
+        word-break	            规定非中日韩文本的换行规则。
+        word-wrap	            允许对长的不可分割的单词进行分割并换行到下一行。
+
+   ​     
 
 
 ## 表格
@@ -1048,8 +1282,11 @@ transition: width 2s,height 3s,background 5s;
 ### 指定延迟时间
 
 属性: `transition-delay`
-
+  eg:
+                    transition: width 2s,height 3s,background 5s;
 取值: 以秒s/ms为单位的数值，设置过渡效果的延迟执行
+
+        把 transition属性放 : hover 中 只有去的效果，没有回的效果(秒回)
 
 
 
@@ -1082,10 +1319,12 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 4. 文字环绕效果，浮动元素不占位会遮挡正常元素的显示，只遮挡元素位置，不会影响正常内容显示，内容会围绕
    浮动元素显示
 5. 浮动元素水平方向没有缝隙，浮动可以解决行内元素或行内块元素，水平方向上由于换行导致的空隙问题
+6.元素浮动只会在当前行浮动，本行位置取消，当前面有元素时，不会往前补位，
+                后面的元素补位浮动元素位置。
 
 **浮动问题:**
 由于子元素全部浮动，在文档中不占位，造成父元素高度为0，影响页面布局
-解决方法:
+**解决方法:**
 
 1. 给父元素固定高度
 2. 给父元素设置overflow:hidden
@@ -1097,12 +1336,13 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
                    right : 当前元素不受右浮动元素的影响
                    both ： 不受左浮动或右浮动的影响
 
-解决父元素高度为0：
+**解决父元素高度为0：**
 步骤:
 
 1. 在父元素的末尾添加空的子元素(块元素)
-2. 为空的子元素元素设置clear:both;
-                   
+2. 为空元素设置clear:both;
+   父元素 `::after{content:"";display:block;clear:both;}`
+                        
 
 ### 定位布局
 
@@ -1118,7 +1358,7 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
 **注意:**
         只有元素设置position为relative/absolute/fixed，才能称元素为已定位元素
-
+静态定位的元素不会受到 top, bottom, left, right影响。
 
 #### 相对定位
 ​        `position : relative;`
@@ -1154,7 +1394,13 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
 ​    `position : fixed;`
 特点 : 元素设置固定定位，参照浏览器窗口进行偏移
-
+​              不会随着页面滚动改变在窗口中的位置
+​              Fixed定位使元素的位置与文档流无关，因此不占据空间，上升为块元素
+​              Fixed定位的元素和其他元素重叠。
+​        eg:
+​            position:fixed;
+​            top:30px;
+​            right:5px;
 
 
 #### 粘性定位
@@ -1213,10 +1459,109 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
 
 
+## 弹性盒子模型（Flexible Box）
+
+主要解决某元素中的子元素的布局方式，为布局提供最大的灵活性
+
+1. 容器
+   要布局的子元素的父元素称之为容器，容器中样式写 `display:flex;`
+
+2. 项目
+
+   要布局的子元素称之为项目
+
+3. 主轴
+
+   项目们排列的方向，称之为主轴(水平和垂直)
+
+   如果项目们是按横向排列，x轴就是主轴
+
+   如果项目们是按纵向排列, y轴就是主轴
+
+4. 交叉轴
+
+   与主轴垂直相交的方向轴叫做交叉轴
+
+**语法 :**
+
+将元素变为弹性容器，他所有的子元素将变成弹性项目，按照弹性布局的方式去排列显示
+
+display : flex  将块级元素变为容器
+              inline-flex  将行内元素变为容器
+
+元素设置为flex容器之后，子元素一些样式属性失效: float/clear/vertical-align
+子元素会转换为行内块元素显示,块元素共行,行内元素可以设置宽高
+
+### 弹性容器的样式属性
+
+    
+    1.主轴方向(项目排列方式)
+            flex-direction : row 横向左往右 默认值
+                             row-reverse 横向右往左
+                             column 纵向上往下
+                             column-reverse 纵向下往上
+    
+    2. 当一个主轴排列不下所有项目时，项目的显示方式
+            flex-wrap : nowrap  不换行，项目会自动压缩  默认值
+                        wrap  换行,项目不压缩
+                        wrap-reverse 换行反转
+    
+    3. flex-flow 是 flex-direction 和 flex-wrap 的缩写
+            取值 : row nowrap
+    
+    4. 定义项目在主轴上的对齐方式
+            justify-content : flex-start 主轴起点对齐  默认值
+                              space-around  间距相同
+                              space-between 两端对齐，中间间距相同
+                              flex-end  主轴终点对齐
+                              center  在主轴上居中对齐
+    
+    5. 项目们在交叉轴上的对齐方式(容器高度大于项目高度)
+            align-items :  flex-start 交叉轴起点对齐  默认值
+                            flex-end  交叉轴终点对齐
+                            center  在交叉轴居中对齐
+                            baseline 交叉轴基线对齐
+                            stretch  如果项目未设置高度，项目高度充满容器
+    
+            align-content 属性在弹性容器内的各项没有占用交叉轴上所有可用的空间时
+                            对齐容器内的各项（垂直）。
+                        space-around	元素位于各行之前、之间、之后都留有空白的容器内。
+                        space-between	元素位于各行之间留有空白的容器内
+                        flex-start	    元素位于容器的开头
+                        flex-end	    元素位于容器的结尾。
+                        center	        元素位于容器的中心。
+                        stretch	        默认值。元素被拉伸以适应容器。
 
 
 
+### 项目的样式属性
 
+ 项目的属性是单独设置给一个项目的，不影响容器和其他项目
+
+
+    1. order
+            取值为无单位的整数，默认0
+            定义项目的排列顺序，值越小离起点越近
+        
+    2. flex-grow
+            取值为无单位的整数，默认0不放大
+            定义空间变大时的项目沿主轴的放大比例
+            取值越大，此项目占据的剩余空间越多
+    
+    3. flex-shrink
+            定义项目的缩小比例，空间不足时，该项目如何缩小
+            取值为无单位的整数，默认为1，空间不足，等比缩小
+            取值为0 ，不缩小
+            取值越大，占据的空间越小
+    
+    4. align-self
+       控制当前项目在交叉轴上对齐方式，与其他项目无关
+                flex-start 交叉轴起点对齐  默认值
+                flex-end  交叉轴终点对齐
+                center  在交叉轴居中对齐
+                baseline 交叉轴基线对齐
+                stretch  如果项目未设置高度，项目高度充满容器
+                auto    继承容器的 align-items 的效果
 
 
 
@@ -1245,15 +1590,12 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
 4. `none`  元素隐藏,在文档中不占位
 
-5. `table`
+5. `table`让元素表现为table,根据内容改变宽高,独占一行
 
 6. `table-cell`
 
    
 
-7. 
-
-   
 
 ### 元素透明度设置
 
@@ -1321,7 +1663,7 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 
    取值 :
 
-   	1. `outside`在内容框外部
+   1. `outside`在内容框外部
    
     	2. `inside` 显示在内容框内部
 
@@ -1362,9 +1704,8 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 **取值 :**
 
 1. `translate(x,y)`
-         
   
-         x,y分别表示元素在X轴上和Y轴上的平移距离，取像素值，可正可负，区分平移方向
+  x,y分别表示元素在X轴上和Y轴上的平移距离，取像素值，可正可负，区分平移方向
     
 2. `translate(x)`
 
@@ -1420,5 +1761,264 @@ HTML 元素的默认值，即没有定位，遵循正常的文档流对象。
 `transform : translate() scale() rotate();`
 
 
+5. 倾斜
+        改变元素在页面中的形状
+        取值 : skew(deg [,deg])
+            包含两个参数值，分别表示向X轴和向Y轴倾斜的角度，
+            如果第二个参数为空，则默认为0
+            
+        skewX(deg);表示让元素向着X轴(水平方向)倾斜，改变的是 Y 轴的角度
+            参数为 + 表示逆时针
+            参数为 - 表示顺时针
+        skewY(deg);表示让元素向着Y轴(水平方向)倾斜，改变的是 X 轴的角度
+            参数为 + 表示顺时针
+            参数为 - 表示逆时针
+   
 
-​     
+    6.转换函数的组合使用
+        transform : translate() scale() rotate();
+
+三D转换
+    属性 : transform
+
+        浏览器不支持 3D的位移
+    
+    1. 透视距离
+        模拟人的眼睛到 3D 转换元素之间的距离
+        perspective(n) 该属性要加载转换元素的父元素上
+            n 为无单位整数, 越小视距越近
+    
+        语法
+            perspective: number|none;    
+    
+    2. 3D 函数
+        translate3D(x,y,z)	定义 3D 转化。
+        translateX(x)	定义 3D 转化，仅使用用于 X 轴的值。
+        translateY(y)	定义 3D 转化，仅使用用于 Y 轴的值。
+        translateZ(z)	定义 3D 转化，仅使用用于 Z 轴的值。
+        scale3D(x,y,z)	定义 3D 缩放转换。
+        scaleX(x)	定义 3D 缩放转换，通过给定一个 X 轴的值。
+        scaleY(y)	定义 3D 缩放转换，通过给定一个 Y 轴的值。
+        scaleZ(z)	定义 3D 缩放转换，通过给定一个 Z 轴的值。
+        rotate3D(x,y,z,deg)	定义 3D 旋转。
+        rotateX(deg)	定义沿 X 轴的 3D 旋转。滚动
+        rotateY(deg)	定义沿 Y 轴的 3D 旋转。门
+        rotateZ(deg)	定义沿 Z 轴的 3D 旋转。风车
+    
+        x , y , z
+        取值大于 1 表示旋转
+        取值 0 表示不旋转
+
+
+动画 @keyframes
+    @keyframes规则是创建动画。 @keyframes规则内指定一个CSS样式和动画将逐步从目前的样式更改为新的样式。
+        语法
+            @keyframes animationname {keyframes-selector {css-styles;}}
+
+            值	                    说明
+            animationname	    必需的。定义animation的名称。
+            keyframes-selector	必需的。动画持续时间的百分比。
+                合法值：
+                    1.  0-100%
+                    2.  from (和0%相同)
+                        to (和100%相同)
+    
+                注意： 您可以用一个动画keyframes-selectors。
+    
+            css-styles	必需的。一个或多个合法的CSS样式属性
+    
+    当在 @keyframes 创建动画，把它绑定到一个选择器，否则动画不会有任何效果。
+        指定至少这两个CSS3的动画属性绑定向一个选择器：
+    
+        animation-name	    规定 @keyframes 动画的名称。
+        animation-duration	规定动画完成一个周期所花费的秒或毫秒。默认是 0
+    
+        animation-timing-function	规定动画的速度曲线。默认是 "ease"。
+            值	            描述
+            linear	    动画从头到尾的速度是相同的。
+            ease	    默认。动画以低速开始，然后加快，在结束前变慢。
+            ease-in	    动画以低速开始。
+            ease-out	动画以低速结束。
+            ease-in-out	动画以低速开始和结束。
+            cubic-bezier(n,n,n,n)	在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值
+    
+        animation-fill-mode	规定当动画不播放时（当动画完成时，或当动画有一个延迟未开始播放时），要应用到元素的样式。
+            值	                        描述
+            none	    默认值。动画在动画执行之前和之后不会应用任何样式到目标元素。
+            forwards	在动画结束后（由 animation-iteration-count 决定），动画将应用该属性值。
+            backwards	动画将应用在 animation-delay 定义期间启动动画的第一次迭代的关键帧中定义的属性值。这些都是 from 关键帧中的值（当 animation-direction 为 "normal" 或 "alternate" 时）或 to 关键帧中的值（当 animation-direction 为 "reverse" 或 "alternate-reverse" 时）。
+            both	    动画遵循 forwards 和 backwards 的规则。也就是说，动画会在两个方向上扩展动画属性。
+            initial	    设置该属性为它的默认值。请参阅 initial。
+            inherit	    从父元素继承该属性。请参阅 inherit。        
+        
+        animation-delay	规定动画何时开始。默认是 0。
+    
+        animation-iteration-count	规定动画被播放的次数。默认是 1。
+            n	        一个数字，定义应该播放多少次动画
+            infinite	指定动画应该播放无限次（永远）
+    
+        animation-direction	规定动画是否在下一周期逆向地播放。默认是 "normal"。
+            值	            描述
+            normal	    默认值。动画按正常播放。
+            reverse	    动画反向播放。
+            alternate	动画在奇数次（1、3、5...）正向播放，在偶数次（2、4、6...）反向播放。
+            alternate-reverse	动画在奇数次（1、3、5...）反向播放，在偶数次（2、4、6...）正向播放。
+            initial	    设置该属性为它的默认值。	
+            inherit	    从父元素继承该属性。
+    
+        animation-play-state	规定动画是否正在运行或暂停。默认是 "running"。
+            paused	指定暂停动画
+            running	指定正在运行的动画
+
+
+        简写 :    animation : animationname  animation-duration;
+    
+        eg:
+            div
+            {
+                width:100px;
+                height:100px;
+                background:red;
+                position:relative;
+                animation:myfirst 5s;
+                -webkit-animation:myfirst 5s; /* Safari and Chrome */
+            }
+            @keyframes myfirst
+            {
+                0%   {background:red; left:0px; top:0px;}
+                25%  {background:yellow; left:200px; top:0px;}
+                50%  {background:blue; left:200px; top:200px;}
+                75%  {background:green; left:0px; top:200px;}
+                100% {background:red; left:0px; top:0px;}
+            }
+
+媒体 @media
+    media : 媒体，看网页的设备
+
+    媒体类型
+        允许你指定文件将如何在不同媒体呈现。该文件可以以不同的方式显示在屏幕上，在纸张上，或听觉浏览器等等。
+    
+        媒体类型	        描述
+        all	            用于所有的媒体设备。
+        screen	        用于电脑显示器 >=992px。768px<=平板电脑<992px，智能手机等<768px。
+        print	        用于打印机和打印预览
+        speech	        应用于屏幕阅读器等发声设备
+
+
+    媒体查询
+        Media Query 允许在相同样式表为不同媒体设置不同的样式。
+    
+       语法 :
+            @media  mediatype and (media feature) not|only|and (media feature){
+                    CSS-Code;
+                }
+    
+            你也可以针对不同的媒体使用不同 stylesheets :
+                <link rel="stylesheet" media="mediatype and|not|only (media feature)" href="mystylesheet.css">
+    
+        媒体属性是CSS3新增的内容，多数媒体属性带有“min-”和“max-”前缀，用于表达“小于等于”和“大于等于”。
+        这避免了使用与HTML和XML冲突的“<”和“>”字符
+            width | min-width | max-width
+            height | min-height | max-height
+            aspect-ratio | min-aspect-ratio | max-aspect-ratio  视口宽高比 @media (min-aspect-ratio: 16/9) 
+        注意: 媒体属性必须用括号()包起来，否则无效
+    
+    逻辑操作符
+        　　操作符not、and、only和逗号(,)可以用来构建复杂的媒体查询
+    
+        and
+        　　and操作符用来把多个媒体属性组合起来，合并到同一条媒体查询中。只有当每个属性都为真时，这条查询的结果才为真
+    
+        　　[注意]在不使用not或only操作符的情况下，媒体类型是可选的，默认为all
+        　　满足横屏以及最小宽度为700px的条件应用样式表
+                @media all and (min-width: 700px) and (orientation: landscape) { ... }
+        　　由于不使用not或only操作符的情况下，媒体类型是可选的，默认为 all，所以可以简写为
+                @media (min-width: 700px) and (orientation: landscape) { ... }
+        or
+        　　将多个媒体查询以逗号分隔放在一起；只要其中任何一个为真，整个媒体语句就返回真，相当于or操作符
+    
+        　　满足最小宽度为700像素或是横屏的手持设备应用样式表
+    
+                @media (min-width: 700px), handheld and (orientation: landscape) { ... }
+        not
+    
+        　　not操作符用来对一条媒体查询的结果进行取反
+    
+        　　[注意]not关键字仅能应用于整个查询，而不能单独应用于一个独立的查询
+    
+        only
+    
+        　　only操作符表示仅在媒体查询匹配成功时应用指定样式。可以通过它让选中的样式在老式浏览器中不被应用
+    
+                media="only screen and (max-width:1000px)"{...}
+        　　上面这行代码，在老式浏览器中被解析为media="only"，因为没有一个叫only的设备，所以实际上老式浏览器不会应用样式
+    
+                media="screen and (max-width:1000px)"{...}
+        　　上面这行代码，在老式浏览器中被解析为media="screen"，它把后面的逻辑表达式忽略了。所以老式浏览器会应用样式
+    
+        　　所以，在使用媒体查询时，only最好不要忽略
+    
+        如果浏览器窗口小于 500px, 背景将变为浅蓝色：
+            @media only screen and (max-width: 500px) {
+                body {
+                    background-color: lightblue;
+                }
+            }
+
+
+    方向：横屏/竖屏
+        结合CSS媒体查询,可以创建适应不同设备的方向(横屏landscape、竖屏portrait等)的布局。
+    
+        语法：
+            orientation：portrait | landscape
+                portrait：指定输出设备中的页面可见区域高度大于或等于宽度
+                landscape： 除portrait值情况外，都是landscape
+        实例
+            如果是横屏背景将是浅蓝色：
+            @media only screen and (orientation: landscape) {
+                body {
+                    background-color: lightblue;
+                }
+            }
+
+js改变css样式的三种方法
+    第一种:用cssText
+        div.style.cssText='width:600px;border:1px red solid';
+
+    第二种：用setProperty()
+        div.style.setProperty('width','700px');
+        div.style.setProperty('border','1px solid blue');
+    
+    第三种：使用css属性对应的style属性
+        div.style.width = "800px";
+        div.style.height = "250px"; 
+
+initial 关键字用于设置 CSS 属性为它的默认值。
+    initial 关键字可用于任何 HTML 元素上的任何 CSS 属性。
+
+    JavaScript 语法
+    	object.style.property="initial"  //恢复默认值
+    CSS 语法
+        property: initial;
+
+
+inherit 关键字指定一个属性应从父元素继承它的值。
+    inherit 关键字可用于任何 HTML 元素上的任何 CSS 属性。
+    JavaScript 语法
+        object.style.property="inherit"     //恢复继承值
+    CSS 语法
+        property: inherit;
+
+CSS优化
+    目的 : 减少服务器压力，提升用户体验
+    1. 优化原则
+        1. 尽量减少 HTTP 请求的个数
+        2. 页面顶部引入css文件
+        3. 将 css 和 js 放到外部独立的文件中
+
+    2. CSS代码优化
+        1. 缩小样式文件
+        2. 减少样式的重写
+        3. 避免出现空的 src 和 href
+        4. 选择更优的样式属性值 (能使用复合，简写的就使用复合简写)
+        5. 代码压缩
