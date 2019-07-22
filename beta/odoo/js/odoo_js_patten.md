@@ -2,6 +2,8 @@
 
 
 
+[TOC]
+
 
 
 ## 静态文件导入
@@ -107,39 +109,44 @@ require('web.dom_ready');
 
 
 
-
-
 ## AJAX
 
-### 查询模型
+### 访问模型
 
-本质是ajax.jsonRpc()方法封装
+本质是`ajax.jsonRpc()`方法封装
 
 `addons\web\static\src\js\core\rpc.js`
 
 ```javascript
 var rpc = require('web.rpc');
+//直接查询模型字段
 rpc.query({
      model: 'barcode.nomenclature',//模型名
-     method: 'read',//模型方法
-     args: [[id], ['name','rule_ids','upc_ean_conv']],//参数
-     kwargs: {},
-}).then(function (nomenclatures){
-                self.nomenclature = nomenclatures[0];
-
-                var args = [
-                    [['barcode_nomenclature_id', '=', self.nomenclature.id]],
-                    ['name', 'sequence', 'type', 'encoding', 'pattern', 'alias'],
-                ];
-                return rpc.query({
-                    model: 'barcode.rule',
-                    method: 'search_read',
-                    args: args,
-                });
-            }).then(function(rules){
-                rules = rules.sort(function(a, b){ return a.sequence - b.sequence; });
-                self.nomenclature.rules = rules;
-});
+     method: 'search_read',//等同 search（）
+     domain?: [['barcode_nomenclature_id', '=', self.nomenclature.id]],//筛选域
+     fields?: ['name', 'sequence', 'type', 'encoding', 'pattern', 'alias'],//查询参数
+     groupBy?: ['sequence'];
+     limit?: 5;
+     offset?: 3;
+     orderBy?: [{name: 'yop', asc: true}, {name: 'aa', desc: false}];
+     //args: [['barcode_nomenclature_id', '=', self.nomenclature.id]],//筛选域
+           //['name', 'sequence', 'type', 'encoding', 'pattern', 'alias'],//查询参数
+     //kwargs: {},
+}).then(function(rules){//成功方法
+    rules = rules.sort(function(a, b){ return a.sequence - b.sequence; });
+);
+    
+    
+//调用模型方法
+rpc.query({
+     model: 'barcode.nomenclature',//模型名
+     method: '模型方法名',//模型方法
+     args: [],//位置参数
+     kwargs: {},//关键字参数
+}).then(function(rules){//成功方法
+    rules = rules.sort(function(a, b){ return a.sequence - b.sequence; });
+);
+    
 ```
 
 
@@ -152,7 +159,7 @@ rpc.query({
 var ajax = require('web.ajax');
 ajax.jsonRpc('/mailing/blacklist/check', 'call', {'email': email})
 .then(function (result) {})//成功函数
-.fail(function () {});//失败函数
+.fail(function (error) {});//失败函数
 ```
 
 控制器
@@ -174,5 +181,25 @@ var utils = require('web.utils');//导入库
 var cookie = utils.get_cookie('im_livechat_session');//获取
 utils.set_cookie('im_livechat_session', "", -1); //删除
 utils.set_cookie('im_livechat_session', JSON.stringify(data, 60*60);//设置
+```
+
+
+
+## 翻译
+
+```javascript
+var core    = require('web.core');
+var _t      = core._t;
+message: _t('Handling transaction...'),
+```
+
+
+
+## token
+
+```javascript
+var csrf_token = $('meta[name=csrf-token]').attr('content');
+//or
+require('web.core').csrf_token
 ```
 
