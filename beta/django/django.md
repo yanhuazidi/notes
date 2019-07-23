@@ -34,12 +34,13 @@ sudo python setup.py install
 ```
 
 
+
 ## Django内置命令 
 
 ### check
 
 ```powershell
-python3 manage.py check app1
+python3 manage.py check [app1]
 ```
 
 检查整个Django项目是否存在常见问题。
@@ -67,7 +68,7 @@ python manage.py flush
 ### makemigrations
 
 ```powershell
-python manage.py makemigrations app1 app2
+python manage.py makemigrations [app1 app2]
 ```
 
 根据检测到的模型创建新的迁移。迁移的作用，更多的是将数据库的操作，以文件的形式记录下来，方便以后检查、调用、重做等等。尤其是对于Git版本管理，它无法获知数据库是如何变化的，只能通过迁移文件中的记录来追溯和保存。
@@ -110,7 +111,7 @@ python manage.py startapp app_name
 ### startproject
 
 ```powershell
-python manage.py startproject project_name
+django-admin startproject project_name
 ```
 
 新建工程。默认情况下，新目录包含manage.py脚本和项目包（包含settings.py和其他文件）。
@@ -354,9 +355,35 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 
 
 
+## urls.py文件
 
+路由配置文件，默认在主目录中,包含最基本的地址映射
+作用： 通过urls.py 中定义好的地址找到对应的视图处理函数
 
+```python
 
+from django.contrib import admin
+from django.urls import path,include
+dic = {
+     "name":"wangwc",
+     "age":18
+}
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('video/', include('video.urls')),
+	url(regex,#允许是正则表达式，匹配请求的url
+        views, #对应的视图处理函数
+        kwargs=None, #字典，用来向 views 传参
+        name=None #为 url 起别名，在地址反向解析时使用
+       ),
+    url(r'^show/(\d{4})/$',show1_views),
+    #def show1_views(request,year)
+    #使用正则表达式的子组传参 - (), 一个子组就是一个参数
+    #多个参数的话要使用多个子组表示，并且中间使用 / 隔开
+    url(r'^show/$',show3_views,dic)
+    #def show3_views(request,name,age)
+]
+```
 
 
 
