@@ -1,10 +1,19 @@
-
+ 
 
 [TOC]
 
 
 
 ## 菜单	menuitem
+
+- `id` （必填） 外部id
+- `name` (必填)  在页面（菜单按钮）显示的字符
+- `parent`  (子菜单必填)  父菜单外部id
+- `sequence`  (选填)  同级菜单的排序优先级,默认为 10  ,越小越优先
+- `web_icon` (选填)  菜单按钮背景图
+- `action`   动作id
+- `active`    激活,默认 true
+- `groups`   权限组
 
 ### 根菜单
 
@@ -25,8 +34,10 @@
 ### 子菜单
 
 ```xml
-<menuitem id="courses_menu" name="Courses" parent="openacademy_menu" action="course_list_action"/>
+<menuitem id="courses_menu" name="Courses" parent="openacademy_menu" action="course_list_action" sequence="20"/>
 ```
+
+**进入app的默认视图为排第一的子菜单action视图**
 
 
 
@@ -41,6 +52,10 @@
          </record>
 <menuitem id="session_menu" name="Sessions" parent="openacademy_menu" action="session_list_action"/>
 ```
+
+**view_mode列表为动作显示的视图,第一个为默认显示视图**
+
+
 
 
 

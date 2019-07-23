@@ -56,22 +56,22 @@ odoo是一个很大的数据驱动的系统，模块定义的很大一部分就�
 
 每个记录可以由`field` 标记组成，定义创建记录时要设置的值。没有`field`的`record`将使用所有默认值（创建）或不执行任何操作（更新）。
 
-`field`具有强制的`name` 属性、要设置的字段的名称以及定义值本身的各种方法：
-
 如果没有为字段提供值，则将在字段上设置隐式false。可用于清除字段，或避免使用字段的默认值。
 
-- `search`对于关系字段，应该是字段模型上的域。
+- `name`  要设置的字段的名称,强制属性.
+
+- `search`对于关系字段，值应该是字段模型上的域。
 
   将评估域，使用该域的模型搜索该域，并将搜索结果设置为该域的值。仅当字段为`Many2one`时使用第一个结果
 
   ```xml
-  <field search="[('code','=','PL')]" model='res.country' name='country_id'/> 
+  <field name='country_id' model='res.country' search="[('code','=','PL')]"/> 
   <field name="journal_id" model="account.journal" search="[
-                  ('type', '=', 'bank'),
-                  ('company_id', '=', obj().env['res.company']._company_default_get('account.journal').id)]"/>
+  ('type', '=', 'bank'),
+  ('company_id', '=', obj().env['res.company']._company_default_get('account.journal').id)]"/>
   ```
 
-- `ref`如果提供了ref属性，则其值必须是有效的外部ID，该ID将被查找并设置为字段的值。
+- `ref`如果提供了ref属性，则其值必须是有效的外部模型ID，该ID将被查找并设置第一个结果为字段的值。
 
   主要用于Many2one和Reference字段
 
@@ -127,7 +127,8 @@ odoo是一个很大的数据驱动的系统，模块定义的很大一部分就�
 ```xml
 <field name="date" eval="time.strftime('%Y')+'-01-01'"/>
 <field name="name" eval="'BNK/%s/0001' % time.strftime('%Y')"/>
-<field name="payment_icon_ids" eval="[(6,0,[ref('website_payment_alipay.payment_icon_cc_alipay')])]"/>
+<field name="payment_icon_ids" 
+       eval="[(6,0,[ref('website_payment_alipay.payment_icon_cc_alipay')])]"/>
 
 ```
 
@@ -147,6 +148,12 @@ odoo是一个很大的数据驱动的系统，模块定义的很大一部分就�
 
 `id` 和`search`是只填一个的
 
+```xml
+<delete model="account.fiscal.position.template" 
+        search="[('chart_template_id','=',ref('l10n_fr_pcg_chart_template'))]"/>
+<delete id="base.access_ir_module_module_group_user" model="ir.model.access"/>
+```
+
 
 
 ### `function`
@@ -154,6 +161,26 @@ odoo是一个很大的数据驱动的系统，模块定义的很大一部分就�
 `function`标记使用提供的参数调用模型上的方法。它有两个强制参数`model`和`name`，分别指定要调用的方法的模型和名称。
 
 可以使用`eval`（应计算为调用方法的参数序列）或`value`元素（请参见`list`值）提供参数。
+
+```xml
+<odoo>
+<data>
+<function model="crm.team" name="message_unsubscribe"
+          eval="[ref('sales_team.team_sales_department', False)]"/>
+<function model="hr.leave.allocation" name="action_approve">
+        <value model="hr.leave.allocation" search="[
+            ('state', '=', 'confirm'),
+            ('id', 'in', [ref('hr_holidays.hr_holidays_employee1_allocation_cl')])
+        ]"/>
+</function>
+<function model="account.chart.template" name="try_loading_for_current_company">
+        <value eval="[ref('l10n_ae.uae_chart_template_standard')]"/>
+</function>
+</data>
+</odoo>
+```
+
+
 
 
 
