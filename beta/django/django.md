@@ -220,7 +220,7 @@ $ tree
 - **HelloWorld/urls.py:** 该 Django 项目的 URL 声明; 一份由 Django 驱动的网站"目录"。
 - **HelloWorld/wsgi.py:** 一个 WSGI 兼容的 Web 服务器的入口，以便运行你的项目。
 
-## Django项目主目录(与项目名称一致的目录)\
+## Django项目主目录(与项目名称一致的目录)
 
 ### \__init__.py
 
@@ -371,19 +371,461 @@ dic = {
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('video/', include('video.urls')),
-	url(regex,#允许是正则表达式，匹配请求的url
+	path(regex,#允许是正则表达式，匹配请求的url
         views, #对应的视图处理函数
         kwargs=None, #字典，用来向 views 传参
         name=None #为 url 起别名，在地址反向解析时使用
        ),
-    url(r'^show/(\d{4})/$',show1_views),
+    path(r'^show/(\d{4})/$',show1_views),
     #def show1_views(request,year)
     #使用正则表达式的子组传参 - (), 一个子组就是一个参数
     #多个参数的话要使用多个子组表示，并且中间使用 / 隔开
-    url(r'^show/$',show3_views,dic)
+    path(r'^show/$',show3_views,dic)
     #def show3_views(request,name,age)
 ]
 ```
 
+### name参数反向解析
+
+​        通过 path() 的别名生成对应的访问地址
+
+        1. 在模板上做反向解析
+            1. 基本解析
+                
+            `{% url '别名' %}`
+                
+            2. 带参数解析
+                `{% url '别名' '参数1' '参数2' ... %}`
+            
+        2. 在视图上做反向解析
+    
+            `from django.urls import reverse`
+    
+            1. 基本解析
+    
+               `url = reverse("别名")`
+    
+            2. 带参数解析
+    
+               `url = reverse("别名",args = ("参数1"，"参数2",....))`
 
 
+
+## 模板 (Templates)
+
+ ### 模板的设置
+
+在 settings.by 中 有一个 TEMPLATES 变量
+
+1. BACKEND : 指定要使用的模板的引擎 
+2. DIRS : 指定模板的存放目录
+   - 不写 : Django会自动的到每个应用中搜索一个叫做temolates的目录来作为为模板的存放目录
+   - 写路径: Django会按照写的路径去搜索
+3. APP_DIRS : 是否自动搜索应用中的目录
+   - True : 表示要自动搜索应用中的templates目录
+   - False : 表示不要
+
+
+
+## 模板的加载
+
+1. 通过 loader 对象获取模板，在通过HttpResponse进行响应
+
+   ```python
+   from django.template import loader
+   t = loader.get_template("模板名称")
+   html = t.render()将模板渲染成字符串
+   return HttpResponse(html)
+   ```
+
+2. 通过 render() 加载并响应模板
+
+   ```python
+   from django.shortcuts import render
+   return render(request,"模板名称")
+   ```
+
+
+
+## 静态文件
+
+### Django中的静态文件的处理
+
+1. 在 settings.py 中设置静态文件的访问路径
+
+   `STATIC_URL = "/static/"`
+   当访问路径为 '/static/' 时 ，就到存储目录中去查找静态文件，而不走路由解析
+
+2. 设置静态文件的存储路径
+
+   `STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)`  元组，可以放多个文件目录
+
+   静态文件目录的存放位置: 
+
+   1. 在项目的根目录处创建一个 static 目录，保存静态文件
+   2. 在每个应用中也可以创建一个 static 目录，用于保存静态文件
+   3.  Django会自动寻找各个static目录
+
+3. 访问静态文件
+
+   1. 通过静态文件访问路径去访问
+
+      `/static/images/naruto.jpg`
+
+   2. 使用 {% static %} 访问静态资源,动态获取静态文件访问路径，不写死
+
+      1. 在模板的最顶层增加
+
+         `{% load static %}`
+
+      2. 在使用静态资源时
+
+         `<img src={% static "images/naruto.jpg" %}`
+
+
+
+
+STATIC_URL = '/static/'
+	STATICFILES_DIRS=(BASE_DIR, 'static') 或		STATIC_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+
+			#STATIC_ROOT 是在部署静态文件时(pyhton  manage  pycollectstatic)
+				所有的静态文静聚合的目录,STATIC_ROOT要写成绝对地址,
+				当部署项目时,在终端输入:python manage.py collectstatic
+				django会把所有的static文件都复制到STATIC_ROOT文件夹下
+	
+	MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+	MEDIA_URL = '/media/'
+	
+	总 urls.py
+		from django.conf.urls import url, include
+		from django.contrib import admin
+		from sale import views
+	
+	
+		from django.conf.urls.static import static
+		from django.conf import settings
+	
+		urlpatterns = [
+			url(r'^admin/', admin.site.urls),
+			url(r'^$', views.index, name='index'),
+			url(r'^user/', include('userinfo.urls')),
+			url(r'^buy/', include('buy.urls')),
+			url(r'^sale/', include('sale.urls')),
+	
+		] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+	
+	
+	models.py
+		img = models.ImageField(upload_to='img/logo', default='brandlogo.png')
+
+
+HttpRequest - 请求
+	1.什么是HttpRequest
+		HttpRequest，就是对请求对象的封装，里面封装的是请求过程中的所有信息。
+		在Django中HttpRequest被封装成request对象并封装到视图处理函数中，在调用视图时自动传入
+	2.HttpRequest中的主要内容
+		1.request.scheme : 请求协议
+		2.request.body : 请求主体
+		3.request.path : 请求路径
+		4.request.get_full_path() : 请求完整的请求路径
+		5.request.get_host() : 请求的主机地址 / 域名
+		6.request.method 
+		7.request.GET : 封装了get请求方式所提交的数据
+		8.request.POST : 封装了post请求方式所提交的数据
+		9.request.COOKIES : 封装了 cookies 中的所有数据
+		10.request.META : 封装了请求的原数据
+			request.META.HTTP_REFERER : 封装了请求的源地址
+	3.获取请求提交的数据
+		1.get 请求
+			1.获取数据
+				request.GET['名称']
+				request.GET.get('名称')
+				request.GET.getlist('名称')
+			2.使用get方式提交数据的场合
+				1.表单中 method 为get 的时候
+				2.地址栏上拼查询字符串的时候
+					http://localhost:8000/01-request/?id=1&name=xxx
+
+				注意：
+					url(r'^01-request/(\d{4})/(\d{1,})',xxx)
+					http://localhost:8000/01-request/2018/10
+	
+					以上方式提交的数据不能使用request.GET来获取，因为以上的方式是 Django 标准而并非 HTTP 标准
+			3.练习：
+				http://localhost:8000/02-request/?year=2018&month=11&day=19
+				接收请求中的数据并打印在终端上：
+				年：2018
+				月：11
+				日：19
+	
+		2.post 请求     action 地址后面要加 /  或使用别名访问 {% url 'login' %}
+			1.获取数据
+				request.POST['名称']
+				request.POST.get('名称')
+				request.POST.getlist('名称')
+	
+			2.使用POST方式提交数据的场合
+	
+				1.使用表单提交时可以使用post
+
+
+			3.CSRF verification failed (403)
+				CSRF : Cross-Site Request Forgery
+					    跨   站点   请求    伪装  
+				
+				解决方案：
+					1.取消csrf的验证
+						删除 settings.py中 MIDDLEWARE 中的 CsrfViewMiddleware 中间件
+					2.在处理函数上增加装饰器
+	                    需要导入模块
+						@csrf_protect
+					3.可以在 表单中的 第一行增加:{% csrf_token %}
+					
+					4.AJXA post提交数据
+					<body>
+	
+					<script>
+							$.ajaxSetup({
+									data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+							});
+					</script>
+
+
+
+
+引用Django自带登录系统	
+	把自定义的用户model类附加在Django自带的登录表上
+	mysql> desc auth_user;
+	+--------------+--------------+------+-----+---------+----------------+
+	| Field              | Type             | Null | Key | Default | Extra          |
+	+--------------+--------------+------+-----+---------+----------------+
+	| id                   | int(11)          | NO   | PRI | NULL     | auto_increment |
+	| password      | varchar(128) | NO   |     | NULL       |                           |
+	| last_login      | datetime(6)   | YES  |     | NULL       |                           |	最后登录时间
+	| is_superuser | tinyint(1)       | NO   |     | NULL       |              				|	超级用户
+	| username     | varchar(150)  | NO   | UNI | NULL   |                			|
+	| first_name    | varchar(30)     | NO   |     | NULL      |                			|
+	| last_name    | varchar(30)     | NO   |     | NULL      |                			|
+	| email            | varchar(254)   | NO   |     | NULL      |                			|	
+	| is_staff         | tinyint(1)         | NO   |     | NULL       |                			|	后台管理员
+	| is_active       | tinyint(1)        | NO   |     | NULL       |                			|	活跃状态
+	| date_joined  | datetime(6)    | NO   |     | NULL      |                			|	登记时间
+	+--------------+--------------+------+-----+---------+----------------+
+
+
+
+
+model.py
+     from django.contrib.auth.models import AbstractUser
+
+	# Create your models here.
+	SEX_CHOICES = (
+		('0', '男'),
+		('1', '女'),
+	)
+
+class UserInfo(AbstractUser):
+    cellphone = models.CharField(max_length=11, null=False, verbose_name='手机')
+    realname = models.CharField(max_length=50, null=False, verbose_name='姓名')
+    uidentity = models.CharField(max_length=18, null=False, verbose_name='身份证')
+    address = models.CharField(max_length=150, null=False, verbose_name='地址')
+    sex = models.CharField(choices=SEX_CHOICES, default='0', max_length=10, verbose_name='性别')
+
+
+ settings.py           当使用用户表时 让Django使用自定义的表
+	AUTH_USER_MODEL = 'userinfo.Userinfo'
+	#app名.类名
+	
+views.py	
+	Django自带的登录验证和登录方法与退出登录方法，自动完成一系列动作(session等。。。)
+	from django.contrib import auth
+	
+	验证用户，存在返回用户对象，失败Flase
+	user = auth.authenticate(username=username, password=password)
+		authenticate()会在User 对象上设置一个属性标识那种认证后端认证了该用户，
+		且该信息在后面的登录过程中是需要的。当我们试图登陆一个从数据库中直接取出
+		来不经过authenticate()的User对象会报错的！！
+		from django.contrib import auth  #导入auth模块
+		def login(request):
+		'''
+	登陆
+	:param request:
+	:return:
+	'''
+	if request.method == 'POST':
+	    user = request.POST.get('user')
+	    pwd = request.POST.get('pwd')
+	    user = auth.authenticate(username =user,password=pwd)  #自动给你的user表自动校验
+	    if user: #登陆成功
+	        auth.login(request,user)  #相当于设置session
+
+
+
+    return render(request,'login.html')
+    	
+    用户登录方法
+    auth.login(request, user)
+
+
+​	
+	退出登录方法
+	auth.logout(request)
+
+
+​	
+	user对象的 is_authenticated()
+			如果是真正的 User 对象，返回值恒为 True 。 用于检查用户是否已经通过了认证。
+			通过认证并不意味着用户拥有任何权限，甚至也不检查该用户是否处于激活状态，
+			这只是表明用户成功的通过了认证。 这个方法很重要, 在后台用request.user.is_authenticated()
+			判断用户是否已经登录，如果true则可以向前台展示request.user.name
+	
+		要求：
+			1  用户登陆后才能访问某些页面，
+	
+			2  如果用户没有登录就访问该页面的话直接跳到登录页面
+	
+			3  用户在跳转的登陆界面中完成登陆后，自动访问跳转到之前访问的地址
+	
+		方法1:
+	
+			直接用auth的is_authenticated()方法验证
+	
+			def my_view(request):
+				if not request.user.is_authenticated():
+						return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+						
+		方法2:
+			根据request.user.username来验证，如果为空，则说明没有登录
+	
+			def my_view(request):
+				if not request.user.username:
+					return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+					
+		方法3:
+	
+			django已经为我们设计好了一个用于此种情况的装饰器：login_requierd()
+	
+			from django.contrib.auth.decorators import login_required
+	
+				@login_required
+				def my_view(request):
+	 
+			若用户没有登录，则会跳转到django默认的 登录URL '/accounts/login/ ' 
+			(这个值可以在settings文件中通过LOGIN_URL进行修改)。并传递  当前访问url的绝对路径 
+			( 登陆成功后，会重定向到该路径 )。
+			修改 login.html 表单中的 action 参数
+# views.py
+from djanco.contrib.auth.decorators import login_required
+from django.shortcuts import render_to_response
+@login_required
+def index(request):
+# settings.py
+LOGIN_URL = '/accounts/login/' # 根据你网站的实际登陆地址来设置
+如果要使用 django 默认登陆地址，则可以通过在 urls.py 中添加如此配置：
+# urls.py
+url(r'^accounts/login/', views.login),
+# login.html
+<div class="container">
+<form class="form-signin" action="/accounts/login/" method="post">
+
+
+	创建用户
+	
+		使用 create_user 辅助函数创建用户:
+		from django.contrib.auth.models import User
+		user = User.objects.create_user（username='',password='',email=''）
+		user.save()
+
+实例		
+def sign_up(request):
+
+  state = None
+  if request.method == 'POST':
+
+    password = request.POST.get('password', '')
+    repeat_password = request.POST.get('repeat_password', '')
+    email=request.POST.get('email', '')
+    username = request.POST.get('username', '')
+    if User.objects.filter(username=username):
+        state = 'user_exist'
+    else:
+        new_user = User.objects.create_user(username=username, 
+    							password=password,		#不用make_password，自动加密
+    							email=email)
+        new_user.save()
+      
+        return redirect('/book/')
+  content = {
+    'state': state,
+    'user': None,
+  }
+  return render(request, 'sign_up.html', content)　		
+		
+	修改密码
+		用户需要修改密码的时候 首先要让他输入原来的密码 ，如果给定的字符串通过了密码检查，返回  True
+		user = User.objects.get(username=request.POST.get(username))
+		passwd = request.POST.get(password)
+		newpasswd = request.POST.get(newpassword)
+		if user.check_password(passwd):
+			使用 set_password() 来修改密码
+			user.set_password(password=newpasswd)
+			user.save
+		
+		实例
+		@login_required
+		def set_password(request):
+		user = request.user
+		state = None
+		if request.method == 'POST':
+			old_password = request.POST.get('old_password', '')
+			new_password = request.POST.get('new_password', '')
+			repeat_password = request.POST.get('repeat_password', '')
+			if user.check_password(old_password):
+				if not new_password:
+					state = 'empty'
+				elif new_password != repeat_password:
+					state = 'repeat_error'
+				else:
+					user.set_password(new_password)
+					user.save()
+					return redirect("/log_in/")
+			else:
+				state = 'password_error'
+		content = {
+				'user': user,
+				'state': state,
+				}
+		return render(request, 'set_password.html', content)
+
+
+​	
+------------------------------------------------------------------------------------
+让前端直接访问html页面,页面跳转
+
+总urls.py
+	from django.conf.urls import url
+	from django.contrib import admin
+	from ccode import viewUtil
+	
+	
+	from django.views.generic import TemplateView
+	
+	urlpatterns = [
+		url(r'^admin/', admin.site.urls),
+		url(r'verifycode',viewUtil.verifycode),
+		url(r'^$',TemplateView.as_view(template_name='code.html'),name="index"),
+	]
+
+
+​    
+------------------------------------------------------------------------------------------------------------
+Django的密码加密工具 
+
+	from django.contrib.auth.hashers import make_password, check_password
+	
+	#加密
+	auth_check = 'MarcelArhut' #自定义
+	new_user.password = make_password(request.POST.get('userpwd'), auth_check, 'pbkdf2_sha1')
+	
+	#对比(明文，密文),一致返回ture，不一致返回Flase
+	check_password(request.POST.get('pwd'),user.password)
