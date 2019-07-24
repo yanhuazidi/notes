@@ -1,5 +1,9 @@
 
 
+[TOC]
+
+
+
 ## Flask 框架
 
 是一个基于python并且依赖于Jinja2模板引擎和Werzeug WSGI服务的一个微型框架
@@ -39,73 +43,95 @@ app = Flask(__name__,template_folder="templates",
 
 ## 路由
 
-    1.路由的体现
-        Flask中，路由是@app.route() 装饰器来表示的
-        @app.route("/")
-        def index()
-            return str
-    
-    2.代参数的路由
-        路由中可以携带参数来表示要传递到视图中的数据
-    
-        1.基本带参的路由
-        @app.route("/show/<name>")
-        def show1(name):
-            name: 表示的就是地址栏上传递的数据
-            pass
-        
-        2.指定参数类型的路由
-            允许在声明路由时指定参数类型
-            避免了在程序中再转换
-            @app.route("/show/<name>/<int:age>")
-            def show(name,age)
-    
-            int: 类型转换器
-            Flask中所支持的类型转换器:
-                类型转换器          作用
-                   缺省             字符串，不能有斜杠(/)
-                   int：            整型
-                   float：          浮点型
-                   path：           字符串，可以有斜杠(/)
-    
-        3.多 URL 的路由匹配
-            为多个url访问地址匹配同一个视图函数
-            @app.route('/地址1')
-            @app.route('/地址2')
-            ...
-            def index():
-                pass
+### 路由的体现
+
+Flask中，路由是@app.route() 装饰器来表示的
+
+```python
+@app.route("/")
+@app.route("/index/")
+def index()
+    return str
+```
 
 
-    3.路由中设置HTTP请求方法
-        在Flask中默认只能接收GET请求,无法接收POST请求
-        在Flask中允许设定可以接收的请求方式，如果请求方式不匹配的话，
-            会响应405(Method Not Allowed)
-        
-        @app.route("/xxx",methods=["POST","GET"])
-        def xxx()
-            该函数即能接收post请求，也能接收get请求
+
+### 路由参数
+
+路由中可以携带参数来表示要传递到视图函数中的数据
+
+```python
+@app.route("/show/<name>")
+def show1(name):
+    name: 表示的就是地址栏上传递的数据
+    pass
+```
+
+**指定参数类型的路由**
+
+允许在声明路由时指定参数类型
+
+```python
+@app.route("/show/<name>/<int:age>")
+def show(name,age):
+    pass
+类型转换器          作用
+缺省             字符串，不能有斜杠(/)
+int：            整型
+float：          浮点型
+path：           字符串，可以有斜杠(/)
+```
 
 
-    4.url的反向解析
-        正向解析: 程序自动解析,根据@app.route()中的访问路径，来匹配处理函数
-        反向解析: 通过视图处理函数的名称自动生成对应的访问路径
-    
-        在Flask中要实现反向解析:
-            url_for('funName',**argv)
-                funName : 要生成地址的函数名
-                args : 该地址中需要的参数
-                返回值: funName 的路由字符串
-    eg:
-        @app.route("/admin/login/form/show/<name>/<age>")
-        def show1(name,age):
-            return "参数name的值为:%s,参数age的值为:%s"%(name,age)
-    
-        @app.route("/url1/<name1>/<age1>")
-        def url1(name1,age1):
-            url = url_for('show1',name=name1,age=age1)
-            print("方向生成的地址为:"+url)
-            return "<a href='%s'>去show1</a>"%url
+
+### 路由中设置HTTP请求方法
+
+在Flask中默认只能接收GET请求,无法接收POST请求
+
+在Flask中允许设定可以接收的请求方式，如果请求方式不匹配的话，会响应405(Method Not Allowed)
+
+
+```python
+@app.route("/xxx",methods=["POST","GET"])
+def xxx()
+    该函数即能接收post请求，也能接收get请求
+```
+
+
+
+### url的反向解析
+
+正向解析: 程序自动解析,根据@app.route()中的访问路径，来匹配处理函数
+
+反向解析: 通过视图处理函数的名称自动生成对应的访问路径
+
+`url_for('funName',**kw)`
+
+- funName : 要生成地址的函数名
+- kw : 该地址中需要的参数
+- 返回值: funName 的路由字符串
+
+#### 视图中解析
+
+
+```python
+@app.route("/admin/login/form/show/<name>/<age>")
+def show1(name,age):
+    return "参数name的值为:%s,参数age的值为:%s"%(name,age)
+
+@app.route("/url1/<name1>/<age1>")
+def url1(name1,age1):
+    url = url_for('show1',name=name1,age=age1)
+    return "<a href='%s'>去show1</a>"%url
+```
+
+#### 模板中解析
+
+```html
+<script type = "text/javascript" src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
+```
+
+
 
 
 
@@ -113,291 +139,193 @@ app = Flask(__name__,template_folder="templates",
 
 ## 模板 Templates
 
+Flask中 ，模板是依赖于jinja2的模板系统  http://jinja.pocoo.org/
+
+### 模板的渲染
+
+作用: 在视图中，将模板文件(xx.html)渲染成字符串之后，再响应给浏览器
+语法:` render_template('xxx.html')`
+参数:要渲染的模板
+返回值: 该模板中的字符串内容
+
+**传递变量到模板中**
+
+`render_template("xxx.html",变量=值,变量=值...)`
+
+在模板中获取变量的值 {{变量名}}
+
+`return render_template("01-var.html",params =locals())`
+
+在模板中获取变量的值 {{params.name}}
 
 
-    在模板中，允许嵌入动态的内容
-    模板最终也会被解释成字符串再响应给客户端，这一过程叫渲染
-    Flask中 ，模板是依赖于jinja2的模板系统  http://jinja.pocoo.org/
-    
-    1.模板的设置
-        默认情况下，Flask会在程序目录中搜索一个templates的目录
-        作为模板的存放目录
-    
-    2.模板的渲染
-        作用: 在视图中，将模板文件(xx.html)渲染成字符串之后，再响应给浏览器
-        语法: render_template('xxx.html')
-        参数:要渲染的模板
-        返回值: 该模板中的字符串内容
-    
-    3.传递变量到模板中
-        1. render_template("xxx.html",变量=值,变量=值...)
-           在模板中获取变量的值
-              {{变量名}}
-    
-        2   
-            title = name
-            author = "宝强"
-            music = "乃亮"
-            singer = "羽凡"
-            print(locals())
-            return render_template("00-homework.html",params=locals())
-        
-            在模板中获取变量的值
-                {{params.变量名}} 或 {{params[变量名]}}
-    
-        3        
-            @app.route('/01-var')
-            def var_views():
-                name = "隔壁老王"
-                age = 32
-                salary  =125.55
-                tup = "老魏","老王","老吕","小ＭＭ"
-                lis = ["漩涡鸣人","佐助","春野樱"]
-                dic = {
-                    "C":"china",
-                    "A":"amekick",
-                    "J":"japan"
-                }
-                dog = Dog()
-                return render_template("01-var.html",params =locals())
-    
-            class Dog:
-                name ="旺财"
-                def eat(self):
-                    return  self.name+"吃狗粮"
-            <html>
-            <h1>姓名:{{params.name}}</h1>
-            <h1>年龄:{{params.age}}</h1>
-            <h1>工资:{{params.salary}}</h1>
-            <h1>元组:{{params.tup}}</h1>
-            <h2>元组:{{params.tup.0}}</h2>
-            <h1>列表:{{params.lis}}</h1>
-            <h1>字典:{{params.dic}}</h1>
-            <h1>对象:{{params.dog}}</h1>
-            <h2>dog name:{{params.dog.name}}</h2>
-            <h2>dog do:{{params.dog.eat()}}</h2>
-            </html>
-    
-    过滤器
-        1.什么是过滤器
-            过滤器是允许在变量输出之前按一定的规则改变变量的值
-    
-        2.语法
-            {{变量|过滤器}}
-    
-        jinja2模板中常见的过滤器
-    
-            过滤器名           说明
-            capitalize      首字符变大写，其他字符变小写
-            lower           将值转为小写字符
-            upper           将值转为大写字符
-            title           将值中的每个单词的首字符变大写
-            trim            取掉值两端的空格
-    
-            见jinja2文档
-    
-    标签
-        1.什么是标签
-            每个标签表示的是不同的服务器端的功能
-    
-        2.常用标签
-            1. if 标签
-                基本 if 结构
-                    {% if 条件 %}
-                      语句块
-                    {% endif %}
-    
-               if else 结构
-                    {% if 条件 %}
-                      语句块
-                    {% else %}
-                      语句块
-                    {% endif %} 
-    
-               if elif 结构
-                    {% if 条件 %}
-                      语句块
-                    {% elif条件1 %}
-                      语句块
-                      ......
-                    {% else %}
-                      语句块
-                    {% endif %}
-        
-            2. for 标签
-                {% for 变量 in iter %}
-                    语句块
-                {% endfor %}
-    
-                内置变量: loop
-                    1.只能在for循环标签中使用
-                    2.不用声明直接用
-                    3.记录本次循环的一些信息
-                loop 中的常用属性
-                    1. index  记录当前循环的次数，从1开始计算
-                    2. index0 从0开始计算
-                    3. first  表示当前的循环是否为第一次循环，值为布尔值
-                                True 表示为第一次
-                                False 表示不是第一次
-                    4. last   表示当前的循环是否为最后一次循环，值为布尔值
-                                True 表示为是
-                                False 表示不是
-    
-                        当前循环次数:{{loop.index}}
-                        当前循环下标:{{loop.index0}}
-    
-                <ul>
-                    {% for key,name in params.dic.items() %}
-                    <li>
-                        <h2 style="color:
-                            {% if loop.first %}
-                            red
-                            {% elif loop.last %}
-                            orange
-                            {% else %}
-                            pink
-                            {% endif %}
-                        ">{{key}}:{{name}}</h2>
-                    </li>
-                    {% endfor %}
-                </ul>
-    
-            3. macro 标签(宏)
-                1. 作用
-                    相当于在模板中声明函数
-    
-                2. 语法
-                    使用 {% macro %}...{% endmacro %}
-    
-                    {% macro 宏名称(参数列表) %}
-                    .....
-                    {% endmacro %}
-    
-                    使用宏:
-                        {{宏名称(参数列表)}}
-                
-                3. 在独立的模板文件中声明所有的宏
-                    1.创建 macro.html 模板文件
-                        作用: 定义项目中要用到的所有的宏
-                    2.在使用宏的模板上导入 macro.html
-                        {% import 'macro.html' as macro1(别名) %}                   
-                    eg:
-                        {% import 'macros.html' as ms %}
-                        {% for name in params.lis %}
-                            {{ms.show_li(name)}}
-                        {% endfor %}
-    
-    静态文件的处理
-        1.什么是静态文件
-            在Flask中不能与服务器动态交互的文件都是静态文件
-    
-        2. 在 Flask 中处理静态文件
-            1. 所有的静态文件要放在 根目录下 static 文件中
-        
-            2. 所有的静态文件必须通过 /static/路径访问  与static目录名无关
-                /static 表示的要到静态资源目录中继续搜索
 
-模板的继承
-    1.模拟的继承类似于类的继承
-      如果一个模板中出现大量的内容与另一个模板相同的话，那么就可以使用
-        继承的方式来简化模板的开发
+### 过滤器
 
-    2.语法
-        1.父模板
-            需要在父模板中定义哪些内容在子模板中可以被重写
-            {% block 块名 %}
-                语句块
-            {% endblock %}
-    
-            block : 定义允许在子模板中被修改的内容
-                1.在父模板中正常显示，没有任何影响
-                2.在子模板中可以被重写
-    
-        2.子模板
-            1.使用标签extends来表示继承
-                {% extends '父模板名称' %} **注意这里有引号**
-    
-            2.使用  block 来重写父模板中同名块的内容
-    
-                {% block 块名 %}
-                    语句块，覆盖父模板中同名的block内容
-                {% endblock %}
+过滤器是允许在变量输出之前按一定的规则改变变量的值
+
+`{{变量|过滤器}}`
+
+jinja2模板中常见的过滤器
+
+| 过滤器     | 说明                           |
+| ---------- | ------------------------------ |
+| capitalize | 首字符变大写，其他字符变小写   |
+| lower      | 将值转为小写字符               |
+| upper      | 将值转为大写字符               |
+| title      | 将值中的每个单词的首字符变大写 |
+| trim       | 取掉值两端的空格               |
 
 
-自定义错误页面
-    404  : Not Found
-    500  : Internerl Server Error
 
-    1. 404的错误处理
-        @app.errorhandler(404)
-        def page_not_fount(e):
-            return render_template('404.html(#自定义)'),404(默认200)
-    
-    1. 500的错误处理
-        @app.errorhandler(500)
-        def internal_server_error(e):
-            return render_template('500.html(#自定义)'),500(默认200)
+## 标签
+
+### if 标签
+
+```html
+{% if 条件 %}
+语句块
+{% elif条件1 %}
+语句块
+......
+{% else %}
+语句块
+{% endif %}
+```
+
+
+
+### for 标签
+
+```html
+{% for 变量 in iter %}
+语句块
+{% endfor %}
+```
+
+内置变量: loop
+
+1. 只能在for循环标签中使用
+2. 不用声明直接用
+3. 记录本次循环的一些信息
+
+**loop 中的常用属性**
+
+1. index  记录当前循环的次数，从1开始计算
+   
+2. index0 从0开始计算
+
+3. first  表示当前的循环是否为第一次循环，值为布尔值
+
+      True 表示为第一次
+
+      False 表示不是第一次
+
+4. last   表示当前的循环是否为最后一次循环，值为布尔值
+
+      True 表示为是
+
+      False 表示不是
+
+当前循环次数:{{loop.index}}
+
+当前循环下标:{{loop.index0}}
+
+
+
+### macro 标签(宏)
+
+相当于在模板中声明函数
+
+{% macro 宏名称(参数列表) %}
+
+ .....
+{% endmacro %}
+
+使用宏:{{宏名称(参数列表)}}
+
+ **在独立的模板文件中声明所有的宏**
+
+1. 创建 macro.html 模板文件
+   作用: 定义项目中要用到的所有的宏
+2. 在使用宏的模板上导入 macro.html
+
+    {% import 'macros.html' as ms %}
+    {% for name in params.lis %}
+     {{ms.show_li(name)}}
+    {% endfor %}
+
+
+
+
+
+## 模板的继承
+
+### 父模板
+
+需要在父模板中定义哪些内容在子模板中可以被重写
+
+{% block 块名 %}
+
+语句块
+
+{% endblock %}
+
+### 子模板
+
+1. 模板顶部使用标签extends来表示继承
+
+    {% extends '父模板名称' %} **注意这里有引号**
+
+2. 使用  block 来重写父模板中同名块的内容
+
+{% block 块名 %}
+语句块，覆盖父模板中同名的block内容
+{% endblock %}
+
+
+
+
+
+## 自定义错误页面
+
+​    404  : Not Found
+​    500  : Internerl Server Error
+
+### 404的错误处理
+
+```python
+@app.errorhandler(404)
+def page_not_fount(e):
+    return render_template('404.html(#自定义)'),404(默认200)
+```
+
+### 500的错误处理
+
+```python
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html(#自定义)'),500(默认200)
+```
 
 ​       
 
 
 
-
-
 ## 请求(request)
 
+### request 的常用成员
 
-​    
-    2.请求对象 - request
-        1.什么是请求对象
-            request - 请求对象，封装了所有与请求相关的信息
-            在Flask中可以通过 request 对象来获取请求信息
-            语法:
-                from flask import request
-        2.request 的常用成员
-            1. scheme : 获取请求的方案(协议)
-            2. method : 获取请求方式 取值为 post 或 get
-            3. args ：获取使用 get 请求方式提交过来的数据 返回dict
-            4. form ：获取使用post请求方式提交过来的数据  返回dict
-            5. cookies ：获取cookies中的相关信息
-            6. headers ：获取请求消息头的相关信息   返回dict
-            7. files ： 获取上传的文件
-            8. path ： 获取请求的资源的具体路径  www.sdfd.cn/aaaaa/wer/
-            9. full_path ： 获取完整的请求资源的具体路径(带get请求中的参数) www.sdfd.cn/aaaaa/wer/?a=sd&a=345
-            10. url ： 获取完整的请求地址，从协议开始  http://www.sdfd.cn/aaaaa/wer/?a=sd&a=345
-    
-        3. 获取使用get请求方式提交过来的数据
-            1.get请求方式
-                1.表单允许实现get请求
-                    <form action='' method='get'>
-                        姓名: <input type='text' name='uname'>
-                        <input type='submit'>
-                    </form>
-                2.请求地址后拼查询字符串(提交的参数)
-                    <a href='/05-get?uname=wei&upwd=123'></a>
-    
-                3.
-                    <button onclick="btnClick()">05-链接</button>
-                    <script>
-                        function btnClick() {
-                            location.href='/05-get?uname=wei&upwd=123456789';
-                        }
-                    </script>
-    
-            2.post 请求方式
-                只有表单提交时下可以触发post请求
-                request.form 获取post提交的数据
-    
-            eg:
-                @app.route('/05-get',methods=['POST','GET'])
-                def get_views():
-                    if request.method=='GET':
-                        uname = request.args.get('uname')
-                        upwd = request.args.get('upwd')
-                    if request.method=='POST':
-                        uname = request.form.get('uname')
-                        upwd = request.form.get('upwd')
-                    return "<h2>用户名:%s,密码:%s</h2>"%(uname,upwd)
+1. `scheme` : 获取请求的方案(协议)
+2. `method` : 获取请求方式 取值为 post 或 get
+3. `args` ：获取使用 get 请求方式提交过来的数据 返回dict
+4. ` form `：获取使用post请求方式提交过来的数据  返回dict
+5. `cookies` ：获取cookies中的相关信息
+6. `headers` ：获取请求消息头的相关信息   返回dict
+7. `files` ： 获取上传的文件
+8. `path` ： 获取请求的资源的具体路径  www.sdfd.cn/aaaaa/wer/
+9. `full_path` ： 获取完整的请求资源的具体路径(带get请求中的参数) www.sdfd.cn/aaaaa/wer/?a=sd&a=345
+10. `url` ： 获取完整的请求地址，从协议开始  http://www.sdfd.cn/aaaaa/wer/?a=sd&a=345
 
 
 
@@ -432,130 +360,174 @@ app = Flask(__name__,template_folder="templates",
 
 ## 响应(response) 
 
+### 响应字符串
+
+return '字符串'
+
+### 响应模板
+
+`return render_template('xxx.html')`
+
+其本质 还是响应字符串
+
+### 响应对象 
+
+指将响应内容封装到一个对象中，以便完成更多的响应行为
+
+在Flask中可以使用 `make_response()` 构建一个响应对象
+
+```python
+from flask import make_response
+def xxx():
+    resp = make_response('响应内容')
+    resp = make_response(render_template('xxx.html'))
+    return resp
+#允许调用resp 中的属性或方法以便完成更多的响应行为
+```
+
+### 重定向
+
+**redirect()**函数的原型如下：
+
+```
+Flask.redirect(location, statuscode, response)
+```
+
+在上述函数中：
+
+- **location**参数是应该重定向响应的URL。
+- **statuscode**发送到浏览器标头，默认为302。
+- **response**参数用于实例化响应。
 
 
+```python
+from flask import redirect
 
-    响应:
-        1.什么是响应
-            响应是由服务器带给客户端的内容
-            响应的内容可以是字符串，模板，重定向
-        
-        2.响应字符串 或 模板
-            1.响应字符串
-                return '字符串'
-    
-            2.响应模板
-                return render_template('xxx.html')
-                其本质 还是响应字符串
-            
-            3.响应对象 
-                指将响应内容封装到一个对象中，以便完成更多的响应行为
-    
-                在Flask中可以使用 make_response() 构建一个响应对象
-                from flask import make_response
-    
-                @app.route('/xxx')
-                def xxx():
-                    resp = make_response('响应内容')
-                    resp = make_response(render_template('xxx.html'))
-                    return resp
-    
-                    # 允许调用resp 中的属性或方法以便完成更多的响应行为
-            
-            重定向
-                1.什么是重定向
-                    由服务器端通知客户端重新向新的地址发送请求
-                
-                2.语法
-                    from flask import redirect
-    
-                    @app.route('/xxx')
-                    def xxx():
-                        return redirect('重定向地址')
-                    **为两次请求
+@app.route('/xxx')
+def xxx():
+    return redirect(url_for('index'))
+#为两次请求
+```
 
 
 
 ## 文件上传
 
-   1.注意问题
-        表单中如果有文件上传的话，必须遵循以下两个要求:
-        1.表单的提交方式 method 必须为 post
-        2.表单的 enctype 属性必须为 multipart/form-data
-        
+### 注意问题
 
-        <form method='post' enctype='multipart/form-data'>
-    
-    2.在服务器端
-        1.获取上传文件
-            语法: request.files
-            作用: 获取上传的所有文件(字典)
-    
-            f = request.files['提交的name']
-            从上传的文件中，将指定名称的文件获取出来并保存到 f 中
-    
-        2.将文件保存带指定的目录处
-            语法 : f.save('保存的路径')
-            作用 : 将文件保存到指定目录处
-            注意 : 
-                1.保存的路径可以是相对路径也可以是绝对路径
-                2.保存路径要精确到文件名称
-                3.保存的目录必须是已存在的
-    
-            ex：
-                f.save('static/'+f.filename)
-    
-                f.filename ：能够获取出文件名
+表单中如果有文件上传的话，必须遵循以下两个要求:
 
-模型    - Models
-    1.什么是模型
-        模型，是根据数据库中表结构而创建出来的 class
+1. 表单的提交方式 method 必须为 post
+2. 表单的 enctype 属性必须为 multipart/form-data    
 
-        模型其实就是将数据表进行 "类化",以类(对象)的方式来操作你数据表(数据)
-    
-        每一张表到编程语言中就是一个class
-        表中的每一个列对应到编程语言中就是class中的一个属性
-        表中的每一条数据对应到编程语言中就是class的一个对象
-    
-        模型: 可以被称为 "模型类" 或 "实体类"
-    
-    2. 模型的框架
-        1.ORM(Object Relation Mapping 对象关系映射)
-            定义： 
-                把对象模型映射到MySQL数据库中
-        
-        2.ORM 框架的三大特征
-            1.数据表(table)到编程类(class)的映射
-                数据库中每一张表对应到编程语言中都有一个类
-            
-                在 ORM 中:
-                    允许将数据表 自动生成一个类
-                    允许将类 自动 生成一张数据表
-                
-            2.数据类型的映射
-                数据表中的字段以及数据类型 对应到 编程语言中有对应的属性和类型
-        
-            3.关系映射
-                将数据库中表与表之间的关系 对应到编程语言中类与类之间的关系
-                数据库中表与表之间的关系:
-                    1. 一对一
-                        A表中的一条记录能够与B表中的一条记录相关联
-                        B表中的一条记录能够与A表中的一条记录相关联
-    
-                        数据库中 : 主键A，外键B(唯一约束)
-                    
-                    2. 一对多
-                        A表中的一条记录能够与B表中的多条记录相关联
-                        B表中的一条记录只能够与A表中的一条记录相关联
-    
-                        数据库中 : 主键A，外键B
-                    
-                    3. 多对多
-                        A表中的一条记录能够与B表中的多条记录相关联
-                        B表中的一条记录能够与A表中的多条记录相关联
-    
-                        实现手段: 增加第三方中间表来实现多对多
-                        数据库 : 第三张表 主键 外键A 外键B
+`<form method='post' enctype='multipart/form-data'>`
+
+### 文件获取
+
+`request.files`上传的所有文件(字典)
+
+文件可以从**request.files[file]**对象的filename属性中获取。
+
+但是，建议使用**secure_filename()**函数获取它的安全版本。
+
+ `f = request.files['提交的name']`
+
+从上传的文件中，将指定名称的文件获取出来并保存到 f 中
+
+### 保存文件
+
+语法 : f.save('保存的路径')
+作用 : 将文件保存到指定目录处
+注意 : 
+
+1. 保存的路径可以是相对路径也可以是绝对路径
+2. 保存路径要精确到文件名称
+3. 保存的目录必须是已存在的
+
+```python
+f = request.files['file']
+f.save('static/'+secure_filename(f.filename))
+f.filename ：能够获取出文件名
+```
+
+
+
+可以在Flask对象的配置设置中定义默认上传文件夹的路径和上传文件的最大大小。
+
+`app.config['UPLOAD_FOLDER']`定义上传文件夹的路径
+
+app.config['MAX_CONTENT_PATH']指定要上传的文件的最大大小（以字节为单位）
+
+
+
+## cookies
+
+### 获取 cookies 的值
+
+```python
+var = request.cookies.get(key,none)
+```
+
+### 设置cookies 
+
+响应对象.set_cookie(key,value,max_age)
+
+- key: 字符串， 要保存的cookies的名称
+- value: 字符串，要保存的cookies的值
+- max_age : 最大的保存时间，取值数值,以 s为单位
+
+**多个cookie键值对**
+resp.set_cookie('uname','wangwc',3600)
+resp.set_cookie('uage', '555', 600)
+
+```python
+resp = make_response(render_template('readcookie.html'))
+resp.set_cookie('userID', user)
+resp.set_cookie('uname','wangwc',3600)
+return resp
+```
+### 删除 cookies 内容
+
+删除对应的键,就能删除对应的键值对
+`resp.del_cookie('key')  `
+
+
+
+## session
+
+### 配置 SECRET_KEY
+`app.config['SECRET_KEY'] = '自定义字符串'`
+
+### 使用 session
+
+`from flask import session`
+
+#### 向 session 中保存数据
+​    session['key'] = str(value)
+​    session['key1'] = str(value1)
+​    ...
+
+#### 从 session 中获取数据
+​    value = session['key']
+​    value = session.get('key')
+
+#### 删除 session 中的数据
+​    del session['key']
+
+   session.pop('key')
+
+#### 清空session中所有数据：
+
+```
+session.clear()
+```
+
+session 空间 默认浏览器30分钟不请求会关闭空间，
+关闭浏览器页面关闭空间
+
+
+
+## 模型    - Models
 
 
             数据库工具
@@ -686,11 +658,11 @@ Flask中的ORM框架
 
 
 ​                
-            3.查询过滤器函数
-                作用: 专门对数据进行筛选，返回部分行数据
-    
-                语法:  db.session.query().过滤器函数().执行函数()
-                    
+​            3.查询过滤器函数
+​                作用: 专门对数据进行筛选，返回部分行数据
+​    
+​                语法:  db.session.query().过滤器函数().执行函数()
+​                    
                 1. filter()  按指定条件进行查询(单表,多表,定值,不定值)  映射where子句
                 2. filter_by() 按等值条件进行过滤
                 3. limit() 按限制行数量获取结果     映射 limit子句
@@ -825,12 +797,12 @@ Flask中的ORM框架
 
 
 ​    
-        2. 在主表实体类中增加关联属性和反向引用关系:
-            为实体类的查询属性，不会作用于数据库
-    
-            关联属性名 = db.reIationship("从表实体类名",backref='反向引用属性名',lazy='')
-                                                        #多个关系选项 用 , 分隔
-    
+​        2. 在主表实体类中增加关联属性和反向引用关系:
+​            为实体类的查询属性，不会作用于数据库
+​    
+​            关联属性名 = db.reIationship("从表实体类名",backref='反向引用属性名',lazy='')
+​                                                        #多个关系选项 用 , 分隔
+​    
         关联属性名: 关联属性,变量名自定义   一对多
             1. 为主表实体类对象属性
             2. 通过这个属性能够得到对应的所有的从表实体类记录对象
@@ -963,18 +935,18 @@ Flask中的ORM框架
 
 
 ​        
-        数据的插入
-            1. A表和B表的记录正常插入，不受影响
-    
-            2. 多对多关联表数据插入，实现A表和B表的多对多映射
-                1.通过关联属性和反向引用属性
-                    在 A表 或 B表中同等操作方式，注意对应关联属性
-                    A表对象 = AClass.query.filter_by(条件).first()  
-                    B表对象 = BClass.query.filter_by(条件).first()
-                    A表对象.关联属性名.append(B表对象)
-                    db.session.add(A表对象)
-                    db.session.commit()
-    
+​        数据的插入
+​            1. A表和B表的记录正常插入，不受影响
+​    
+​            2. 多对多关联表数据插入，实现A表和B表的多对多映射
+​                1.通过关联属性和反向引用属性
+​                    在 A表 或 B表中同等操作方式，注意对应关联属性
+​                    A表对象 = AClass.query.filter_by(条件).first()  
+​                    B表对象 = BClass.query.filter_by(条件).first()
+​                    A表对象.关联属性名.append(B表对象)
+​                    db.session.add(A表对象)
+​                    db.session.commit()
+​    
                 2.通过关联表实体类
                     关联表实体类对象 = 关联表实体类名()
                     关联表实体类对象.A表从键属性名 = values  #必须是A表主键的值
@@ -1034,72 +1006,5 @@ Flask中的ORM框架
                 return 'OK'
 
 
-
-## cookies
-
-    Flask 中使用 cookies
-        1.保存 cookies 到客户端
-            使用响应对象，将数据保存进客户端的(浏览器)
-            响应对象:
-                1. resp = make_response(' ')
-                2. resp = redirect('/xxx')
-    
-            cookies 的语法:
-                响应对象.set_cookie(key,value,max_age)
-                    key: 字符串， 要保存的cookies的名称
-                    value: 字符串，要保存的cookies的值
-                    max_age : 最大的保存时间，取值数值,以 s为单位
-                多个cookie键值对
-                    resp.set_cookie('uname','wangwc',3600)
-                    resp.set_cookie('uage', '555', 600)
-    
-            eg：
-                resp = make_response('保存cookie成功')
-                resp.set_cookie('uname','wangwc',3600)
-                return resp
-    
-        2.在服务器端获取 cookies 的值
-            浏览器每次向服务器发送请求时，会将cookies中所有数据封装到request中并带到服务器
-            通过 request.cookies 获取所有的cookie的值，为字典
-
-
-
-        3.删除 cookies 内容
-            删除对应的键,就能删除对应的键值对
-            语法:
-                响应对象.delete_cookie('key')  
-
-
-
-## session
-
-
-
-    2. session 在 Flask 中的实现
-        1. 配置 SECRET_KEY
-            app.config['SECRET_KEY'] = '自定义字符串'
-    
-        2. 使用 session
-            from flask import session
-    
-            1.向 session 中保存数据
-                session['key'] = str(value)
-                session['key1'] = str(value1)
-                ...
-    
-            2.从 session 中获取数据
-                value = session['key']
-                value = session.get('key')
-    
-            3.删除 session 中的数据
-                del session['key']
-    
-        3. session 空间 默认浏览器30分钟不请求会关闭空间，
-            关闭浏览器页面关闭空间
-    
-        4.保存进 session 的内容
-            多次与服务器交互时要使用到的数据需要保存进  session
-            如:
-                登录信息
 
 
