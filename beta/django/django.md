@@ -387,27 +387,29 @@ urlpatterns = [
 
 ### name参数反向解析
 
-​        通过 path() 的别名生成对应的访问地址
+通过 path() 的别名生成对应的访问地址
 
-        1. 在模板上做反向解析
-            1. 基本解析
-                
-            `{% url '别名' %}`
-                
-            2. 带参数解析
-                `{% url '别名' '参数1' '参数2' ... %}`
-            
-        2. 在视图上做反向解析
-    
-            `from django.urls import reverse`
-    
-            1. 基本解析
-    
-               `url = reverse("别名")`
-    
-            2. 带参数解析
-    
-               `url = reverse("别名",args = ("参数1"，"参数2",....))`
+1. 在模板上做反向解析
+
+   1. 基本解析
+
+      `{% url '别名' %}`
+
+   2. 带参数解析
+
+      `{% url '别名' '参数1' '参数2' ... %}`
+
+2. 在视图上做反向解析
+
+   `from django.urls import reverse`
+
+   1. 基本解析
+
+      `url = reverse("别名")`
+
+   2. 带参数解析
+
+      `url = reverse("别名",args = ("参数1"，"参数2",....))`
 
 
 
@@ -447,104 +449,145 @@ urlpatterns = [
 
 
 
+
+
 ## 静态文件
 
-### Django中的静态文件的处理
+### 静态文件的访问路径
 
-1. 在 settings.py 中设置静态文件的访问路径
+`STATIC_URL = "/static/"`
+当访问路径为 '/static/' 时 ，就到存储目录中去查找静态文件，而不走路由解析
 
-   `STATIC_URL = "/static/"`
-   当访问路径为 '/static/' 时 ，就到存储目录中去查找静态文件，而不走路由解析
+### 静态文件的存储路径
 
-2. 设置静态文件的存储路径
+1. `STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)`  元组，可以放多个文件目录
 
-   `STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)`  元组，可以放多个文件目录
+   - 在项目的根目录处创建一个 static 目录，保存静态文件
+   - 在每个应用中也可以创建一个 static 目录，用于保存静态文件
+   - Django会自动寻找各个static目录
 
-   静态文件目录的存放位置: 
+2. 如果您想在其中一个位置引用具有附加名称空间的文件，您可以选择提供前缀作为 元组
 
-   1. 在项目的根目录处创建一个 static 目录，保存静态文件
-   2. 在每个应用中也可以创建一个 static 目录，用于保存静态文件
-   3.  Django会自动寻找各个static目录
+   ```python
+   STATICFILES_DIRS = [
+       # ...
+       ("downloads", "/opt/webfiles/stats"),
+   ]
+   ```
 
-3. 访问静态文件
+   这将允许你指的是本地文件 `'/opt/webfiles/stats/polls_20101022.tar.gz'`与`'/static/downloads/polls_20101022.tar.gz'`在您的模板，例如：
 
-   1. 通过静态文件访问路径去访问
-
-      `/static/images/naruto.jpg`
-
-   2. 使用 {% static %} 访问静态资源,动态获取静态文件访问路径，不写死
-
-      1. 在模板的最顶层增加
-
-         `{% load static %}`
-
-      2. 在使用静态资源时
-
-         `<img src={% static "images/naruto.jpg" %}`
+   ```
+   <a href="{% static "downloads/polls_20101022.tar.gz" %}">
+   ```
 
 
 
+### STATIC_ROOT
 
-STATIC_URL = '/static/'
-	STATICFILES_DIRS=(BASE_DIR, 'static') 或		STATIC_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+默认： `None`
 
-			#STATIC_ROOT 是在部署静态文件时(pyhton  manage  pycollectstatic)
-				所有的静态文静聚合的目录,STATIC_ROOT要写成绝对地址,
-				当部署项目时,在终端输入:python manage.py collectstatic
-				django会把所有的static文件都复制到STATIC_ROOT文件夹下
+[`collectstatic`](https://docs.djangoproject.com/zh-hans/2.2/ref/contrib/staticfiles/#django-admin-collectstatic)将收集静态文件以进行部署的目录的绝对路径。
+
+`STATIC_ROOT 是在部署静态文件时(pyhton  manage  pycollectstatic)所有的静态文静聚合的目录,STATIC_ROOT要写成绝对地址,所有的静态文静聚合的目录,STATIC_ROOT要写成绝对地址,django会把所有的static文件都复制`STATIC_ROOT文件夹下
+
+
+
+### 访问静态文件
+
+1. 通过静态文件访问路径去访问
+
+   `/static/images/naruto.jpg`
+
+2. 使用 {% static %} 访问静态资源,动态获取静态文件访问路径，不写死
+
+   1. 在模板的最顶层增加
+
+      `{% load static %}`
+
+   2. 在使用静态资源时
+
+      `<img src={% static "images/naruto.jpg" %}`
+
+
+
+## 媒体文件
+
+### `MEDIA_ROOT`
+
+默认值:( `''`空字符串）
+
+用于保存用户上载文件的目录的绝对文件系统路径。
+
+例： `"/var/www/example.com/media/"`
+
+`MEDIA_ROOT`并且`STATIC_ROOT`必须具有不同的值。
+
+### `MEDIA_URL`
+
+默认值:( `''`空字符串）
+
+处理从中提供的媒体的URL 如果设置为非空值，则必须以斜杠结尾。
+
+如果你想用你的模板，添加 在 的选项。{{ MEDIA_URL}}
+
+例： `"http://media.example.com/"`
+
+`MEDIA_URL`并且`STATIC_URL`必须具有不同的值。
+
+
+
 	
 	MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 	MEDIA_URL = '/media/'
 	
 	总 urls.py
-		from django.conf.urls import url, include
-		from django.contrib import admin
-		from sale import views
-	
-	
-		from django.conf.urls.static import static
-		from django.conf import settings
-	
-		urlpatterns = [
+	from django.conf.urls import url, include
+	from django.contrib import admin
+	from sale import views
+	from django.conf.urls.static import static
+	from django.conf import settings
+	urlpatterns = [
 			url(r'^admin/', admin.site.urls),
 			url(r'^$', views.index, name='index'),
 			url(r'^user/', include('userinfo.urls')),
 			url(r'^buy/', include('buy.urls')),
 			url(r'^sale/', include('sale.urls')),
 	
-		] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-	
-	
+		] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)	
+
 	models.py
 		img = models.ImageField(upload_to='img/logo', default='brandlogo.png')
 
 
-HttpRequest - 请求
-	1.什么是HttpRequest
-		HttpRequest，就是对请求对象的封装，里面封装的是请求过程中的所有信息。
-		在Django中HttpRequest被封装成request对象并封装到视图处理函数中，在调用视图时自动传入
-	2.HttpRequest中的主要内容
-		1.request.scheme : 请求协议
-		2.request.body : 请求主体
-		3.request.path : 请求路径
-		4.request.get_full_path() : 请求完整的请求路径
-		5.request.get_host() : 请求的主机地址 / 域名
-		6.request.method 
-		7.request.GET : 封装了get请求方式所提交的数据
-		8.request.POST : 封装了post请求方式所提交的数据
-		9.request.COOKIES : 封装了 cookies 中的所有数据
-		10.request.META : 封装了请求的原数据
-			request.META.HTTP_REFERER : 封装了请求的源地址
-	3.获取请求提交的数据
-		1.get 请求
-			1.获取数据
-				request.GET['名称']
-				request.GET.get('名称')
-				request.GET.getlist('名称')
-			2.使用get方式提交数据的场合
-				1.表单中 method 为get 的时候
-				2.地址栏上拼查询字符串的时候
-					http://localhost:8000/01-request/?id=1&name=xxx
+
+## HttpRequest - 请求
+
+​	1.什么是HttpRequest
+​		HttpRequest，就是对请求对象的封装，里面封装的是请求过程中的所有信息。
+​		在Django中HttpRequest被封装成request对象并封装到视图处理函数中，在调用视图时自动传入
+​	2.HttpRequest中的主要内容
+​		1.request.scheme : 请求协议
+​		2.request.body : 请求主体
+​		3.request.path : 请求路径
+​		4.request.get_full_path() : 请求完整的请求路径
+​		5.request.get_host() : 请求的主机地址 / 域名
+​		6.request.method 
+​		7.request.GET : 封装了get请求方式所提交的数据
+​		8.request.POST : 封装了post请求方式所提交的数据
+​		9.request.COOKIES : 封装了 cookies 中的所有数据
+​		10.request.META : 封装了请求的原数据
+​			request.META.HTTP_REFERER : 封装了请求的源地址
+​	3.获取请求提交的数据
+​		1.get 请求
+​			1.获取数据
+​				request.GET['名称']
+​				request.GET.get('名称')
+​				request.GET.getlist('名称')
+​			2.使用get方式提交数据的场合
+​				1.表单中 method 为get 的时候
+​				2.地址栏上拼查询字符串的时候
+​					http://localhost:8000/01-request/?id=1&name=xxx
 
 				注意：
 					url(r'^01-request/(\d{4})/(\d{1,})',xxx)
@@ -592,9 +635,9 @@ HttpRequest - 请求
 
 
 
+## 引用Django自带登录系统
 
-引用Django自带登录系统	
-	把自定义的用户model类附加在Django自带的登录表上
+把自定义的用户model类附加在Django自带的登录表上
 	mysql> desc auth_user;
 	+--------------+--------------+------+-----+---------+----------------+
 	| Field              | Type             | Null | Key | Default | Extra          |
@@ -614,16 +657,14 @@ HttpRequest - 请求
 
 
 
+### model.py
 
-model.py
-     from django.contrib.auth.models import AbstractUser
-
-	# Create your models here.
-	SEX_CHOICES = (
-		('0', '男'),
-		('1', '女'),
-	)
-
+```python
+from django.contrib.auth.models import AbstractUser
+SEX_CHOICES = (
+	('0', '男'),
+	('1', '女'),
+)
 class UserInfo(AbstractUser):
     cellphone = models.CharField(max_length=11, null=False, verbose_name='手机')
     realname = models.CharField(max_length=50, null=False, verbose_name='姓名')
@@ -631,54 +672,53 @@ class UserInfo(AbstractUser):
     address = models.CharField(max_length=150, null=False, verbose_name='地址')
     sex = models.CharField(choices=SEX_CHOICES, default='0', max_length=10, verbose_name='性别')
 
-
- settings.py           当使用用户表时 让Django使用自定义的表
-	AUTH_USER_MODEL = 'userinfo.Userinfo'
-	#app名.类名
-	
-views.py	
-	Django自带的登录验证和登录方法与退出登录方法，自动完成一系列动作(session等。。。)
-	from django.contrib import auth
-	
-	验证用户，存在返回用户对象，失败Flase
-	user = auth.authenticate(username=username, password=password)
-		authenticate()会在User 对象上设置一个属性标识那种认证后端认证了该用户，
-		且该信息在后面的登录过程中是需要的。当我们试图登陆一个从数据库中直接取出
-		来不经过authenticate()的User对象会报错的！！
-		from django.contrib import auth  #导入auth模块
-		def login(request):
-		'''
-	登陆
-	:param request:
-	:return:
-	'''
-	if request.method == 'POST':
-	    user = request.POST.get('user')
-	    pwd = request.POST.get('pwd')
-	    user = auth.authenticate(username =user,password=pwd)  #自动给你的user表自动校验
-	    if user: #登陆成功
-	        auth.login(request,user)  #相当于设置session
+```
 
 
 
-    return render(request,'login.html')
-    	
-    用户登录方法
-    auth.login(request, user)
+### settings.py
+
+当使用用户表时 让Django使用自定义的表
+	`AUTH_USER_MODEL = 'userinfo.Userinfo'`app名.类名
+
+
+
+### views.py	
+Django自带的登录验证和登录方法与退出登录方法，自动完成一系列动作(session等。。。)
+
+```python
+退出登录方法from django.contrib import auth
+#验证用户，存在返回用户对象，失败Flase
+user = auth.authenticate(username=username, password=password)
+authenticate()会在User 对象上设置一个属性标识那种认证后端认证了该用户，且该信息在后面的登录过程中是需要的。当我们试图登陆一个从数据库中直接取出来不经过authenticate()的User对象会报错的！！
+
+from django.contrib import auth  #导入auth模块
+def login(request):
+'''
+登陆
+:param request:
+:return:
+'''
+if request.method == 'POST':
+    user = request.POST.get('user')
+    pwd = request.POST.get('pwd')
+    user = auth.authenticate(username =user,password=pwd)  #自动给你的user表自动校验
+    if user: #登陆成功
+        auth.login(request,user)  #相当于设置session
+
+#退出登录方法
+auth.logout(request)      
+
+```
 
 
 ​	
-	退出登录方法
-	auth.logout(request)
-
-
+​	user对象的 is_authenticated()
+​			如果是真正的 User 对象，返回值恒为 True 。 用于检查用户是否已经通过了认证。
+​			通过认证并不意味着用户拥有任何权限，甚至也不检查该用户是否处于激活状态，
+​			这只是表明用户成功的通过了认证。 这个方法很重要, 在后台用request.user.is_authenticated()
+​			判断用户是否已经登录，如果true则可以向前台展示request.user.name
 ​	
-	user对象的 is_authenticated()
-			如果是真正的 User 对象，返回值恒为 True 。 用于检查用户是否已经通过了认证。
-			通过认证并不意味着用户拥有任何权限，甚至也不检查该用户是否处于激活状态，
-			这只是表明用户成功的通过了认证。 这个方法很重要, 在后台用request.user.is_authenticated()
-			判断用户是否已经登录，如果true则可以向前台展示request.user.name
-	
 		要求：
 			1  用户登陆后才能访问某些页面，
 	
@@ -719,14 +759,20 @@ from djanco.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 @login_required
 def index(request):
+
 # settings.py
 LOGIN_URL = '/accounts/login/' # 根据你网站的实际登陆地址来设置
 如果要使用 django 默认登陆地址，则可以通过在 urls.py 中添加如此配置：
+
 # urls.py
 url(r'^accounts/login/', views.login),
 # login.html
+
+```html
 <div class="container">
 <form class="form-signin" action="/accounts/login/" method="post">
+```
+
 
 
 	创建用户
