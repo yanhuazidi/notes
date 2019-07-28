@@ -1980,7 +1980,7 @@ cursor.execute(variable,[name,score])
 安装
     在线: sudo pip3 install sqlalchemy
 
-离线:  $ tar -xf sql....tar.gz
-      $ cd sqlalchemy
-      $ sudo python3 setup.py install
+离线:  `$ tar -xf sql....tar.gz`
+      ​`$ cd sqlalchemy`
+      ​`$ sudo python3 setup.py install`
 
