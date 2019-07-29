@@ -537,7 +537,7 @@ urlpatterns = [
 
 
 
-	
+
 	MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 	MEDIA_URL = '/media/'
 	
@@ -555,7 +555,7 @@ urlpatterns = [
 			url(r'^sale/', include('sale.urls')),
 	
 		] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)	
-
+	
 	models.py
 		img = models.ImageField(upload_to='img/logo', default='brandlogo.png')
 
@@ -713,15 +713,15 @@ auth.logout(request)
 
 
 ​	
-​	user对象的 is_authenticated()
+​	user对象的 is_authenticated
 ​			如果是真正的 User 对象，返回值恒为 True 。 用于检查用户是否已经通过了认证。
 ​			通过认证并不意味着用户拥有任何权限，甚至也不检查该用户是否处于激活状态，
-​			这只是表明用户成功的通过了认证。 这个方法很重要, 在后台用request.user.is_authenticated()
+​			这只是表明用户成功的通过了认证。 这个方法很重要, 在后台用request.user.is_authenticated
 ​			判断用户是否已经登录，如果true则可以向前台展示request.user.name
 ​	
-		要求：
-			1  用户登陆后才能访问某些页面，
-	
+​		要求：
+​			1  用户登陆后才能访问某些页面，
+​	
 			2  如果用户没有登录就访问该页面的话直接跳到登录页面
 	
 			3  用户在跳转的登陆界面中完成登陆后，自动访问跳转到之前访问的地址
