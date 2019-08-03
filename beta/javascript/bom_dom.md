@@ -132,19 +132,21 @@
 
    **开启一次性定时器**
 
-   参数:
+   ​	`setTimeout(function,time);`
 
-   - `function` : 需要执行的代码
+   参数:
+   
+- `function` : 需要执行的代码
    - `delay`  :  延迟执行的时长，默认毫秒为单位
 
    返回值 : 定时器的ID
 
    **关闭超时调用**
-
+   
    `clearTimeout(timerID);`
 
 
-     
+​     
 ## DOM 
 
 文档对象模型，提供操作文档对象的属性和方法
@@ -192,7 +194,7 @@ DOM 的核心对象为`window.document`(文档对象)
         文档节点 : 9
 
 2. 属性 `nodeName`  查看节点名称    
-    
+  
     返回值:   
     
     元素节点 : 标签名
@@ -344,7 +346,7 @@ elem.id = null;
 
     1. `parentNode` 属性
         获取当前节点的父节点，只有唯一的父节点
-        
+
    2. `childNode` 属性
 
         获取当前元素所有的子节点，包含换行,以数组形式返回
