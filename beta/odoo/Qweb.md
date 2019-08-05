@@ -465,11 +465,11 @@ javascript QWeb实现提供了一些调试挂钩:
 
 ## 助手
 
+
+
 `core.qweb`
 
-(core 是`web.core` 模块)QWeb2.Engine()的一个实例,加载了所有模块定义的模板文件，
-
-以及对标准helper对象`_(underscore)`,`_t (translation function) `和JSON的引用。
+(core 是`web.core` 模块)QWeb2.Engine()的一个实例,加载了所有模块定义的模板文件，以及对标准helper对象`_(underscore)`,`_t (translation function) `和JSON的引用。
 
 `core.qweb.render`可以用来轻松渲染基本模块模板
 
@@ -479,13 +479,13 @@ javascript QWeb实现提供了一些调试挂钩:
 
 ### class QWeb2.Engine()
 
-QWeb“renderer”处理QWeb的大部分逻辑(加载、解析、编译和呈现模板)。
+QWeb“render”处理QWeb的大部分逻辑(加载、解析、编译和呈现模板)。
 
 Odoo Web在核心模块中为用户实例化一个，并将其导出到core.qweb。它还将各个模块的所有模板文件加载到该QWeb实例中。
 
 QWeb2.Engine()还充当“模板名称空间”。
 
-QWeb2.Engine.QWeb2.Engine。呈现(模板(、上下文))
+QWeb2.Engine.render(模板(、上下文))
 
 将先前加载的模板呈现为字符串，使用上下文(如果提供的话)查找模板呈现期间访问的变量(例如要显示的字符串)。
 
@@ -499,7 +499,7 @@ Returns	String
 
 该引擎公开了另一种方法，在某些情况下可能有用(例如，如果你需要一个单独的模板名称空间，在Odoo Web中，看板视图会得到它们自己的QWeb2.Engine()实例，这样它们的模板就不会与更通用的“模块”模板发生冲突):
 
-`QWeb2.Engine.QWeb2.Engine.add_template(*templates*)`
+`QWeb2.Engine.add_template(templates)`
 
 在QWeb实例中加载一个模板文件(模板的集合)。模板可以指定为:
 
@@ -519,19 +519,19 @@ QWeb将遍历文档的第一层(所提供根的子节点)并加载任何命名�
 
 **QWeb2.Engine()还为行为定制公开了各种属性:**
 
-`QWeb2.Engine.QWeb2.Engine.prefix`
+`QWeb2.Engine.prefix`
 
 用于在解析过程中识别指令的前缀。一个字符串。默认情况下,t。
 
-`QWeb2.Engine.QWeb2.Engine.debug`
+`QWeb2.Engine.debug`
 
 布尔标志将引擎置于“调试模式”。通常，QWeb拦截模板执行过程中产生的任何错误。在调试模式下，它将保留所有异常，而不拦截它们
 
-`QWeb2.Engine.QWeb2.Engine.jQuery`
+`QWeb2.Engine.jQuery`
 
 模板继承处理期间使用的jQuery实例。默认为`window.jQuery`.
 
-`QWeb2.Engine.QWeb2.Engine.preprocess_node`
+`QWeb2.Engine.preprocess_node`
 
 一个函数。如果存在，则在将每个DOM节点编译为模板代码之前调用。在Odoo Web中，这用于自动翻译文本内容和模板中的一些属性。默认为空。
 
