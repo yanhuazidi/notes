@@ -2,6 +2,33 @@
 
 
 
+## 基本视图
+
+视图定义了模型记录的显示方式。每种类型的视图代表一种可视化模式（记录列表，其聚合图，......）。可以通过类型（例如*合作伙伴列表*）或特别是通过其ID 来一般性地请求视图。对于通用请求，将使用具有正确类型和最低优先级的视图（因此每种类型的最低优先级视图是该类型的默认视图）。
+
+视图继承允许更改在其他地方声明的视图（添加或删除内容）。
+
+### 通用视图声明
+
+视图被声明为模型的记录`ir.ui.view`。视图类型由`arch`字段的根元素隐含：
+
+```xml
+<record model="ir.ui.view" id="view_id">
+    <field name="name">view.name</field>
+    <field name="model">object_name</field>
+    <field name="priority" eval="16"/>优先级
+    <field name="arch" type="xml">
+        <!-- view content: <form>, <tree>, <graph>, ... -->
+    </field>
+</record>
+```
+
+视图的内容是XML。
+
+`arch`必须声明该字段`type="xml"`以便正确解析。
+
+
+
 ## 常见的结构
 
 视图对象公开许多字段，除非另有指定，否则它们是可选的。
@@ -95,7 +122,11 @@
 
 视图的规格按顺序应用。
 
-## 列表视图
+
+
+## 树视图
+
+树视图（也称为列表视图）以表格形式显示记录。
 
 列表视图的根元素是`<tree>`,它可以有以下几种属性：
 
@@ -200,9 +231,11 @@
 
 
 
-## 表单
+## 表单视图
 
-表单视图用于展示单条数据，根元素是form，由常规html和构造部分、语义部分组成
+表单用于展示,创建和编辑单个记录。
+
+根元素是`<form>`，由常规html和构造部分、语义部分组成
 
 ### 构造部分
 
@@ -213,13 +246,39 @@
 定义一个tab块，每一个tab通过一个page子元素定义，每个page可以有以下属性：
 
 - string (required) --tab标签的名称
-- accesskey --html accesskey
+- accesskey --HTML访问键
 - attrs --基于记录值的动态属性
 
 #### group
 
 用于定义栏目在表单中布局，默认情况下一个group定义两个列，并且每个最直接的子元素占用一个列，field类型的元素默认显示一个标签
  group占用的列数是可以通过col属性自定义的，默认2个；其他元素可以通过**colspan**属性来定义占的列数，子元素是横向布局的，可以通过设置string 属性来定义group所展示的标题
+
+```xml
+<form string="Idea form">
+    <group colspan="4">
+        <group colspan="2" col="2">
+            <separator string="General stuff" colspan="2"/>
+            <field name="name"/>
+            <field name="inventor_id"/>
+        </group>
+
+        <group colspan="2" col="2">
+            <separator string="Dates" colspan="2"/>
+            <field name="active"/>
+            <field name="invent_date" readonly="1"/>
+        </group>
+
+        <notebook colspan="4">
+            <page string="Description">
+                <field name="description" nolabel="1"/>
+            </page>
+        </notebook>
+
+        <field name="state"/>
+    </group>
+</form>
+```
 
 #### newline
 
@@ -485,6 +544,8 @@
 
 例：设置-配置-销售
 1.单行显示（没有弹出框）2.没有表格 3.保留取消按钮 4.保存按钮标红
+
+**表单视图还可以使用纯HTML来实现更灵活的布局**
 
 
 
@@ -977,6 +1038,10 @@ The root element of the Activity view is <activity>, it accepts the following at
 
 
 ## Search
+
+搜索视图自定义与列表视图（以及其他聚合视图）关联的搜索字段。它们的根元素是`<search>`，它们由定义可以搜索哪些字段的字段组成：
+
+如果模型不存在搜索视图，则Odoo会生成仅允许在该`name`字段上搜索的视图。
 
 Search views are a break from previous view types in that they don’t display*content*: although they apply to a specific model, they are used to filter other view’s content (generally aggregated views e.g. [Lists](https://www.odoo.com/documentation/12.0/reference/views.html#reference-views-list) or [Graphs](https://www.odoo.com/documentation/12.0/reference/views.html#reference-views-graph)). Beyond that difference in use case, they are defined the same way.
 

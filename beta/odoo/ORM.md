@@ -366,6 +366,32 @@ a_field = fields.Char(default=compute_default_value)
 
 ### 参数
 
+
+
+公共属性
+
+`string` (`unicode`, default: field’s name)
+
+用户界面中字段的标签（用户可见）。
+
+`required` (`bool`, default: `False`)
+
+如果为`true`，则字段不能为空，它必须具有默认值，或者在创建记录时始终给定值。
+
+`help` (`unicode`, default: `''`)
+
+为用户界面中的用户提供帮助工具提示。
+
+`index` (`bool`, default: `False`)
+
+请求odoo在列上创建数据库索引。
+
+```
+ duration = fields.Float(digits=(6, 2), help="Duration in days")
+```
+
+`digits=(6, 2)`指定浮点数的精度：6是总位数，而2是逗号后的位数。请注意，它会导致逗号之前的数字位数最多为4
+
 newline：只有在组内有用，早早的结束了当前行，立即切换到一个新的行（事先没有填充任何剩余列）
 separator：小的水平间距，具有字符串属性的行为作为一个章节标题
 sheet：可以作为一个直接的子类，以形成一个更窄、更敏感的形式布局
@@ -679,7 +705,9 @@ class user(Model):
 
 **_rec_name**
 
-​	可选字段用作名称，由osv的name_get()使用(默认:'name')
+默认情况下，对于各种显示和搜索行为，odoo还需要所有模型上的名称字段。用于这些目的的字段可以通过设置_rec_name来覆盖。
+
+可选字段用作名称，由osv的name_get()使用(默认:'name')
 
 **_inherit**
 
@@ -2139,6 +2167,8 @@ record.read()[0]
 ### 委托继承
 
 第三种继承机制提供了更大的灵活性(可以在运行时更改)，但功能更少:使用_inherits模型将当前模型上没有找到的任何字段的查找委托给“子”模型。委托是通过在父模型上自动设置的引用字段来执行的:
+
+继承机制（委托）允许将模型的每个记录链接到父模型中的记录，并提供对父记录字段的透明访问。
 
 ```python
 class Child0(models.Model):

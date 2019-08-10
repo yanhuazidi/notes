@@ -4,7 +4,21 @@
 
 
 
-# Command-line interface: odoo-bin
+## 启动/停止odoo服务器
+
+odoo使用客户机/服务器体系结构，其中客户机是通过RPC访问odoo服务器的Web浏览器。
+
+为了启动服务器，只需在shell中调用命令odoo bin，必要时添加文件的完整路径：
+
+```shell
+odoo-bin
+```
+
+通过在终端上按两次`ctrl-c`或终止相应的操作系统进程来停止服务器。
+
+
+
+## 命令行界面: odoo-bin
 
 **python odoo-bin option**
 
@@ -317,11 +331,13 @@ debug_rpc_answer  设置odoo和HTTP请求和响应记录器进行调试   相当
 
 
 
-## Scaffolding  脚手架
+## Scaffolding  
 
 脚手架是自动创建骨架结构以简化引导（在Odoo的情况下，新模块）。 虽然没有必要，但它避免了设置基本结构和查找所有起始要求的乏味。
 
 可以通过odoo-bin scaffold子命令获得脚手架
+
+`python .\odoo-bin scaffold openacademy public`
 
 ### -t <template> 
 
@@ -331,7 +347,7 @@ debug_rpc_answer  设置odoo和HTTP请求和响应记录器进行调试   相当
 
 要创建的模块的名称，可以用各种方式来生成程序名称（例如模块目录名称，型号名称......）
 
-### destination
+### destination目标目录
 
 在其中创建新模块的目录，默认为当前目录
 

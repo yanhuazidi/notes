@@ -203,7 +203,9 @@ PaymentScreen-Paymentmethods
 
 
 
+### 支付按钮
 
+**screens.js**
 
 ```js
 render_paymentmethods: function() {
@@ -228,6 +230,14 @@ click_paymentmethods: function(id) {
         this.render_paymentlines();
     },
 
+add_paymentline: function(cashregister) {
+        this.assert_editable();
+        var newPaymentline = new exports.Paymentline({},{order: this, cashregister:cashregister, pos: this.pos});
+        if(cashregister.journal.type !== 'cash' || this.pos.config.iface_precompute_cash){
+            newPaymentline.set_amount( this.get_due() );
+        }
+        this.paymentlines.add(newPaymentline);
+        this.select_paymentline(newPaymentline);
 ```
 
 
@@ -250,7 +260,7 @@ add_paymentline: function(cashregister) {
 **确认订单**
 
 ```js
-this.$('.next').click(function(){
+this.$('.next').click(function(){//2024
       self.validate_order();
 });
 
@@ -294,7 +304,13 @@ finalize_validation: function() {
 
 
 
+##  保存订单到后台数据库
 
+```js
+_flush_orders
+
+_save_to_server
+```
 
 
 
