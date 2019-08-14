@@ -2075,7 +2075,7 @@ Bases: odoo.fields.Selection
 
 
 
-## 继承和扩展
+## 模型继承
 
 Odoo提供了三种不同的机制，以模块化的方式扩展模型:
 
@@ -2087,9 +2087,60 @@ odoo有三种模块化的模型继承机制：
 
 ![](https://www.odoo.com/documentation/12.0/_images/inheritance_methods1.png)
 
+
+
+### 扩展继承
+
+- 用于添加功能
+- 与现有视图兼容的新类
+- 存储在同一个表中
+
+```python
+_inherit = '被继承模型'
+_name = '被继承模型' # 可省略
+```
+
+新模型将替换现有模型，本质上是就地扩展它。这对于向现有模型(在其他模块中创建的)添加新字段或方法，或自定义或重新配置它们(例如更改它们的默认排序顺序)非常有用:
+
+```python
+class Extension0(models.Model):  
+    _name = 'extension.0'
+    _description = 'Extension zero'
+    name = fields.Char(default="A")
+
+class Extension1(models.Model):
+    _inherit = 'extension.0'
+
+    description = fields.Char(default="Extended")
+```
+
+```python
+record = env['extension.0'].create({})
+record.read()[0]
+```
+
+将收益率:
+
+```python
+{'name': "A", 'description': "Extended"}
+```
+
+它还将生成各种自动字段，除非禁用了它们
+
+
+
 ### 古典继承
 
-当同时使用`_inherit`和`_name`属性时，Odoo使用现有的(通过_inherit提供)作为基础创建一个新模型。新模型从其基础获取所有字段、方法和元信息(default & al)。
+- 用于复制功能
+- 新类忽略现有的视图
+- 存储在不同的表中
+
+```python
+_inherit = '被继承模型'
+_name = '新模型名' # 必填
+```
+
+Odoo使用现有的(通过_inherit提供)作为基础创建一个新模型。新模型从其基础获取所有字段、方法和元信息(default & al)。
 
 ```python
 class Inheritance0(models.Model):
@@ -2130,37 +2181,6 @@ b = env['inheritance.1'].create({'name': 'B'})
 ```
 
 第二个模型继承了第一个模型的check方法及其name字段，但是覆盖了call方法，就像使用标准Python继承时一样。
-
-
-
-## 扩展
-
-当使用`_inherit`而不使用`_name`时，新模型将替换现有模型，本质上是就地扩展它。这对于向现有模型(在其他模块中创建的)添加新字段或方法，或自定义或重新配置它们(例如更改它们的默认排序顺序)非常有用:
-
-```python
-    _name = 'extension.0'
-    _description = 'Extension zero'
-
-    name = fields.Char(default="A")
-
-class Extension1(models.Model):
-    _inherit = 'extension.0'
-
-    description = fields.Char(default="Extended")
-```
-
-```python
-record = env['extension.0'].create({})
-record.read()[0]
-```
-
-将收益率:
-
-```python
-{'name': "A", 'description': "Extended"}
-```
-
-它还将生成各种自动字段，除非禁用了它们
 
 
 

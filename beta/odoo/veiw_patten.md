@@ -33,9 +33,16 @@
 
 ### 根菜单
 
+`static/description/icon.png`即可将使目录带背景图
+
 ```xml
 <menuitem id="main_openacademy_menu" name="Open Academy weitianhua" groups="base.group_user"  web_icon="openacademy_weitianhua,static/description/icon.png"/>
 ```
+
+**应用图标**
+
+1. 'application': True
+2. 所有模型加权限     .csv 文件
 
 
 
