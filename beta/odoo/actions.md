@@ -2,19 +2,31 @@
 
 
 
+### 外部标识符
+
+存储在`ir.model.data`
+
+
+
 ## action简介
 
 ### actions定义了系统对于用户的操作的响应 ( 登录、按钮、选择项目等 )
 
 `action`可以存储在数据库中，也可以作为字典直接返回，例如按钮方法。
 
+Odoo中的五种action都是继承自ir.actions.actions模型实现的子类，共有五种。分别对应五种类型、五种用途。
+
+odoo中还有其他含有action命名的模型，诸如：action.todo等，都不是actions的子类，不是动作；
+
+odoo中翻译为动作的，也不全是action，例如：自动动作，它是ir.cron模型，执行服务器的定时任务。
+
 每个action有两个必选属性：
 
-- `type`		当前操作的类别，决定可以使用哪些字段以及如何解释该操作。
+- `type`  当前操作的类别，决定可以使用哪些字段以及如何解释该操作。
 
-  常用的有 `ir.actions.act_window`,,,
+  常用的有 `ir.actions.act_window`
 
-- `name`		简短的用户可读的操作描述，可以显示在客户端界面
+- `name`  简短的用户可读的操作描述，可以显示在客户端界面
 
 
 
@@ -36,13 +48,58 @@
 字段列表：
 
 > 1. `res_model` -- 需要在view里显示数据的model
+>
 > 2. `views` -- 一个(view_id, view_type) 列表，view_type代表视图类型如：form,tree,gragh...，view_id是可选的数据库id或False，如果没有指定id，客户端会自动用fields_view_get()获取相应类型的默认视图，type参数列表的第一个会被默认用来展示,在执行操作时默认打开
+>
 > 3. `res_id` (可选) -- 当默认的视图类型是form时，可用于指定加载的数据(否则应该创建一个新记录)列表
+>
 > 4. `search_view_id` (可选) -- (id, name)，id是储存在数据库的搜索视图，默认会读取model的默认搜索视图
+>
 > 5. `target` (可选) -- 定义视图是 在当前视图上打开(`current`)、使用全屏模式(`fullscreen`)、使用弹出框(`new`)、可使用`main`代替`current`来清除面包屑导航
-> 6. `context` (可选) -- 额外的需要传给视图的环境数据
-> 7. `domain` (可选) -- 筛选域以隐式地添加到所有视图搜索查询
+>
+> 6. `context` (可选) -- 额外的需要传给打开的视图的环境数据
+>
+>    ```xml
+>    1）模型有多个同种视图时，指定打开具体的视图
+>    <field name="context">{'tree_view_ref':'模块.view_tree_XXX','form_view_ref':'模块.view_form_XXX'}</field>
+>    <field name="search_view_id" ref="view_search_XXX/>
+>    2）在跳转的同时启用过滤器
+>    <field name="context">{'search_default_过滤器名': [active_id]/True}</field>
+>    
+>    3）传递数据，可用于domain中作为表达式的值
+>    <field name="context">{"key":value}</field>
+>    
+>    4）指定跳转过去的视图记录的分组方式
+>    <field name="context">{'group_by': ['字段','...'];'group_by_no_leaf':1}</field>
+>    ```
+>
+>    context中的变量值有两种方式指定：
+>
+>    1）在python代码中调用action
+>
+>    ```python
+>    ctx = self._context.copy()
+>    ctx.update({'key': 值,})
+>    action = self.env.ref(action_name).read()
+>    action['context'] = ctx
+>    return action
+>    ```
+>
+>    2）在action的context字段直接指定，不过一般都是明确的字面量值
+>
+>    ```xml
+>    //传递数据
+>    <field name="context">{"key":value}</field>
+>    ```
+>
+> 7. `domain` (可选) -- 自动添加到搜索视图中的查询条件，即：跳转到目标视图时，立即应用domain条件过滤模型记录。表达式中的值可以是具体的常量值，也可以是调用该action时传进来的context中的变量值。
+>
+>    ```xml
+>    <field name="domain">[('字段', '=', '具体值'),('字段','=',上下文中的变量)]</field>
+>    ```
+>
 > 8. `limit` (可选) -- 默认情况下列表中显示的记录数。web客户机中默认值为80
+>
 > 9. `auto_search`(可选) -- 搜索是否在加载默认视图后立即执行，默认True
 
 ```python
@@ -69,6 +126,22 @@
 - view_ids -- 视图对象的一系列的字段，用于定义视图的默认内容
 - view_id -- 将指定的view加入到视图中，以防不被view_ids所包含,添加到views列表中的特定视图，以防其类型是view_mode列表的一部分，而view_id中的某个视图还没有填充它
 
+11：view_mode
+
+​        以逗号分隔的视图类型列表，所有列举的类型的视图记录都会被加载。
+
+12：view_ids
+
+​        一般用于具体指定view_mode中列举类型的各种视图的具体记录。用法如下：
+
+```xml
+<record id="action_" model="ir.actions.act_window">
+    <field name="view_ids" eval="[(5,0,0),
+                          (0,0,{'view_mode':'tree'}),
+                          (0,0,{'view_mode':'form', 'view_id': ref('form视图id')})]"/>
+</record>
+```
+
 上述参数一般在使用数据文件定义action的时候使用：
 
 ```xml
@@ -87,24 +160,56 @@
 - 如果定义了view_id而且它的类型没有被包含在其中，将它的(id, type)加到最前面
 - 对于所有没有指定的view_mode，加一个(False,type)
 
+**help**
+
+```xml
+<field name="help" type="html">
+    <p class="o_view_nocontent_smiling_face">
+      Add a new member
+    </p><p>
+      Odoo helps you easily track all activities related to a member: 
+      Current Membership Status, Discussions and History of Membership, etc.
+    </p>
+</field>
+```
+
 
 
 ## 链接Action(`ir.actions.act_url`)
 
-允许通过odoo的链接打开一个网站页面，可通过两个字段来自定义：
+允许通过odoo的链接打开一个网站页面，将用Odoo主页替换当前的内容部分。可通过两个字段来自定义：
 
 - `url` -- 当激活action时所打开的链接
 - `target `--   new：在新窗口打开，self：替换当前页面内容，默认new
 
-```python
-{
-    "type": "ir.actions.act_url",
-    "url": "http://odoo.com",
-    "target": "self",
-}
+**用法：**
+
+1）视图上：通过点击菜单，打开链接
+
+```xml
+<record id="url_action_XXX" model="ir.actions.act_url">
+        <field name="name"></field>
+        <field name="url">网址</field>
+        <field name="target">new</field>
+</record>
+<record id="base.open_menu" model="ir.actions.todo">
+        <field name="action_id" ref="url_action_XXX"/>
+        <field name="state">open</field>
+</record>
 ```
 
-将用Odoo主页替换当前的内容部分。
+2）python代码：可以作为按钮的点击函数，在函数中return一个链接action，打开链接
+
+```python
+return {
+       'type': 'ir.actions.act_url',
+       'url': "http://odoo.com",
+       'target': 'self',
+       'res_id': self.id,
+  }
+```
+
+
 
 
 
@@ -120,7 +225,7 @@
 - `model_id` -- 与action相关联的model，在 evaluation contexts中可用
 - `condition` (可选) -- 使用服务端的  evaluation contexts 来执行python代码，如果是False则阻止action执行，默认值是True
 
-有效动作类型是可以随意扩展的，默认的动作类型**：
+有效动作类型是可以随意扩展的，默认的动作类型：
 
 ### `code`
 
@@ -209,6 +314,28 @@ code
 
 直接返回使用action_id定义的其他操作的间接方向。只需将该操作返回给客户端执行即可。
 
+**用法举例：**
+
+```xml
+//定义action
+<record model="ir.actions.server" id="记录id">
+        <field name="name"></field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="模块名.model_下划线分隔的模型名"/>
+        <field name="code">
+        要执行的python代码。
+        </field>
+ </record>
+
+//调用action
+1）可以在界面上调用，作为按钮点击事件等
+<button name="%(模块名.action记录id)d" type="action" string="按钮文本" class="oe_link"/>
+
+2）也可以在python代码中使用
+
+3）结合odoo中的定时任务使用
+```
+
 
 
 ### 上下文环境
@@ -244,6 +371,90 @@ code
 - `attachment_use` -- 当取值true的时候只在第一次请求时生成报表，之后直接从保存的报表打印，可用于生成后不会有改变的报表
 - `attachment` -- 使用python表达式来定义报表名字，该记录可用变量object访问
 
+用法举例：
+
+1）定义报表模型
+
+```
+class XXXReport(models.AbstractModel):
+    _name = 'report.模块名.报表名'
+
+    @api.model
+    def get_data(self, 参数):
+       获取报表所需数据并返回。
+
+    @api.multi
+    def render_html(self, docids, data=None):
+        data = dict(data or {})
+        data.update(get_data(参数))
+        return self.env['report'].render('模块名.报表qweb文件template id', data)//传递data，渲染报表
+```
+
+2）定义报表视图
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="报表模板id">
+            Qweb语法，定义报表格式。
+        </template>
+    </data>
+</odoo>
+```
+
+3）定义报表打印action
+
+```
+<record id="" model="ir.actions.report.xml">
+        <field name="name"></field>
+        <field name="model">report.模块名.报表模型名</field>
+        <field name="report_type">qweb-pdf|qweb-html</field>
+        <field name="report_name">输出的报表文件名</field>
+ </record>
+```
+
+4）在controller、按钮事件等地方，渲染报表【渲染时，会自动调用渲染action，按照action指定的纸张格式、输出文件名等设定进行渲染】
+
+```
+    @http.route('/模块/xx_report', type='http', auth='user')
+    def print_xx_report(self, 查询条件值, **kw):
+        report_model = request.env['report.报表模型名'] //获取报表模型
+        pdf = request.env['report'].with_context(查询参数 = 查询条件值).get_pdf(report_model, '模块.报表qweb文件的template id')
+        pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdf))]
+        return request.make_response(pdf, headers=pdfhttpheaders)
+```
+
+ 注：我们创建的报表，都是report模型中的一条记录而已。
+
+​        因此，odoo报表打印其实就是report模型的两个方法：get_pdf(具体报表模型，报表视图模板id) 和 get_html(具体报表模型，报表视图模板id)。
+
+​        因此，报表打印可以通过以上两个方法，可以在任何地方触发打印：在controller可以生成报表回传(如上）、也可以作为按钮的点击函数进行响应。
+
+​        此外，report模型还提供了render方法，传递参数进来直接渲染报表的qweb文件，也是可以的。
+
+```
+return self.env['report'].render('模块.报表template id', data)
+```
+
+ 5）报表的打印
+
+​        上面四步只是生成了报表，但是要调起打印机打印，报表工作才算是完成。
+
+​        PDF报表：由于生成了PDF文件，任何PDF阅读器都集成了打印选项，因此这不需要我们实现。
+
+​        Html报表：网页渲染的报表，因为整个网页就是报表内容，因此打印报表就是打印网页。
+
+​                       a）可以直接点击浏览器的“打印”菜单，进行打印；
+
+​                       b）在报表页面，设置一个botton，为它指定响应事件，调用浏览器的打印函数
+
+```
+$('.print_button').click(function() {window.print();})
+```
+
+
+
 
 
 ## 客户端Actions (ir.actions.client)
@@ -253,6 +464,7 @@ code
 - `tag` -- action在客户端的标识符，一般是一个专用的字符串
 - `params` (可选) -- 用来传给客户端的python数据字典格式数据
 - `target`(可选) -- `current`:当前内容区打开action,`fullscreen`:以全屏模式打开，`new`：以弹出框打开
+- `context`-- 作为额外数据，传递给客户端函数。
 
 ```python
 #例：打开一个pos界面，不需要服务端知道它是如何运行的
@@ -261,6 +473,53 @@ code
     "tag": "pos.ui"
 }
 ```
+
+```xml
+<record id="action_manual_reconcile" model="ir.actions.client">
+    <field name="name">Journal Items to Reconcile</field>
+    <field name="res_model">account.move.line</field>
+    <field name="tag">manual_reconciliation_view</field>
+</record>
+```
+
+  用法举例：
+
+1）在js文件中定义客户端widget，并注册
+
+```js
+var 自定义widget名= Widget.extend({
+        init：init函数；
+        start:自动调用到start函数；
+        其他函数，被init、start调用。//自定义widget，就是自定义动作
+})
+core.action_registry.add('widget tag名', widget名);
+return {
+    widget名: widget名,
+};
+```
+
+2）在视图中调用：**作为按钮的点击函数的name属性、作为菜单项的action**
+
+```xml
+<record id="action_" model="ir.actions.client">
+            <field name="name"></field>
+            <field name="res_model"></field>
+            <field name="tag">widget注册时的tag名</field>
+</record>
+```
+
+ 3）在代码中调用
+
+```
+return {
+            'type': 'ir.actions.client',
+            'name': '',
+            'tag': '动作的tag',
+            'params': {key:value},
+        }
+```
+
+【客户端动作十分强大而且自由，可以在js文件中使用前端逻辑定义一系列操作，诸如跳转、加载页面等等都可以。甚至，可以加载自定义的qweb页面进来，使用jinja填充数据，实现自由前端。】
 
 
 

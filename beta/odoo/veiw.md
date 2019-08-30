@@ -45,7 +45,7 @@
 
 - `inherit_id` 当前视图的父级视图
 
-- `mode` 继承模式，当inherit_id没有设置时，它的值是primary,当设置了inherit_id后，它默认值是extension，可手动设置为primary
+- `mode` 继承模式，当inherit_id没有设置时，它的值是primary（初级）,当设置了inherit_id后，它默认值是extension（扩展），可手动设置为primary
 
 - `application` 定义哪些视图可以被切换，默认情况下所有视图都可以
 
@@ -95,9 +95,9 @@
 继承规范由一个定位元素组成，用来匹配父视图中被继承的元素、和 子视图中会被用来修改的继承元素
  一共有三种用来匹配目标元素的定位元素：
 
-- 带有expr属性的xpath元素 ，expr是一个用在arch中的xpath表达式，找到的第一个节点就是匹配结果
-- 带有name属性的field元素，匹配第一个一样name的field元素，其他的属性在匹配时被忽略
-- 其他的元素：匹配第一个拥有一样的name及其他属性的元素（忽略position,version属性）
+- 带有`expr`属性的`xpath`元素 ，`expr`是一个用在`arch`中的`xpath`表达式，找到的第一个节点就是匹配结果
+- 带有`name`属性的`field`元素，匹配第一个一样`name`的`field`元素，其他的属性在匹配时被忽略
+- 其他的元素：匹配第一个拥有一样的`name`及其他属性的元素（忽略`position`,`version`属性）
 
 继承规范通过可选的position属性来指定如何修改匹配的节点
 
@@ -105,9 +105,10 @@
 - `replace` - 替换匹配的节点
 - `after `- 添加到匹配的节点的父节点之后
 - `before `- 添加到匹配的节点的父节点之前
-- `attributes` - 继承的内容是一系列拥有name属性的attribute 元素，且有可选的内容主体
-   1.如果attribute有内容主体，就在匹配的节点上添加以name命名的、以内容主体为值的属性
-   2.如果attribute没有内容主体，就将匹配节点上名字为name的属性删除，如果没有对应的属性，抛出一个错误
+
+**fields** 继承的内容是一系列拥有name属性的field 元素，且有可选的内容主体
+1.如果field有内容主体，就在匹配的节点上添加以name命名的、以内容主体为值的属性
+2.如果field没有内容主体，就将匹配节点上名字为name的属性删除，如果没有对应的属性，抛出一个错误
 
 此外，`position` `move` 可以作为规范的直接子元素使用，其中包含用于移动节点的`inside`、`replace`、`after`或`before`位置属性。
 
@@ -134,6 +135,14 @@
 
 默认情况下选择单行记录时会打开对应记录的表单，该属性让数据可以在列表内进行编辑，有效的值是top和bottom，可让新的记录出现在列表的顶部或底部
 
+```xml
+<tree string="Budget Items" editable="top">
+```
+
+### on_write
+
+只当启用editable时有用，在调用时会传给函数新增或修改后的记录，该函数需要返回一个用于更新列表的记录id列表
+
 ### default_order
 
 重定义视图的排序规则，以逗号分隔多个字段，可使用desc来进行倒序
@@ -150,13 +159,17 @@
 
 ``{$name}` 可为 `bf` (`font-weight: bold`), `it` (`font-style: italic`),或其他 bootstrap样式如(`danger`, `info`, `muted`, `primary`, `success` or `warning`).
 
+```xml
+<tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-bf="not partner_id" string="Vendor Bill" js_class="account_bills_tree">
+```
+
 ### create, edit, delete
 
 可以通过将它们设置为false来禁用视图中的对应操作
 
-### on_write
-
-只当启用editable时有用，在调用时会传给函数新增或修改后的记录，该函数需要返回一个用于更新列表的记录id列表
+```xml
+<tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Voucher Entries" create="0" edit="0">
+```
 
 ### button
 
@@ -164,19 +177,55 @@
 
 >**属性列表：**
 >
->1. `icon` -- 用来展示按钮的图标
+>1. `icon` -- 用来展示按钮的图标  可以是 font-awesome
+>
+>   ```xml
+>   <button type="object" name="compute_depreciation_board" string="Compute Depreciation"
+>    icon="fa-arrow-right" states="draft"/>
+>   ```
+>
 >2. `string` -- 当没有icon的时候，button显示的文字，有icon的时候、相当于alt属性值
+>
 >3. `type` -- 按钮类型，表示点击它之后如何影响系统
 >
 >>1)`workflow`（默认）：将按钮name作为信号发送给工作流，记录的内容作为参数
->> 2)`object `： 调用当前数据列表模型的方法，方法名是按钮的name，调用时带有记录id和当前上下文环境
->> 3)`action` ： 加载ir.actions，按钮name是该action在数据库的id，上下文环境扩展到列表的model(作为active_model)、当前记录(active_id)、所有当前加载记录的id(active_ids)
+>>2)`object `： 调用当前数据列表模型的方法，方法名是按钮的name，调用时带有记录id和当前上下文环境
+>>
+>>```xml
+>><button name="action_cancel_draf" states="draft" string="Confirm" type="object" class="oe_highlight"/>
+>>```
+>>
+>>3)`action` ： 加载`ir.actions`，按钮`name`是该`action`在数据库的id，`action`上下文环境添加此列表的`model`(作为`active_model`)、当前记录(`active_id`)、所有当前加载记录的id(`active_ids`)
+>>
+>>**name** 的值为 `action` 外部ID 或 %()d 转换后的数据库ID
+>>
+>>```xml
+>><button name="%(action_asset_modify)d" states="open,draft" string="Modify Depreciation" type="action"/>
+>>name="%(action_asset_modify)d" 会将外部id转换为数据库记录id
+>>```
 >
->4. `name`,`args` 与type一样
->5. `attrs` 基于记录值的动态属性，将domain表达式应用在记录上，当返回值为True的时候设置相应的属性，一般用于invisible （隐藏按钮）、readonly （禁用按钮但显示）这两种属性
->6. `states`   `invisible`属性的简写，`attrs`给出一个以逗号分隔的state列表，需要模型有一个对应的state属性，可以将不在state列表中的记录的按钮隐藏
->7. context` 当响应odoo的调用时，合并到视图的上下文环境中
->8. confirm` 当点击按钮时给出的确认消息
+>4. `name`,`args` 与`type`一样
+>
+>5. `attrs` 基于记录值的动态属性，将`domain`表达式应用在记录上，当返回值为`True`的时候设置相应的属性，一般用于`invisible` （隐藏按钮）、`readonly` （禁用按钮但显示）这两种属性
+>
+>   ```xml
+>   <button name="set_to_draft" string="Set to Draft" type="object"
+>   attrs="{'invisible': ['|', ('entry_count', '!=', 0), ('state', '!=', 'open')]}"/>
+>   ```
+>
+>6. `states`   `invisible`属性的简写，`attrs`给出一个以逗号分隔的state列表，**需要模型有一个对应的state属性，可以将不在state列表中的记录的按钮隐藏**
+>
+>   ```xml
+>   <button name="%(action_asset_modify)d" states="open,draft" string="Modify Depreciation" type="action"/>
+>   ```
+>
+>7. `context` 当响应odoo的调用时，合并到视图的上下文环境中
+>
+>8. `confirm` 当点击按钮时给出的确认消息
+>
+>   ```xml
+>   <button name="cancel_voucher" string="Cancel Receipt" type="object" states="posted" confirm="Are you sure you want to cancel this receipt?"/>
+>   ```
 
 ### field
 
@@ -194,8 +243,14 @@
 >>`many2onebutton`当关联字段值存在时显示勾，不存在显示X
 >>`handle`对于排序字段，直接显示向上向下箭头
 >
->6. `sum`, `avg` 在底部显示基于当前页面数据的计算
->7. `attrs` 基于记录值的动态属性，只对当前栏有效，即可以第一条记录中该字段显示，第二条隐藏
+>6. `sum`, `avg` 在**底部**显示基于当前页面数据的计算
+>
+>   ```xml
+>   <field name="practical_amount" avg="Practical Amount" widget="monetary"/>
+>   <field name="theoritical_amount" sum="Theoritical Amount" widget="monetary"/>
+>   ```
+>
+>7. `attrs` 基于记录值的动态属性，**只对当前栏有效**，即可以第一条记录中该字段显示，第二条隐藏
 
 如果列表视图是可编辑的，那么表单视图中的任何字段属性都是有效的，并将在设置内联表单视图时使用
 
@@ -252,18 +307,19 @@
 #### group
 
 用于定义栏目在表单中布局，默认情况下一个group定义两个列，并且每个最直接的子元素占用一个列，field类型的元素默认显示一个标签
- group占用的列数是可以通过col属性自定义的，默认2个；其他元素可以通过**colspan**属性来定义占的列数，子元素是横向布局的，可以通过设置string 属性来定义group所展示的标题
+group占用的列数是可以通过**col**属性自定义的，默认2个；
+其他元素可以通过**colspan**属性来定义占的列数，子元素是横向布局的，可以通过设置string 属性来定义group所展示的标题
 
 ```xml
 <form string="Idea form">
-    <group colspan="4">
-        <group colspan="2" col="2">
+    <group col="4">
+        <group col="2">
             <separator string="General stuff" colspan="2"/>
             <field name="name"/>
             <field name="inventor_id"/>
         </group>
 
-        <group colspan="2" col="2">
+        <group col="2">
             <separator string="Dates" colspan="2"/>
             <field name="active"/>
             <field name="invent_date" readonly="1"/>
@@ -304,16 +360,25 @@
 
 调用Odoo系统，类似于列表视图按钮。此外，还可以指定以下属性:
 
->`special`
+>`special` 对于对话框中打开的窗体视图:`save`以保存记录并关闭对话框，`cancel`以不保存而关闭对话框。
 >
->对于对话框中打开的窗体视图:保存以保存记录并关闭对话框，取消以不保存而关闭对话框。
+>```xml
+><button string="Cancel" class="btn-secondary" special="cancel"/>
+>```
 
 #### field
 
 展示当前记录的某个字段，有以下属性：
 - `name` (必选) -- 用于展示字段名
+
 - `widget` -- 每个字段根据其数据类型有一个默认的展示方式，widget属性可指定用一个别的方式来展示
+
 - `options` -- 用于指定widget字段配置的json对象
+
+  ```xml
+  <field name="value_residual" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+  ```
+
 - `class` -- 用于设置当前元素的html class属性：
 
   >`oe_inline` -  防止它自动将之后的字段换行
@@ -323,17 +388,29 @@
   >`oe_avatar` - 当该字段为图片时，将它展示为头像（90*90的正方形）
 
 - `groups` - 只将该字段展示给指定用户组
+
 - `on_change` - 在字段值改变时调用对应方法，从8.0开始改用模型中的 odoo.api.onchange()
+
 - `attrs` - 基于记录值的动态参数
+
 - `domain` - 当以选择的方式显示关联字段时，用过过滤数据
+
 - `context `- 用于关联字段，显示数据时提供上下文环境
+
 - `readonly` - 该字段可在读和编辑模式下展示，但是永远是不能编辑的
+
 - `required` - 当该值没有设置就保存时给出一个错误提示并阻止保存
+
 - `nolabel` - 不显示字段的标签，只有在该字段是group子元素时用意义
+
 - `placeholder` - 字段值为空时展示的提示
+
 - `mode` - 对于one2many字段，用于展示其关联的记录的形式，有tree, form, kanban , graph，默认是tree
+
 - `help` - 当将鼠标放在字段或标签时显示的提示
+
 - `filename` - 对于二进制的字段，相关字段给出文件名
+
 - `password` - 表示该字段是一个密码，不明文展示
 
 ### 业务视图规则
@@ -376,7 +453,7 @@
   >->发货
 
 
-   高亮的按钮强调下一步的流程，用于提示用户，通常放在第一个。另外取消按钮一般被设置成灰色，如在发货里退款按钮不会被设置为高亮。通过设置oe_highlight的class属性来将按钮元素高亮显示
+高亮的按钮强调下一步的流程，用于提示用户，通常放在第一个。另外取消按钮一般被设置成灰色，如在发货里退款按钮不会被设置为高亮。通过设置oe_highlight的class属性来将按钮元素高亮显示
 
   ```xml
   <button class="oe_highlight" name="..." type="..." states="..."/>
@@ -642,10 +719,10 @@ pivot跟其他图表一样也只允许field元素，它可以有以下属性:
 - `default_group_by` -- 当action或search没有进行分组时，视图是否需要进行分组，取值为用于进行分组的字段名
 - `default_order` -- 当用户没有对记录进行排序时卡片中所使用的排序字段
 - `class` -- 添加看板视图根html的类属性
-- `group_create`--“添加新列”栏是否可见。默认值:真的。
-- `group_delete`--是否可以通过上下文菜单删除组。默认值:真的。
-- `group_edit`--是否可以通过上下文菜单编辑组。默认值:真的。
-- `archivable`--如果在模型上定义了activefield，是否可以存档/恢复属于列的记录。默认值:真的。
+- `group_create`--“添加新列”栏是否可见。默认值:true。
+- `group_delete`--是否可以通过上下文菜单删除组。默认值:true。
+- `group_edit`--是否可以通过上下文菜单编辑组。默认值:true。
+- `archivable`--如果在模型上定义了activefield，是否可以存档/恢复属于列的记录。默认值:true。
 - `quick_create` -- 是否可以在不切换到表单视图的情况下直接创建记录，当看板视图是经过分组的时候它是启用的，否则不启用，可通过设置True来强制启用，False强制禁用
 
 子元素可以是以下几种
@@ -896,7 +973,7 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
   容许属性:
 
-  - `field` (强制性)
+  - `field` (必填)
 
   用于计算聚合的字段名。可能的字段类型有:
 
@@ -908,37 +985,37 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
   
 
-  - `name` **(强制性)**
+  - `name` (必填)
 
-  - `string` (optional)
+  - `string` (可选)
 
-    A short description that will be displayed above the value. If not given, it will fall back to the field string.
+    将在值上方显示的简短描述。如果不给出，它将返回到字段字符串。
 
-  - `domain` (optional)
+  - `domain` (可选)
 
-    An additional restriction on the set of records that we want to aggregate. This domain will be combined with the current domain.
+    对要聚合的记录集的附加限制。此域将与当前域合并。
 
-  - `domain_label` (optional)
+  - `domain_label` (可选)
 
-    When the user clicks on an aggregate with a domain, it will be added to the search view as a facet. The string displayed for this facet can be customized with this attribute.
+    当用户单击带有域的聚合时，它将作为方面添加到搜索视图中。可以使用此属性自定义为此方面显示的字符串。
 
-  - `group_operator` (optional)
+  - `group_operator` (可选)
 
-    A valid postgreSQL aggregate function identifier to use whn aggregating values (see <https://www.postgresql.org/docs/9.5/static/functions-aggregate.html>). If not provided, By default, the group_operator from the field definition is used. Note that no aggregation of field values is achieved if the group_operator value is “”.
+    使用WHN聚合值的有效PostgreSQL聚合函数标识符（请参阅https://www.postgresql.org/docs/9.5/static/functions aggregate.html）。如果未提供，默认情况下，将使用字段定义中的group_运算符。请注意，如果组“operator value”为“”，则不会实现字段值的聚合。
 
-    The special aggregate function `count_distinct` (defined in odoo) can also be used here
+    这里还可以使用特殊的聚合函数count_distinct（在odoo中定义）
 
     ```xml
     <aggregate name="price_total_max" field="price_total" group_operator="max"/>
     ```
     
-  - `col` (optional)--由此标记张成的列数(仅在组中有意义)。默认情况下,1。
+  - `col` (可选)--由此标记张成的列数(仅在组中有意义)。默认情况下,1。
   
-  - `widget` (optional)--格式化值的小部件(类似于字段的小部件属性)。例如,货币。
+  - `widget` (可选)--格式化值的小部件(类似于字段的小部件属性)。例如,货币。
   
-  - `help` (optional)--工具提示中dipkill的帮助消息(相当于python中字段的帮助)
+  - `help` (可选)--工具提示中dipkill的帮助消息(相当于python中字段的帮助)
   
-  - `measure` (optional)--此属性是描述在单击聚合时必须在图和轴心视图中使用的度量的字段的名称。特殊值_count__可用于计数测度。
+  - `measure` (可选)--此属性是描述在单击聚合时必须在图和轴心视图中使用的度量的字段的名称。特殊值_count__可用于计数测度。
   
     ```xml
     <aggregate name="total_ojects" string="Total Objects" field="id" group_operator="count" measure="count"/>
@@ -953,87 +1030,79 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
   注意，与聚合类似，公式也应该在组标记中使用(否则样式将无法正确应用)。
 
-
-
-
-
-
-
-
-
 - `widget`
 
-  Declares a specialized widget to be used to display the information. This is a mechanism similar to the widgets in the form view.Admissible attributes are:`name` (mandatory)A string to identify which widget should be instantiated. The view will look into the `widget_registry` to get the proper class.`col` (optional)The number of columns spanned by this tag (only makes sense inside a group). By default, 1.
+  声明用于显示信息的专用小部件。这是一种类似于窗体视图中小部件的机制。允许的属性是：name（强制）一个字符串，用于标识应实例化哪个小部件。视图将查看widget_注册表，以获得正确的class.col（可选）这个标记所跨越的列数（只在组内有意义）。默认情况下，1.
 
 
 
 ## Cohort
 
-The cohort view is used to display and understand the way some data changes over a period of time. For example, imagine that for a given business, clients can subscribe to some service. The cohort view can then display the total number of subscriptions each month, and study the rate at which client leave the service (churn). When clicking on a cell, the cohort view will redirect you to a new action in which you will only see the records contained in the cell’s time interval; this action contains a list view and a form view.
+队列视图用于显示和理解某些数据在一段时间内的变化方式。例如，假设对于给定的业务，客户机可以订阅某些服务。然后，队列视图可以显示每个月的订阅总数，并研究客户离开服务（流失）的速度。单击单元格时，队列视图将重定向到一个新操作，在该操作中，您将只看到单元格时间间隔中包含的记录；此操作包含列表视图和表单视图。
 
 ### Warning
 
-The Cohort view is only available in Odoo Enterprise.
+队列视图仅在Odo Enterprise中可用。
 
-By default the cohort view will use the same list and form views as those defined on the action. You can pass a list view and a form view to the context of the action in order to set/override the views that will be used (the context keys to use being `form_view_id` and `list_view_id`)
+默认情况下，队列视图将使用与操作上定义的列表和表单视图相同的列表和表单视图。您可以将列表视图和表单视图传递到操作的上下文，以便设置/重写将要使用的视图（要使用的上下文键是表单视图ID和列表视图ID）
 
-For example, here is a very simple cohort view:
+例如，这里有一个非常简单的队列视图：
 
 ```
 <cohort string="Subscription" date_start="date_start" date_stop="date" interval="month"/>
 ```
 
-The root element of the Cohort view is <cohort>, it accepts the following attributes:
+队列视图的根元素是`<cohort>`，它接受以下属性：
 
-- - `string` (mandatory)
+- `string` (必填)
 
-    A title, which should describe the view
+  标题，应描述视图
 
-- - `date_start` (mandatory)
+- `date_start` (必填)
 
-    A valid date or datetime field. This field is understood by the view as the beginning date of a record
+  有效的日期或日期时间字段。视图将此字段理解为记录的开始日期。
 
-- - `date_stop` (mandatory)
+- `date_stop` (必填)
 
-    A valid date or datetime field. This field is understood by the view as the end date of a record. This is the field that will determine the churn.
+  有效的日期或日期时间字段。视图将此字段理解为记录的结束日期。这是决定客户流失的字段。
 
-- - `mode` (optional)
+- `mode` (可选)
 
-    A string to describe the mode. It should be either ‘churn’ or ‘retention’ (default). Churn mode will start at 0% and accumulate over time whereas retention will start at 100% and decrease over time.
+  描述模式的字符串。它应该是“客户流失”或“保留”（默认）。搅动模式将从0%开始，并随着时间累积，而保留将从100%开始，并随着时间减少。
 
-- - `timeline` (optional)
+- `timeline` (可选)
 
-    A string to describe the timeline. It should be either ‘backward’ or ‘forward’ (default). Forward timeline will display data from date_start to date_stop, whereas backward timeline will display data from date_stop to date_start (when the date_start is in future / greater than date_stop).
+  描述时间线的字符串。它应该是“向后”或“向前”（默认）。前进时间线将显示从“开始”到“停止”的数据，而后退时间线将显示从“停止”到“开始”的数据（当“开始”日期在将来/大于“停止”日期时）。
 
-- - `interval` (optional)
+- `interval` (可选)
 
-    A string to describe a time interval. It should be ‘day’, ‘week’, ‘month’’ (default) or ‘year’.
+  描述时间间隔的字符串。应为“天”、“周”、“月”（默认）或“年”。
 
-- - `measure` (optional)
+- `measure` (可选)
 
-    A field that can be aggregated. This field will be used to compute the values for each cell. If not set, the cohort view will count the number of occurrences.
+  可以聚合的字段。此字段将用于计算每个单元格的值。如果未设置，队列视图将计算出现的次数。
 
 
 
 ## Activity
 
-The Activity view is used to display the activities linked to the records. The data are displayed in a chart with the records forming the rows and the activity types the columns. When clicking on a cell, a detailed description of all activities of the same type for the record is displayed.
+活动视图用于显示链接到记录的活动。数据显示在图表中，其中记录构成行，活动类型为列。当单击一个单元格时，将显示该记录的同一类型的所有活动的详细说明。
 
 ### Warning
 
-The Activity view is only available when the `mail` module is installed, and for the models that inherit from the `mail.activity.mixin`.
+只有在安装了`mail` 模块以及从`mail.activity.mixin`继承的模型时，“活动”视图才可用。
 
-For example, here is a very simple Activity view:
+例如，这里是一个非常简单的活动视图：
 
 ```
 <activity string="Activities"/>
 ```
 
-The root element of the Activity view is <activity>, it accepts the following attributes:
+活动视图的根元素是`<activity>`，它接受以下属性：
 
-- - `string` (mandatory)
+- `string` (必填)
 
-    A title, which should describe the view
+  标题，应描述视图
 
 
 
@@ -1043,33 +1112,39 @@ The root element of the Activity view is <activity>, it accepts the following at
 
 如果模型不存在搜索视图，则Odoo会生成仅允许在该`name`字段上搜索的视图。
 
-Search views are a break from previous view types in that they don’t display*content*: although they apply to a specific model, they are used to filter other view’s content (generally aggregated views e.g. [Lists](https://www.odoo.com/documentation/12.0/reference/views.html#reference-views-list) or [Graphs](https://www.odoo.com/documentation/12.0/reference/views.html#reference-views-graph)). Beyond that difference in use case, they are defined the same way.
+搜索视图与以前的视图类型不同，因为它们不显示内容：尽管它们应用于特定的模型，但它们用于筛选其他视图的内容（通常是聚合视图，例如列表或图形）。除了用例中的差异之外，它们的定义方式也是一样的。
 
-The root element of search views is `<search>`. It takes no attributes.
+搜索视图的根元素是`<search>`。它不需要属性。
 
-Possible children elements of the search view are:
+搜索视图的可能子元素包括：
 
 - `field`
 
-  fields define domains or contexts with user-provided values. When search domains are generated, field domains are composed with one another and with filters using **AND**.Fields can have the following attributes:`name`the name of the field to filter on`string`the field’s label`operator`by default, fields generate domains of the form `[(*name*, *operator*,*provided_value*)]` where `name` is the field’s name and `provided_value` is the value provided by the user, possibly filtered or transformed (e.g. a user is expected to provide the *label* of a selection field’s value, not the value itself).The `operator` attribute allows overriding the default operator, which depends on the field’s type (e.g. `=` for float fields but `ilike` for char fields)`filter_domain`complete domain to use as the field’s search domain, can use a `self` variable to inject the provided value in the custom domain. Can be used to generate significantly more flexible domains than `operator` alone (e.g. searches on multiple fields at once)If both `operator` and `filter_domain` are provided, `filter_domain` takes precedence.`context`allows adding context keys, including the user-provided value (which as for `domain` is available as a `self` variable). By default, fields don’t generate domains.the domain and context are inclusive and both are generated if a `context` is specified. To only generate context values, set `filter_domain` to an empty list: `filter_domain="[]"``groups`make the field only available to specific users`widget`use specific search widget for the field (the only use case in standard Odoo 8.0 is a `selection` widget for [`Many2one`](https://www.odoo.com/documentation/12.0/reference/orm.html#odoo.fields.Many2one) fields)`domain`if the field can provide an auto-completion (e.g. [`Many2one`](https://www.odoo.com/documentation/12.0/reference/orm.html#odoo.fields.Many2one)), filters the possible completion results.
+  字段使用用户提供的值domains或contexts。当生成搜索域时，字段域彼此组成，并使用**AND**筛选。
+
+  字段可以具有以下属性：
+
+  `name`要筛选字符串的字段的名称字段的labeloperator默认情况下，字段生成形式为 `[(*name*, *operator*,*provided_value*)]`的域，其中name是字段的名称，provided值是用户提供的值，可能是fil或转换（例如，用户需要提供选择字段值的标签，而不是值本身）。
+
+  `operator`属性允许重写默认运算符，该运算符取决于字段的类型（例如=对于float字段，而ilike对于char字段）`filter_domain` complete域用作字段的搜索域，可以使用自变量将提供的值注入自定义域。可用于生成比单独的运算符更灵活的域（例如，一次搜索多个字段）。如果同时提供运算符和筛选器域，则筛选器域优先。上下文允许添加上下文键，包括用户提供的值（对于域，该值为avai）标记为自变量）。默认情况下，字段不会生成域。域和上下文是包含的，如果指定了上下文，则两者都会生成。若要仅生成上下文值，请将filter_domain设置为空列表：filter_domain=“[]”`` groups使该字段仅对特定用户可用如果该字段可以提供De an auto completion（例如Many2one），过滤可能的完成结果。
+
+  
 
 - `filter`
 
-  a filter is a predefined toggle in the search view, it can only be enabled or disabled. Its main purposes are to add data to the search context (the context passed to the data view for searching/filtering), or to append new sections to the search filter.Filters can have the following attributes:`string` (required)the label of the filter`domain` (optional)an Odoo [domain](https://www.odoo.com/documentation/12.0/reference/orm.html#reference-orm-domains), will be appended to the action’s domain as part of the search domain.`date` (optional)the name of a field of type `date` or `datetime`. Using this attribute has the effect to create a set of filters available in a submenu of the filters menu.Example:`<filter name="filter_create_date" date="create_date" string="Creation Date"/> `The example above allows to easily search for records with creation date field values in one of the periods below.`Create Date >   Today   This Week   This Month   This Quarter   This Year --------------   Yesterday   Last Week   Last Month   Last Quarter   Last Year --------------   Last 7 Days   Last 30 Days   Last 365 Days `Note that the generated domains are dynamic and can be saved as such (via the favorites menu).`default_period` (optional)only makes sense for a filter with non empty `date` attribute. determines which period is activated if the filter is in the default set of filters activated at the view initialization. If not provided, ‘this_month’ is used by default.To choose among the following options: today, this_week, this_month, this_quarter, this_year, yesterday, last_week, last_month, last_quarter, last_year, last_7_days, last_30_days, last_365_daysExample:`<filter name="filter_create_date" date="create_date" string="Creation Date" default_period="this_week"/> ``context`a Python dictionary, merged into the action’s domain to generate the search domainThe key `group_by` can be used to define a groupby available in the ‘Group By’ menu. The ‘group_by’ value can be a valid field name or a list of field names.`<filter name="groupby_category" string="Category" context = {'group_by': 'category_id'}/> `The groupby defined above allows to group data by category.When the field is of type `date` or `datetime`, the filter generates a submenu of the Group By menu in which the following interval options are available: day, week, month, quarter, year.In case the filter is in the default set of filters activated at the view initialization, the records are grouped by month by default. This can be changed by using the syntax ‘date_field:interval’ as in the following example.Example:`<filter name="groupby_create_date" string="Creation Date" context = {'group_by': 'create_date:week'}/> ``name`logical name for the filter, can be used to [enable it by default](https://www.odoo.com/documentation/12.0/reference/views.html#reference-views-search-defaults), can also be used as [inheritance hook](https://www.odoo.com/documentation/12.0/reference/views.html#reference-views-inheritance)`help`a longer explanatory text for the filter, may be displayed as a tooltip`groups`makes a filter only available to specific usersNew in version 7.0.Sequences of filters (without non-filters separating them) are treated as inclusively composited: they will be composed with `OR` rather than the usual `AND`, e.g.`<filter domain="[('state', '=', 'draft')]"/> <filter domain="[('state', '=', 'done')]"/> `if both filters are selected, will select the records whose `state` is `draft` or `done`, but`<filter domain="[('state', '=', 'draft')]"/> <separator/> <filter domain="[('delay', '<', 15)]"/> `if both filters are selected, will select the records whose `state` is `draft` **and** `delay` is below 15.
+  过滤器是搜索视图中的预定义切换，只能启用或禁用。其主要目的是将数据添加到搜索上下文（传递给数据视图以进行搜索/筛选的上下文），或将新节附加到搜索筛选器。筛选器可以具有以下属性：string（必需）filter domain（可选）的标签odoo域，将被附加到o操作的域作为搜索域的一部分。日期（可选）日期或日期时间类型的字段的名称。使用此属性可以创建过滤器菜单子菜单中可用的一组过滤器。示例：<filter name=“filter_create_date”date=“create_date”string=“creation date”/>上面的示例允许在其中一个期间中轻松搜索具有创建日期字段值的记录。下面。创建日期>本周，本月，本季度Orites菜单）。默认时间段（可选）仅对具有非空日期属性的筛选器有意义。确定如果筛选器在视图初始化时激活的默认筛选器集中，则激活哪个期间。如果未提供，则默认使用“本月”。要在以下选项中进行选择：今天、本周、本月、本季度、本年、昨天、上周、上月、上季度、去年、上7天、上30天、上365天示例：<filter name=“filter\u create\u date”date=“create_date“string=”creation date“default_period=”this_week/>`` contexta python dictionary，合并到操作的域中以生成搜索域密钥group_by可用于定义“group by”菜单中可用的groupby。“group_by”值可以是有效的字段名或字段名列表。<filter name=“groupby_category”string=“category”context=“group_by”：“category_id”/>上面定义的groupby允许按类别对数据进行分组。当字段类型为日期或日期时间时，筛选器生成子菜单。在“分组依据”菜单中，可以使用以下间隔选项：日、周、月、季度、年。如果筛选器在视图初始化时激活的默认筛选器集中，则默认情况下，记录按月分组。这可以通过使用以下示例中的语法“日期域：间隔”来更改。示例：<filter name=“group by\u create\u date”string=“creation date”context=“group\u by”：“创建日期：周”/>``筛选器的名称逻辑名称，默认情况下可用于启用它，也可用于heritance hookhelp筛选器的较长解释性文本可以显示为工具提示组，就像只有特定用户才能使用的筛选器7.0版一样。筛选器序列（没有将其分隔的非筛选器）被视为包含组合：它们将由或更确切地说是由n通常和，例如<filter domain=“[（'state'，'='，'draft'）”/><filter domain=“[（'state'，'='，'done'）”/>如果同时选择了两个筛选器，将选择状态为draft或done的记录，但<filter domain=“[（'state'，'='，'draft'）”/><separator/><filter domain=“[（'delay'，'<'，15）]“/>如果bot选择H过滤器，将选择状态为草稿且延迟低于15的记录。
 
 - `separator`
 
-  can be used to separates groups of filters in simple search views
+  可用于在简单搜索视图中分隔过滤器组
 
 - `group`
 
-  can be used to separate groups of filters, more readable than `separator` in complex search views
-
-
+  可用于分隔过滤器组，比复杂搜索视图中的分隔符更可读。
 
 ### Search defaults
 
-Search fields and filters can be configured through the action’s `context` using `search_default_*name*` keys. For fields, the value should be the value to set in the field, for filters it’s a boolean value. For instance, assuming `foo` is a field and `bar` is a filter an action context of:
+搜索字段和过滤器可以通过操作的上下文使用搜索\u default_*name*键进行配置。对于字段，值应该是要在字段中设置的值，对于筛选器，它是一个布尔值。例如，假设foo是一个字段，而bar是一个筛选器，则操作上下文为：
 
 ```
 {
@@ -1078,13 +1153,7 @@ Search fields and filters can be configured through the action’s `context` usi
 }
 ```
 
-will automatically enable the `bar` filter and search the `foo` field for *acro*.
-
-
-
-
-
-
+将自动启用栏过滤器，并在foo字段中搜索`acro`。
 
 
 
@@ -1156,179 +1225,3 @@ will automatically enable the `bar` filter and search the `foo` field for *acro*
 |                            | upgrade_radio                           |
 |                            | url                                     |
 |                            | website_button                          |
-
-
-
-
-
-
-
-
-
-
-
-## 视图
-
-- 菜单视图：把   数据模型—— 菜单 —— 视图（tree、form）连接起来
-
-- 表单视图：创建、编辑数据模型所用视图。
-
-- 列表视图：展示数据模型（显示数据）时使用。
-
-- 搜索视图：制定odoo右上角对于当前数据模型的可搜索字段以及可用过滤器。
-
-
-
-
-## 菜单视图
-
-在定义了数据模型之后，我们要操作该模型。就需要把模型——菜单——视图 连接起来。这可以通过act_window+menuitem来实现。
-
-<act_window>元素定义了一个客户端窗口动作，该动作将以列表和表单视图的顺序打开todo.task模型.
-
- <menuitem>定义了一个顶级菜单项，调用前面定义的action_todo_task动作。
-
-两个元素都包含了id属性。 此id属性也称为XML ID，它用于唯一标识模块内的每个数据元素，并且可以由其他元素使用来引用它。
-
-```
-<!-- 视图动作 -->
-<act_window id="action_qingjia_qingjiadan"  //该标签的id
-               name="请假单"    //视图名
-               res_model="qingjia.qingjiadan"  //视图要操作哪个数据模型：模块.数据模型
-               view_mode="tree,form" />   //依次用什么视图来打开这个数据模型
-
-<!-- 顶级菜单 -->
-<menuitem name="请假" id="menu_qingjia"/> //顶级菜单：出现在导航栏上
-
-<!-- 二级菜单 -->  //二级菜单：点击顶级菜单跳转到请假模块后，出现在左侧边栏。
-<menuitem name="请假单" id="menu_qingjia_qingjiadan" parent="menu_qingjia" action="action_qingjia_qingjiadan"/>  //指定菜单的响应动作：依次用什么视图来操作数据模型
-```
-
-最后，把视图文件所在路径注册到manifest的data中：
-
- 'data': [
-        'views/views.xml',  //注意：路径要全。
-    ],
-2）表单视图
-
- 所有的视图都存储在数据库中。我们在XML文件中声明一个描述视图的<record>元素，该模块在安装模块时将被加载到数据库中。
-
-<record id="view_form_模块名" model="ir.ui.view"> 
-   <field name="name">表单名</field> 
-   <field name="model">数据模型（模块.模型）</field> 
-   <field name="arch" type="xml"> //重点：视图类型定义 
-     <form> 
-       <group> //表单中一列
-         <field name="name"/> //字段为数据模型中的字段内容
-         <field name="is_done"/> 
-         <field name="active"/> 
-       </group> 
-     </form> 
-   </field> 
- </record> 
-业务凭证窗体视图（仿纸页风格）
-
-此表单包含两个元素：<header>包含操作按钮，<sheet>包含数据字段。
-
-Form视图可以添加按钮以完成特定动作。这些按钮可以打开一个新的包含Form表单的窗口或运行定义在模块中的Python函数。
-
-它们可以定义在Form视图内的任意位置，但是对于文档形式的窗体，建议把它们放在<header>标签中。
-
-```
-   <form>
-      <header> //操作按钮所在区域
-        <button name="按钮响应事件（定义在数据模型中）" type="动作的类型（执行的操作）" string="按钮显示文本" class="按钮样式" />
-      </header>
-      <sheet> //数据字段操作区域
-        <group name="group_top" string="请假单"> 
-          <field name="name"/> //数据模型中的字段们
-          <field name="days"/>
-          <field name="startdate"/>
-          <field name="reason"/>
-        </group>
-      </sheet>
-    </form>
-```
-
-group标签（相当于div）
-
-<group>标签允许组织Form表单里的内容。在<group>中放置<group>，可以创建一个两列的列表。Group标签使用时，建议定义它的name属性，这样可以更方便的让其它模块扩展它或者用于标识该列内容的显示位置。
-
-使用group方便地安排内容的分布显示：
-
-   <sheet>
-       <group name="group_top">
-           <group name="group_left">//左边列
-               <field name="name"/>
-           </group>
-           <group name="group_right">//右边列
-               <field name="is_done"/>
-               <field name="active" readonly="1"/>
-           </group>
-       </group>
-   </sheet>
-所以一个完整的form视图如下：
-
-```
-<form>
-       <header>//操作按钮区域
-           <button name="数据模型中定义的按钮事件" type="操作类型" string="按钮显示文本" class="按钮样式" />
-       </header>
-       <sheet>//数据字段区域
-           <group name="group_top">//使用group进行布局
-               <group name="group_left">
-                   <field name="name"/>
-               </group>
-               <group name="group_right">
-                   <field name="is_done"/>
-                   <field name="active" readonly="1" />
-               </group>
-           </group>
-       </sheet>
-   </form>
-```
-
-
-
-
-Tab 分页效果：notebook标签
-
-<form>
-        ......
-        <notebook>
-            <page string="页名">
-                <field name="显示内容" nolabel="页号"/>
-            </page>
-        </notebook>
-</form>
-
-3）列表视图
-
-查看模型时，将使用<tree>视图。 树视图能够显示按层级结构组织的行，但大多数时候，它们用于显示简单列表。
-
-<record id="view_tree_数据模型名" model="ir.ui.view"> 
- <field name="name">列表名</field> 
- <field name="model">模块.数据模型</field> 
- <field name="arch" type="xml"> //指明视图类型
-   <tree colors="可以指明下面字段值为何值时，对应行使用什么背景颜色（这是通过bootstrap来实现的）"> 
-     <field name="字段.."/> 
-     <field name="字段.."/> 
-   </tree> 
- </field> 
-</record>
-4）搜索视图
-
-在列表的右上角，Odoo显示一个搜索框。 它搜索的字段和可用的过滤器是由<search>视图定义的。
-
-<record id="view_filter_数据模型名" model="ir.ui.view"> 
- <field name="name">过滤器名</field> 
- <field name="model">模块.数据模型</field> 
- <field name="arch" type="xml"> //视图类型 
-   <search>  //搜索视图定义
-     <field name="可搜索字段"/>  //可搜索字段定义
-     <filter string="过滤条件名"  domain="[('字段','操作符',值)]"/>  //过滤条件定义
-   </search> 
- </field> 
-</record> 
-
-https://blog.csdn.net/miantian180/article/details/81698120
