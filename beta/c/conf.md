@@ -64,38 +64,6 @@ Xcode 目前可从 [developer.apple.com/technologies/tools/](http://developer.ap
 
 
 
-## 编译
-
-**gcc 进行 c 语言编译分为四个步骤：**
-
-1.预处理，生成预编译文件（.i 文件）：
-
-```shell
-gcc –E hello.c –o hello.i
-```
-
-2.编译，生成汇编代码（.s 文件）：
-
-```shell
-gcc –S hello.i –o hello.s
-```
-
-3.汇编，生成目标文件（.o 文件）：
-
-```shell
-gcc –c hello.s –o hello.o
-```
-
-4.链接，生成可执行文件：
-
-```shell
-gcc hello.o –o hello
-```
-
-有时候，进行调试，可能会用到某个步骤哦
-
-
-
 ## vscode配置
 
 Win10下使用 vscode 编译 c 语言，安装好 MinGW 后，在里面找到 mingw32-gcc.bin, mingw32-gcc-g++.bin, 以及 mingw32-gdb.bin 第一个是 c 语言文件的编译器，第二个是 c++ 的，第三个是用来调试编译后文件的。然后设置好环境变量，编写好 .c 文件，在 vscode 中打开 .c 文件所在的文件夹（注意是文件夹），然后配置 launch.json 文件如下所示：
