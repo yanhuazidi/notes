@@ -59,44 +59,56 @@ odoo中翻译为动作的，也不全是action，例如：自动动作，它是i
 >
 > 6. `context` (可选) -- 额外的需要传给打开的视图的环境数据
 >
->    ```xml
 >    1）模型有多个同种视图时，指定打开具体的视图
+>
+>    ```xml
 >    <field name="context">{'tree_view_ref':'模块.view_tree_XXX','form_view_ref':'模块.view_form_XXX'}</field>
 >    <field name="search_view_id" ref="view_search_XXX/>
+>    ```
+>
 >    2）在跳转的同时启用过滤器
->    <field name="context">{'search_default_过滤器名': [active_id]/True}</field>
->    
->    3）传递数据，可用于domain中作为表达式的值
->    <field name="context">{"key":value}</field>
->    
->    4）指定跳转过去的视图记录的分组方式
->    <field name="context">{'group_by': ['字段','...'];'group_by_no_leaf':1}</field>
->    ```
->
->    context中的变量值有两种方式指定：
->
->    1）在python代码中调用action
->
->    ```python
->    ctx = self._context.copy()
->    ctx.update({'key': 值,})
->    action = self.env.ref(action_name).read()
->    action['context'] = ctx
->    return action
->    ```
->
->    2）在action的context字段直接指定，不过一般都是明确的字面量值
 >
 >    ```xml
->    //传递数据
->    <field name="context">{"key":value}</field>
+>    <field name="context">{'search_default_过滤器名': [active_id]/True}</field>
 >    ```
+>
+>    3）传递数据，可用于domain中作为表达式的值
+>
+>    ```xml
+>    <field name="context">{"key":value}</field>
+>    <field name="context" eval="{'default_antex_membership': True, 'default_type': 'service','default_categ_id': ref('product_category_add')}"></field>   
+>    ```
+>
+>    4）指定跳转过去的视图记录的分组方式
+>
+>    ```xml
+>    <field name="context">{'group_by': ['字段','...'];'group_by_no_leaf':1}</field>               
+>    ```
+>
+> context中的变量值有两种方式指定：
+>
+> 1）在python代码中调用action
+>
+> ```python
+> ctx = self._context.copy()
+> ctx.update({'key': 值,})
+> action = self.env.ref(action_name).read()
+> action['context'] = ctx
+> return action
+> ```
+>
+> 2）在action的context字段直接指定，不过一般都是明确的字面量值
+>
+> ```xml
+> //传递数据
+> <field name="context">{"key":value}</field>
+> ```
 >
 > 7. `domain` (可选) -- 自动添加到搜索视图中的查询条件，即：跳转到目标视图时，立即应用domain条件过滤模型记录。表达式中的值可以是具体的常量值，也可以是调用该action时传进来的context中的变量值。
 >
->    ```xml
->    <field name="domain">[('字段', '=', '具体值'),('字段','=',上下文中的变量)]</field>
->    ```
+> ```xml
+> <field name="domain">[('字段', '=', '具体值'),('字段','=',上下文中的变量)]</field>
+> ```
 >
 > 8. `limit` (可选) -- 默认情况下列表中显示的记录数。web客户机中默认值为80
 >
