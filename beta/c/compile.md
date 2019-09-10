@@ -1,4 +1,4 @@
-
+[TOC]
 
 
 
@@ -63,7 +63,7 @@ int main()
 
 
 
-## 编译
+## 编译步骤
 
 **gcc 进行 c 语言编译分为四个步骤：**
 
@@ -92,3 +92,46 @@ gcc hello.o –o hello
 ```
 
 有时候，进行调试，可能会用到某个步骤哦
+
+
+
+## 怎样让C语言编写的程序生成exe文件运行时不显示cmd黑窗口
+
+先
+
+```
+`#include <windows.h>`
+```
+
+然后调用
+
+```
+`ShowWindow(GetConsoleWindow(), SW_HIDE);`
+```
+
+```c
+# include <stdio.h>
+# include <stdlib.h>
+#include <windows.h>
+int main()
+{   ShowWindow(GetConsoleWindow(), SW_HIDE);
+    system("code D:/project/erp");
+    return 0;
+}
+```
+
+
+
+
+
+## 修改exe图标
+
+### 修改快捷方式图标
+
+用右键点击快捷方式文件：
+1 出现属性菜单
+2 点击属性
+3 出现更改图标
+4 点击更改图标
+5 选择自己的图标
+6 确定

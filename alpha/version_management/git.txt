@@ -12,7 +12,7 @@ git 的使用
 
     分布式:每个节点关系平等，都保存完整代码，节点之间相互推送
             或者下载代码。工作方式多样
-
+    
     集中式:有明确的中央服务器统一管理代码，每个节点将代码上传
             中央服务器或者从中央服务器下载。逻辑简单
 
@@ -36,29 +36,29 @@ git 基本配置
             命令：git config --system
             配置文件：/etc/gitconfig
             配置用户sudo git config --system user.name Tedu
-
+    
         2.当前用户的所有项目均使用的配置
             命令：git config --global
             配置文件：~/.gitconfig
             配置邮箱 git config --global user.email tarena@tedu.cn
-
+    
         3.只在当前项目中使用的配置
             命令：git config (要求命令要在git项目文件夹中执行)
             配置文件：项目文件夹/.git/config
             配置编辑器
                      git config core.editor vscode
-
+    
         4.查看当前配置
             git config --list
 
 git 基本概念
 
     工作区：通过自己主机操作的git目录
-
+    
     暂存区：用来记录你工作区的行为，作为暂时保存
-
+    
     本地仓库：本地用来备份同步工作区内容的区域
-
+    
     远程仓库：其它主机的git仓库
 
 git 的基本操作命令
@@ -70,28 +70,28 @@ git 的基本操作命令
     查看工作分支状态
         git status
         *默认工作分支为master，可以通过创建新的分支切换
-
+    
     文件提交到暂存区
         git add [file]
         * 可以一次提交多个内容，中间用空格隔开
         * 提交的内容可以是文件也可以是目录
         * 提交所有内容用 * 表示
-
+    
     删除暂存区的记录
         git rm --cached [file]   (目录加 -r )
-
+    
     将暂存区记录的修改内容同步到本地仓库
         git commit -m "add some message"    
         * -m 为添加的附加信息
         * 当工作区和本地仓库内容一致时，git status提示工作区干净
-
+    
     查看提交记录    上面的最新
         git log     或 git log ---pretty=oneline
       eg.
         commit 9c4dd2137b7bef260d70f27e16b1c640c9401ff3  全球唯一版本号
         Author: wei <yanhuazidi@163.com>    作者信息
         Date:   Fri Nov 2 16:18:01 2018 +0800       提交日期时间
-
+    
             add some files      提交日志
 
 工作区操作
@@ -100,7 +100,7 @@ git 的基本操作命令
 
     放弃工作区的修改
         git checkout -- [file]
-
+    
     恢复仓库文件到工作区
         git checkout [file]
 
@@ -110,7 +110,7 @@ git 的基本操作命令
     
     移动工作区文件并提交到暂存区记录
         git mv file dir
-
+    
     * rm  mv  的用法和shell命令rm mv 相同，操作后直接commit 同步到本地仓库
 
 版本控制命令
@@ -118,10 +118,10 @@ git 的基本操作命令
         git reset --hard HEAD^  回到上一个版本
 
         HEAD 后几个^ 表示回到之前的几个版本
-
+    
     通过 commit_id 回到指定的版本
         git reset --hard commit_id
-
+    
     查看操作日志    上面的最新
         git reflog 
         *获取到操作记录后可以根据commit_id去往较新的版本
@@ -133,7 +133,7 @@ git 的基本操作命令
     创建标签
         git tag v1.0 [-m '标签信息']
         默认会在最新的commit_id处打标签
-
+    
     查看所有标签
         git tag
     
@@ -142,10 +142,10 @@ git 的基本操作命令
     
     在某个指定commig_id处打标签
         git tag v0.9 [commit_id]
-
+    
     回到某个标签的版本
         git reset --hard v0.9
-
+    
     删除某个标签
         git tag -d 标签号  
 
@@ -154,21 +154,21 @@ git 的基本操作命令
         git stash
 
         *将工作区修改内容暂时封存，恢复到最近一个干净状态
-
+    
     查看保存的工作区
         git stash list
-		>>>stash@{0}: WIP on dev: f52c633 add merge
-		上面的最新
-		
+    	>>>stash@{0}: WIP on dev: f52c633 add merge
+    	上面的最新
+    	
     应用某一个工作区
-		一是用	git stash apply	恢复上一个工作区，
-			也可以指定某个工作区: git stash apply stash@{index}  
-		
-		但是恢复后，stash内容并不删除，你需要用git stash drop来删除
-		
-		二是应用上一个工作区，并删除当前的
-			git stash pop
-
+    	一是用	git stash apply	恢复上一个工作区，
+    		也可以指定某个工作区: git stash apply stash@{index}  
+    	
+    	但是恢复后，stash内容并不删除，你需要用git stash drop来删除
+    	
+    	二是应用上一个工作区，并删除当前的
+    		git stash pop
+    
     删除工作区
         git stash drop stash@{index}  删某一个
         git stash clear   删所有
@@ -193,7 +193,7 @@ git 的基本操作命令
     git checkout [branch]
 
     git checkout -b [branch] 创建并切换到新的分支 
-	
+
 合并某分支到当前分支
     git merge [branch_name]
 
@@ -203,7 +203,7 @@ git 的基本操作命令
 
     强制删除未合并分支
     git branch -D [branch]
-	
+
 查看分支提交情况
 	git log --graph --pretty=oneline --abbrev-commit
 
@@ -218,10 +218,10 @@ git 的基本操作命令
     
     2.设置仓库文件夹的属主
         chown [yonghu:yonghuzu] [dirname]
-
+    
     3.创建共享仓库
         git init --bare [aid.git]
-
+    
     4.设置git 项目文件夹属组
         chow -R [yonghu:yonghuzu] [aid.git]
 
@@ -243,16 +243,17 @@ git 的基本操作命令
     在指定文件夹内(普通文件夹)
 	
 	默认clone 主分支
-    git clone [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
+	git clone [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
 	
 	clone 指定分支
 	git clone -b dev http://10.1.1.11/service/tmall-service.git
 
-	
-	
+
+​	
+​	
 指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：
-	$ git branch --set-upstream-to=origin/dev dev
-	Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+​	$ git branch --set-upstream-to=origin/dev dev
+​	Branch 'dev' set up to track remote branch 'dev' from 'origin'.
 
 将代码同步到远程主机
     git push 远程仓库名 分支名
@@ -269,29 +270,44 @@ github
     开源的项目社区网站，提供丰富的开源项目，也为用户提供项目管理服务
 
     git 是gitbub 唯一指定的代码管理工具
-
+    
     网址 : https://github.com
-
+    
     创建新的仓库 : 右上角 +    --》 new repository -->填写信息
-
+    
     操作github：
         1.git remote 连接远程仓库
         2.通过 git push 上传代码
         
          * github 就是一个远程仓库
-		 
+
 
 多人协作的工作模式通常是这样：
 
 	首先，可以试图用git push origin <branch-name>推送自己的修改；
-
+	
 	如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
-
+	
 	如果合并有冲突，则解决冲突，并在本地提交；
-
+	
 	没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
-
+	
 	如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，
 	用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。	
 
-    
+
+​    
+
+
+
+
+
+# [vscode：解决操作git总让输入用户名及密码问题](https://www.cnblogs.com/finalanddistance/p/10476080.html)
+
+
+
+只要是使用git操作，不管是同步，拉去，克隆，vscode总让我们输入用户名及密码，是一件很繁琐的事情
+
+我们打开终端，会看到cmd定位在我们仓库位置，我们只要添加：**git config --global credential.helper store**
+
+再退出vscode并重启，进行git操作，就发现，vscode不再让我们每次都输入用户名和密码啦！

@@ -119,7 +119,8 @@ odoo中翻译为动作的，也不全是action，例如：自动动作，它是i
 {
     "type": "ir.actions.act_window",
     "res_model": "res.partner",
-    "views": [[False, "tree"], [False, "form"]],
+    "views": [[False, "list"], [False, "form"]],
+    "view_type": "list",
     "domain": [["customer", "=", true]],
 }
 #在新的对话框中打开一个指定产品的表单
