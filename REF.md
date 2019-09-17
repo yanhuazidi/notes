@@ -24,8 +24,6 @@
 
 
 
-
-
 # python
 
 ## [Python Import机制备忘-模块搜索路径](https://www.cnblogs.com/qq78292959/archive/2013/05/17/3083961.html)
@@ -34,19 +32,21 @@
 
 ## [官方文档](https://www.djangoproject.com/)
 
-
-
 # Odoo
 
 ## [odoo中模型标识汇总](https://www.cnblogs.com/toby2chen/p/5213903.html)
 
 ## [odoo中各字段的含义和用法](https://blog.csdn.net/qq_42831716/article/details/83827738)
 
-# Bootstrap4
+
+
+# 样式库
 
 ## [Bootstrap4 中文文档](http://bs4.ntp.org.cn/)
 
+## [Layui](https://www.layui.com/demo/form.html)
 
+## [font-awesome](http://www.fontawesome.com.cn/)
 
 # jQuery
 
@@ -56,11 +56,17 @@
 
 ## [jQuery的deferred对象详解](http://www.ruanyifeng.com/blog/2011/08/a_detailed_explanation_of_jquery_deferred_object.html)
 
-# [ font-awesome](http://www.fontawesome.com.cn/)
-
 # Xpath
 
 ## [python3解析库lxml](https://www.cnblogs.com/zhangxinqi/p/9210211.html)
+
+
+
+# 数据可视化
+
+## [echarts](https://echarts.apache.org/zh/tutorial.html#5 分钟上手 ECharts)
+
+
 
 # 图片处理
 
@@ -72,3 +78,8 @@
 ![成功](D:\notes\ref.assets\-success-success.svg)![重要](D:\notes\ref.assets\-important-important.svg)![危急](D:\notes\ref.assets\-critical-critical.svg)![信息](D:\notes\ref.assets\-informational-informational.svg)![待用](D:\notes\ref.assets\-inactive-inactive.svg)
 ![紫罗兰色](D:\notes\ref.assets\-blueviolet-blueviolet.svg)![ff69b4](D:\notes\ref.assets\-ff69b4-ff69b4.svg)![9cf](D:\notes\ref.assets\-9cf-9cf.svg)
 
+
+
+# 后台模板
+
+https://www.scnoob.com/tag/后台管理.html?page=1

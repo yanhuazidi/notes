@@ -483,16 +483,13 @@ self.env.cr.execute("some_sql", param1, param2, param3)
 
 ###### `unlink()`
 
-删除当前集的记录
+删除当前集的记录,只能对单个记录执行
 
 加薪
 
 - **AccessError**
-
-   -
-
-  - 如果用户对请求的对象没有取消链接权限
-  - 如果用户试图绕过请求对象上取消链接的访问规则
+- 如果用户对请求的对象没有取消链接权限
+   - 如果用户试图绕过请求对象上取消链接的访问规则
 
 - [**UserError**](https://www.odoo.com/documentation/12.0/webservices/iap.html#odoo.exceptions.UserError) - 如果记录是其他记录的默认属性
 

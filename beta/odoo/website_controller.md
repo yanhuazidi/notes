@@ -54,6 +54,14 @@ class OmPurchase(http.Controller):
 
 
 
+XML
+
+```xml
+<t t-esc="json.dumps(request.env.user._is_admin())"/>,
+<t t-esc="json.dumps(request.env.user._is_system())"/>,
+<t t-esc="json.dumps(request.env.user._is_public())"/>,
+```
+
 
 
 ## 请求
