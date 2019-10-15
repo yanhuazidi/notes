@@ -6,3 +6,12 @@
 
 
 
+### [下载](https://github.com/apache/incubator-echarts/tree/4.3.0/dist)
+
+```html
+<!-- 引入 ECharts 文件 -->
+    <script src="echarts.min.js"></script>
+```
+
+
+

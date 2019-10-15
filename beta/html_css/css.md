@@ -529,6 +529,8 @@ div span{   2
 
 
 
+
+
 ## HTML 元素的分类及特点
 ### 块级元素
 
@@ -1193,6 +1195,44 @@ background: -ms-linear-gradient(right, red, blue); /ie
 
    ​     
 
+### 设置元素的垂直对齐方式
+
+vertical-align 属性
+
+该属性定义行内元素的基线相对于该元素所在行的基线的垂直对齐。允许指定负长度值和百分比值。这会使元素降低而不是升高。在表单元格中，这个属性会设置单元格框中的单元格内容的对齐方式。
+
+| 值          | 描述                                                         |
+| :---------- | :----------------------------------------------------------- |
+| baseline    | 默认。元素放置在父元素的基线上。                             |
+| sub         | 垂直对齐文本的下标。                                         |
+| super       | 垂直对齐文本的上标                                           |
+| top         | 把元素的顶端与行中最高元素的顶端对齐                         |
+| text-top    | 把元素的顶端与父元素字体的顶端对齐                           |
+| middle      | 把此元素放置在父元素的中部。                                 |
+| bottom      | 把元素的顶端与行中最低的元素的顶端对齐。                     |
+| text-bottom | 把元素的底端与父元素字体的底端对齐。                         |
+| length      |                                                              |
+| %           | 使用 "line-height" 属性的百分比值来排列此元素。允许使用负值。 |
+| inherit     | 规定应该从父元素继承 vertical-align 属性的值。               |
+
+
+
+### 空白处理
+
+white-space属性
+
+| 值       | 描述                                                         |
+| :------- | :----------------------------------------------------------- |
+| normal   | 默认。空白会被浏览器忽略。                                   |
+| pre      | 空白会被浏览器保留。其行为方式类似 HTML 中的 <pre> 标签。    |
+| nowrap   | 文本不会换行，文本会在在同一行上继续，直到遇到 <br> 标签为止。 |
+| pre-wrap | 保留空白符序列，但是正常地进行换行。                         |
+| pre-line | 合并空白符序列，但是保留换行符。                             |
+| inherit  | 规定应该从父元素继承 white-space 属性的值。                  |
+
+
+
+
 
 ## 表格
 
@@ -1283,10 +1323,15 @@ transition: width 2s,height 3s,background 5s;
 
 属性: `transition-delay`
   eg:
-                    transition: width 2s,height 3s,background 5s;
+
+```css
+transition: width 2s,height 3s,background 5s;
+
+```
+
 取值: 以秒s/ms为单位的数值，设置过渡效果的延迟执行
 
-        把 transition属性放 : hover 中 只有去的效果，没有回的效果(秒回)
+把 transition属性放 : hover 中 只有去的效果，没有回的效果(秒回)
 
 
 
@@ -1494,7 +1539,7 @@ display : flex  将块级元素变为容器
 
 ### 弹性容器的样式属性
 
-    
+
     1.主轴方向(项目排列方式)
             flex-direction : row 横向左往右 默认值
                              row-reverse 横向右往左
@@ -1706,7 +1751,7 @@ display : flex  将块级元素变为容器
 1. `translate(x,y)`
   
   x,y分别表示元素在X轴上和Y轴上的平移距离，取像素值，可正可负，区分平移方向
-    
+  
 2. `translate(x)`
 
       一个值表示沿X轴平移
@@ -1778,8 +1823,9 @@ display : flex  将块级元素变为容器
     6.转换函数的组合使用
         transform : translate() scale() rotate();
 
-三D转换
-    属性 : transform
+## 三D转换
+
+​    属性 : transform
 
         浏览器不支持 3D的位移
     
@@ -1810,30 +1856,41 @@ display : flex  将块级元素变为容器
         取值 0 表示不旋转
 
 
-动画 @keyframes
-    @keyframes规则是创建动画。 @keyframes规则内指定一个CSS样式和动画将逐步从目前的样式更改为新的样式。
-        语法
-            @keyframes animationname {keyframes-selector {css-styles;}}
 
-            值	                    说明
-            animationname	    必需的。定义animation的名称。
-            keyframes-selector	必需的。动画持续时间的百分比。
-                合法值：
-                    1.  0-100%
-                    2.  from (和0%相同)
-                        to (和100%相同)
-    
-                注意： 您可以用一个动画keyframes-selectors。
-    
-            css-styles	必需的。一个或多个合法的CSS样式属性
-    
-    当在 @keyframes 创建动画，把它绑定到一个选择器，否则动画不会有任何效果。
-        指定至少这两个CSS3的动画属性绑定向一个选择器：
-    
-        animation-name	    规定 @keyframes 动画的名称。
-        animation-duration	规定动画完成一个周期所花费的秒或毫秒。默认是 0
-    
-        animation-timing-function	规定动画的速度曲线。默认是 "ease"。
+## 动画 @keyframes
+
+**https://www.w3school.com.cn/css3/css3_animation.asp**
+
+@keyframes规则是创建动画。 @keyframes规则内指定一个CSS样式和动画将逐步从目前的样式更改为新的样式。
+语法
+
+```css
+@keyframes animationname {
+    keyframes-selector {css-styles;}
+}
+```
+
+值	                    				说明
+animationname	   	 必需的。定义animation的名称。
+keyframes-selector	必需的。动画持续时间的百分比。
+
+合法值：
+
+1. 0-100%
+
+2. from (和0%相同)
+   to (和100%相同)
+
+注意： 您可以用一个动画keyframes-selectors。
+
+css-styles	必需的。一个或多个合法的CSS样式属性
+
+**当在 @keyframes 创建动画，把它绑定到一个选择器，否则动画不会有任何效果。**
+
+定至少这两个CSS3的动画属性绑定向一个选择器：
+	animation-name	    规定 @keyframes 动画的名称。
+	animation-duration	规定动画完成一个周期所花费的秒或毫秒。默认是 0
+    animation-timing-function	规定动画的速度曲线。默认是 "ease"。
             值	            描述
             linear	    动画从头到尾的速度是相同的。
             ease	    默认。动画以低速开始，然后加快，在结束前变慢。
@@ -1842,6 +1899,9 @@ display : flex  将块级元素变为容器
             ease-in-out	动画以低速开始和结束。
             cubic-bezier(n,n,n,n)	在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值
     
+
+
+
         animation-fill-mode	规定当动画不播放时（当动画完成时，或当动画有一个延迟未开始播放时），要应用到元素的样式。
             值	                        描述
             none	    默认值。动画在动画执行之前和之后不会应用任何样式到目标元素。
@@ -1892,8 +1952,8 @@ display : flex  将块级元素变为容器
                 100% {background:red; left:0px; top:0px;}
             }
 
-媒体 @media
-    media : 媒体，看网页的设备
+## 媒体 @media
+​    media : 媒体，看网页的设备
 
     媒体类型
         允许你指定文件将如何在不同媒体呈现。该文件可以以不同的方式显示在屏幕上，在纸张上，或听觉浏览器等等。

@@ -154,7 +154,7 @@ reg.exec() 方法是一个正则表达式方法。
 
 ### test       检索字符串中指定的值。返回 true 或 false。
 
-reg.text(param)
+reg.test(param)
 
 参数: 要验证的字符串
 返回值: ture/false 表示字符串中是否包含满足正则模式的内容

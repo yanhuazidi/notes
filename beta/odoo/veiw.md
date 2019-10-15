@@ -782,6 +782,8 @@ class KanbanRecord()
 
 - kanban_text_ellipsis(string[, size=160]) 将比较长的内容提取一部分显示
 
+
+
 ## 日历视图
 
 日历视图按天、周、月来显示数据，根元素是`<calendar>`，有以下属性：
@@ -886,35 +888,28 @@ class KanbanRecord()
 
 ## Diagram
 
-示意图可用来展示原来就是图表的记录，根元素是`<diagram>`，没有属性，
+图表视图可用于显示记录的有向图。根元素是`<diagram>`，没有属性
 
-有几种子元素：
+图表视图的可能子视图包括：
 
-- `node` (必选, 1)
+- **node**  (必选, 1)
 
   定义图表的节点，有以下属性：
 
-  > `object`-- 节点对应的model
-  >
-  > `shape`-- 就像列表视图的颜色、字体一样的形状表示，唯一可选的取值是`rectangle` （长方形），默认无
-  >
-  > `bgcolor`-- 用来表示节点的背景颜色，默认是白色，可取值grey
+  - **object**  -- 节点对应的model
+  - **shape** --条件形状映射类似于列表视图中的颜色和字体。唯一有效的形状是`rectangle`矩形（默认形状是省略号
+  - **bgcolor** -- 与`shape`相同，但有条件地映射节点的背景色。默认的背景颜色是白色，唯一有效的选择是灰色
 
-- `arrow` (必选, 1)
+- **arrow**(必选, 1)
 
   用于定义图表的箭头，有以下属性：
 
-  > `object` (required)-- 箭头对应的model
-  >
-  > `source` (required)-- model的Many2one字段，用于指向箭头的源节点数据
-  >
-  > `destination` (required)-- model的Many2one字段，指向箭头的目标节点数据
-  >
-  > `label`-- python格式的属性列表，相应的属性值会用作箭头的label显示
-
-- `label`
-
-  用于解释示意图的节点，string属性定义的是节点的内容，每个label带有编号显示在示意图头部
+  - **object** (required)-- 箭头对应的model
+  - **source** (required)-- model的Many2one字段，用于指向箭头的源节点数据
+  - **destination**(required)-- model的Many2one字段，指向箭头的目标节点数据
+  - **label**-- python格式的属性列表，相应的属性值会用作箭头的label显示
+  
+- **label**   说明：对于图，string属性定义了注释的内容。每个标签在图表标题中作为一个段落输出，很容易看到，但没有任何特殊强调。
 
 
 
@@ -922,9 +917,9 @@ class KanbanRecord()
 
 与pivot和graph视图一样，dashboard视图用于显示聚合数据。然而，仪表板可以嵌入子视图，这使得对给定数据集有更完整和更有趣的查看成为可能。
 
-### Warning
-
-​	仪表板视图只在Odoo企业中可用。
+>### Warning
+>
+>仪表板视图只在Odoo企业版中可用。
 
 仪表板视图可以显示子视图、某些字段的聚合(在一个域中)，甚至公式(包含一个或多个聚合的表达式)。例如，这里有一个非常简单的仪表盘:
 
@@ -1040,45 +1035,45 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
 队列视图用于显示和理解某些数据在一段时间内的变化方式。例如，假设对于给定的业务，客户机可以订阅某些服务。然后，队列视图可以显示每个月的订阅总数，并研究客户离开服务（流失）的速度。单击单元格时，队列视图将重定向到一个新操作，在该操作中，您将只看到单元格时间间隔中包含的记录；此操作包含列表视图和表单视图。
 
-### Warning
+>### Warning
+>
+>队列视图只在Odoo企业版中可用。
 
-队列视图仅在Odo Enterprise中可用。
-
-默认情况下，队列视图将使用与操作上定义的列表和表单视图相同的列表和表单视图。您可以将列表视图和表单视图传递到操作的上下文，以便设置/重写将要使用的视图（要使用的上下文键是表单视图ID和列表视图ID）
+默认情况下，队列视图将使用与动作中定义的列表和表单视图相同的列表和表单视图。您可以将列表视图和表单视图传递到操作的上下文，以便设置/覆盖将要使用的视图（要使用的上下文键是`form_view_id` 和list_view_id）
 
 例如，这里有一个非常简单的队列视图：
 
-```
+```xml
 <cohort string="Subscription" date_start="date_start" date_stop="date" interval="month"/>
 ```
 
 队列视图的根元素是`<cohort>`，它接受以下属性：
 
-- `string` (必填)
+- **string**  (必填)
 
   标题，应描述视图
 
-- `date_start` (必填)
+- **date_start**  (必填)
 
   有效的日期或日期时间字段。视图将此字段理解为记录的开始日期。
 
-- `date_stop` (必填)
+- **date_stop** (必填)
 
   有效的日期或日期时间字段。视图将此字段理解为记录的结束日期。这是决定客户流失的字段。
 
-- `mode` (可选)
+- **mode**(可选)
 
-  描述模式的字符串。它应该是“客户流失”或“保留”（默认）。搅动模式将从0%开始，并随着时间累积，而保留将从100%开始，并随着时间减少。
+  描述模式的字符串。它应该是`churn`或`retention`（默认）。Churn模式将从0%开始，并随着时间的推移而累积，而retention将从100%开始，并随着时间的推移而降低。
 
-- `timeline` (可选)
+- **timeline** (可选)
 
-  描述时间线的字符串。它应该是“向后”或“向前”（默认）。前进时间线将显示从“开始”到“停止”的数据，而后退时间线将显示从“停止”到“开始”的数据（当“开始”日期在将来/大于“停止”日期时）。
+  描述时间线的字符串。它应该是`backward`或`forward`（默认）。前进时间线将显示从`date_start`到`date_stop`的数据，而`backward`时间线将显示从`date_stop`到`date_start`的数据（当`date_start`在未来/大于`date_stop`时）。
 
-- `interval` (可选)
+- **interval** (可选)
 
-  描述时间间隔的字符串。应为“天”、“周”、“月”（默认）或“年”。
+  描述时间间隔的字符串。应为‘day’, ‘week’, ‘month’’ (default) or ‘year’.
 
-- `measure` (可选)
+- **measure** (可选)
 
   可以聚合的字段。此字段将用于计算每个单元格的值。如果未设置，队列视图将计算出现的次数。
 
@@ -1088,9 +1083,9 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
 活动视图用于显示链接到记录的活动。数据显示在图表中，其中记录构成行，活动类型为列。当单击一个单元格时，将显示该记录的同一类型的所有活动的详细说明。
 
-### Warning
-
-只有在安装了`mail` 模块以及从`mail.activity.mixin`继承的模型时，“活动”视图才可用。
+>### Warning
+>
+>只有在安装了`mail` 模块以及从`mail.activity.mixin`继承的模型时，“活动”视图才可用。
 
 例如，这里是一个非常简单的活动视图：
 
@@ -1100,7 +1095,7 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
 活动视图的根元素是`<activity>`，它接受以下属性：
 
-- `string` (必填)
+- **string **(必填)
 
   标题，应描述视图
 
@@ -1108,52 +1103,176 @@ Dashboard视图的根元素是< Dashboard >，它不接受任何属性。
 
 ## Search
 
-搜索视图自定义与列表视图（以及其他聚合视图）关联的搜索字段。它们的根元素是`<search>`，它们由定义可以搜索哪些字段的字段组成：
-
-如果模型不存在搜索视图，则Odoo会生成仅允许在该`name`字段上搜索的视图。
-
-搜索视图与以前的视图类型不同，因为它们不显示内容：尽管它们应用于特定的模型，但它们用于筛选其他视图的内容（通常是聚合视图，例如列表或图形）。除了用例中的差异之外，它们的定义方式也是一样的。
+搜索视图与以前的视图类型不同，因为它们不显示内容：尽管它们应用于特定模型，但它们用于筛选其他视图的内容（通常是聚合视图，如列表或图表）。除了用例中的差异之外，它们的定义是相同的。
 
 搜索视图的根元素是`<search>`。它不需要属性。
 
+如果模型不存在搜索视图，则Odoo会生成仅允许在该`name`字段上搜索的视图。
+
 搜索视图的可能子元素包括：
 
-- `field`
+**field**
 
-  字段使用用户提供的值domains或contexts。当生成搜索域时，字段域彼此组成，并使用**AND**筛选。
+字段使用用户提供的值来定义域或上下文。生成搜索域时，字段域彼此使用**AND**组合进行筛选。
 
-  字段可以具有以下属性：
+字段可以具有以下属性：
 
-  `name`要筛选字符串的字段的名称字段的labeloperator默认情况下，字段生成形式为 `[(*name*, *operator*,*provided_value*)]`的域，其中name是字段的名称，provided值是用户提供的值，可能是fil或转换（例如，用户需要提供选择字段值的标签，而不是值本身）。
+- **name** -- 作为过滤条件的字段名
 
-  `operator`属性允许重写默认运算符，该运算符取决于字段的类型（例如=对于float字段，而ilike对于char字段）`filter_domain` complete域用作字段的搜索域，可以使用自变量将提供的值注入自定义域。可用于生成比单独的运算符更灵活的域（例如，一次搜索多个字段）。如果同时提供运算符和筛选器域，则筛选器域优先。上下文允许添加上下文键，包括用户提供的值（对于域，该值为avai）标记为自变量）。默认情况下，字段不会生成域。域和上下文是包含的，如果指定了上下文，则两者都会生成。若要仅生成上下文值，请将filter_domain设置为空列表：filter_domain=“[]”`` groups使该字段仅对特定用户可用如果该字段可以提供De an auto completion（例如Many2one），过滤可能的完成结果。
+- **string** -- 字段的label
 
-  
+- **operator** -- 默认情况下field会生成`[(name, operator, provided_value)]`格式的表达式，其中name是字段名，provided_value是用户提供的可能被过滤或翻译的值，如 : 用户需要提供选择字段值的标签，而不是值本身。
 
-- `filter`
+  operator属性允许重写默认运算符，默认运算符取决于字段的类型（数字型是=，字符型是ilike）
 
-  过滤器是搜索视图中的预定义切换，只能启用或禁用。其主要目的是将数据添加到搜索上下文（传递给数据视图以进行搜索/筛选的上下文），或将新节附加到搜索筛选器。筛选器可以具有以下属性：string（必需）filter domain（可选）的标签odoo域，将被附加到o操作的域作为搜索域的一部分。日期（可选）日期或日期时间类型的字段的名称。使用此属性可以创建过滤器菜单子菜单中可用的一组过滤器。示例：<filter name=“filter_create_date”date=“create_date”string=“creation date”/>上面的示例允许在其中一个期间中轻松搜索具有创建日期字段值的记录。下面。创建日期>本周，本月，本季度Orites菜单）。默认时间段（可选）仅对具有非空日期属性的筛选器有意义。确定如果筛选器在视图初始化时激活的默认筛选器集中，则激活哪个期间。如果未提供，则默认使用“本月”。要在以下选项中进行选择：今天、本周、本月、本季度、本年、昨天、上周、上月、上季度、去年、上7天、上30天、上365天示例：<filter name=“filter\u create\u date”date=“create_date“string=”creation date“default_period=”this_week/>`` contexta python dictionary，合并到操作的域中以生成搜索域密钥group_by可用于定义“group by”菜单中可用的groupby。“group_by”值可以是有效的字段名或字段名列表。<filter name=“groupby_category”string=“category”context=“group_by”：“category_id”/>上面定义的groupby允许按类别对数据进行分组。当字段类型为日期或日期时间时，筛选器生成子菜单。在“分组依据”菜单中，可以使用以下间隔选项：日、周、月、季度、年。如果筛选器在视图初始化时激活的默认筛选器集中，则默认情况下，记录按月分组。这可以通过使用以下示例中的语法“日期域：间隔”来更改。示例：<filter name=“group by\u create\u date”string=“creation date”context=“group\u by”：“创建日期：周”/>``筛选器的名称逻辑名称，默认情况下可用于启用它，也可用于heritance hookhelp筛选器的较长解释性文本可以显示为工具提示组，就像只有特定用户才能使用的筛选器7.0版一样。筛选器序列（没有将其分隔的非筛选器）被视为包含组合：它们将由或更确切地说是由n通常和，例如<filter domain=“[（'state'，'='，'draft'）”/><filter domain=“[（'state'，'='，'done'）”/>如果同时选择了两个筛选器，将选择状态为draft或done的记录，但<filter domain=“[（'state'，'='，'draft'）”/><separator/><filter domain=“[（'delay'，'<'，15）]“/>如果bot选择H过滤器，将选择状态为草稿且延迟低于15的记录。
+- **filter_domain** -- 用于搜索的完整的domain表达式，可以用self变量来代表当前记录的当前字段值，
 
-- `separator`
+  当`operator`和`filter_domain`同时赋值时，filter_domain有最高优先级
 
-  可用于在简单搜索视图中分隔过滤器组
+  可以使用自变量将提供的值注入自定义域。可用于生成比单独的运算符更灵活的域（例如，一次搜索多个字段）
 
-- `group`
+  ```xml
+  <field name="name" filter_domain="['|', '|', ('明确的字段内容', 'ilike', self), ('shortdesc', 'ilike', self), ('name', 'ilike', self)]" string="Theme"/>
+  ```
 
-  可用于分隔过滤器组，比复杂搜索视图中的分隔符更可读。
+- **context**   --允许添加上下文键，包括用户提供的值（对于域，该值作为自变量可用）。默认情况下，字段不会生成域。
+
+  域和上下文是包含的，如果指定了上下文，则两者都会生成。若要仅生成上下文值，请将`filter_domain`设置为空列表：filter_domain='[]'
+
+- **groups **  --使该字段仅对特定用户可用
+
+- **widget**   --对字段使用特定的搜索小部件（标准odoo 8.0中的唯一用例是Many2one字段的选择小部件）
+
+- **domain**   --如果字段可以提供自动完成（例如Many2one），则过滤可能的完成结果。
+
+
+
+**filter**
+
+过滤器是搜索视图中的预定义切换，只能启用或禁用。其主要目的是将数据添加到搜索上下文（传递到数据视图以进行搜索/筛选的上下文）或将新的条件附加到搜索筛选器。
+
+筛选器可以具有以下属性：
+
+- **string**（必需）过滤器的标签
+
+- **domain**（可选）odoo域，将作为搜索域的一部分附加到操作的域中。
+
+- **date**（可选）日期或日期时间类型的字段的名称。使用此属性可以创建过滤器菜单子菜单中可用的一组过滤器。
+
+  示例：
+
+  ```xml
+  <filter name="filter_create_date" date="create_date" string="creation date"/>
+  ```
+
+  上面的示例允许在下面的某个时段中轻松搜索具有创建日期字段值的记录。
+
+  ```
+  Create Date >
+    Today
+    This Week
+    This Month
+    This Quarter
+    This Year
+  --------------
+    Yesterday
+    Last Week
+    Last Month
+    Last Quarter
+    Last Year
+  --------------
+    Last 7 Days
+    Last 30 Days
+    Last 365 Days
+  ```
+
+  请注意，生成的域是动态的，可以这样保存（通过“收藏夹”菜单）。
+
+- **default_period**(可选)    仅对具有非空日期属性的筛选器才有意义。确定如果筛选器位于视图初始化时激活的默认筛选器集中，则激活哪个时段。如果未提供，则默认使用`this_month`。
+
+  选择下列选项：
+
+  today, this_week, this_month, this_quarter, this_year, yesterday, last_week, last_month, last_quarter, last_year, last_7_days, last_30_days, last_365_days
+
+  示例：
+
+  ```xml
+  <filter name="filter_create_date" date="create_date" string="creation date"  default_period="this_week"/>
+  ```
+
+- **context**   一个python字典，合并到操作的域中以生成搜索域.
+
+  `group_by`键可用于定义“Group By”菜单中可用的分组依据。`group_by`值可以是有效的字段名或字段名列表。
+
+  ```xml
+  <filter name="groupby_category" string="category" context="{'group_by':'category_id'}"/>
+  ```
+
+  上面定义的group by允许按类别对数据进行分组。
+
+  当字段类型为Date或DateTime时，筛选器将生成`group_by`菜单的子菜单，其中提供以下间隔选项：Day、Week、Month、Quarter、Year。
+
+  如果筛选器位于视图初始化时激活的默认筛选器集中，则默认情况下记录按月份分组。可以使用如下示例中的语法`date_field:interval`来更改此值。
+
+  示例：
+
+  ```xml
+  <filter name="groupby_create_date" string="creation date" context="'group_by': 'create_date:week'"/>
+  ```
+
+- **name**  筛选器的逻辑名称，默认情况下可以用于启用它，也可以用作继承挂钩
+
+- **help**  过滤器的较长解释性文本可以显示为工具提示
+
+- **groups**   使筛选器仅对特定用户可用
+
+  版本7.0中的新功能。
+
+  过滤器序列（不带分离它们的非过滤器）被视为包含合成：它们将由`OR`而不是通常的`AND`组成
+
+  例如:
+
+  ```xml
+  <filter domain="[('state', '=', 'draft')]"/>
+  <filter domain="[('state', '=', 'done')]"/>
+  ```
+
+  如果两个过滤器都被选中，将选择状态为`draft`或`done`的记录，但是
+
+  ```xml
+  <filter domain="[('state', '=', 'draft')]"/>
+  <separator/>
+  <filter domain="[('delay', '<', 15)]"/>
+  ```
+
+  如果两个过滤器都被选中，将选择状态为草稿且延迟小于15的记录。
+
+**separator**
+
+可用于在简单搜索视图中分隔过滤器组
+
+**group**
+
+可用于分隔过滤器组，比复杂搜索视图中的分隔符更可读。
+
+
 
 ### Search defaults
 
-搜索字段和过滤器可以通过操作的上下文使用搜索\u default_*name*键进行配置。对于字段，值应该是要在字段中设置的值，对于筛选器，它是一个布尔值。例如，假设foo是一个字段，而bar是一个筛选器，则操作上下文为：
+搜索字段和过滤器可以在操作的上下文使用`search_default_name`键进行配置。
+对于字段，值应该是要在字段中设置的值
+对于筛选器，它是一个布尔值。例如，假设foo是一个字段，而bar是一个筛选器，则操作上下文为：
 
-```
+```json
 {
   'search_default_foo': 'acro',
   'search_default_bar': 1
 }
 ```
 
-将自动启用栏过滤器，并在foo字段中搜索`acro`。
+将自动启用bar过滤器并在foo字段中搜索acro。
+
+
 
 
 

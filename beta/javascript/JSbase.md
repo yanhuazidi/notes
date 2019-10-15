@@ -1315,7 +1315,7 @@ var phone1 = {
 
 
 
-### 使用内置构造函数    Object()
+### 使用内置构造函数    Object(
 
 ```javascript
 var book = new Object();  //{}
