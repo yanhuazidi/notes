@@ -6,24 +6,25 @@
 
 
 
-## 记录集
+## 记录集   Recordsets 
 
-**与模型和记录的交互通过记录集执行，记录集是同一模型的一组已排序的记录。**
+**模型和记录的交互是通过记录集执行的，记录集是同一模型的一组已排序的记录。**
 
-与名称的含义相反，目前记录集可能包含重复项。这在未来可能会改变。
+> ### Warning
+>
+> 与名称的含义相反，记录集当前可能包含重复项。这在未来可能会改变。
 
-模型上定义的方法在记录集上执行，它们`self`是记录集：
+在模型上定义的方法在记录集上执行， `self` 是一个记录集：
 
 ```python
 class AModel(models.Model):
     _name = 'a.model'
     def a_method(self):
-        # self can be anywhere between 0 records and all records in the
-        # database
+        # self 可以介于0条记录和数据库中所有记录之间
         self.do_operation()
 ```
 
-迭代记录集将产生新*的单个记录*集 （“单例”），就像迭代Python字符串产生单个字符的字符串一样：
+对记录集进行迭代将产生新的单个记录的记录集（单例），类似于在python字符串上迭代，可以生成单个字符的字符串：
 
 ```python
 def do_operation(self):
@@ -34,9 +35,13 @@ def do_operation(self):
 
 
 
-## 现场访问
+### 字段访问
 
-记录集提供了一个“活动记录”接口:模型字段可以作为属性直接从记录中读取和写入，但只能在单例(单记录记录集)上。字段值也可以像dict项一样访问，对于动态字段名，dict项比getattr()更优雅、更安全。设置字段的值会触发对数据库的更新:
+记录集提供了一个“操作记录”接口：模型字段可以作为属性直接从记录中读写，但只能在单例（单记录记录集）上读写。
+
+字段值也可以像python 字典键一样访问，这比动态字段名的 `getattr()` 更优雅和安全。
+
+设置字段的值将触发对数据库的更新：
 
 ```python
 >>> record.name
@@ -51,98 +56,98 @@ Bob
 
 尝试在多个记录上读取或写入字段会引发错误。
 
-访问关系字段(Many2one, One2many, Many2many)总是返回一个记录集，如果没有设置该字段，则返回空。
+访问关系字段(`Many2one`, `One2many`, `Many2many`) 总是返回一个记录集，如果该字段未设置，则返回空记录集。
 
-危险
-每个字段的赋值都会触发数据库更新，当同时设置多个字段或在多个记录上设置字段(值相同)时，使用write():
+>### Danger
+>
+>对字段的每次赋值都会触发数据库更新，当同时设置多个字段或在多个记录上设置字段（设置为同一值）时，请使用`write()`：
+>
+>```python
+># 3 * len(records) 数据库更新
+>for record in records:
+>record.a = 1
+>record.b = 2
+>record.c = 3
+>
+># len(records) 数据库更新
+>for record in records:
+>record.write({'a': 1, 'b': 2, 'c': 3})
+>
+># 1 数据库更新
+>records.write({'a': 1, 'b': 2, 'c': 3})
+>```
+>
+>
+
+
+
+### 记录缓存和预取
+
+odoo为记录的字段维护一个缓存，因此不是每个字段访问都会发出一个数据库请求，这对性能是很糟糕的。以下示例仅查询第一条语句的数据库：
 
 ```python
-# 3 * len(records) database updates
-for record in records:
-    record.a = 1
-    record.b = 2
-    record.c = 3
-# len(records) database updates
-for record in records:
-    record.write({'a': 1, 'b': 2, 'c': 3})
-# 1 database update
-records.write({'a': 1, 'b': 2, 'c': 3})
+record.name             # 第一次访问从数据库读取值
+record.name             # 第二次访问从缓存读取值
 ```
 
+为了避免一次读取一条记录上的一个字段，Odoo 按照一些启发式方法预取记录和字段以获得良好的性能。一旦必须读取给定记录上的某个字段， ORM 就会实际读取较大记录集中的该字段，并将返回值存储在缓存中以供以后使用。预取的记录集通常是通过迭代获得记录的记录集。此外，所有简单的存储字段（boolean、integer、float、char、text、date、datetime、selection、many2one）都是一起获取的；它们对应于模型表的列，并在同一个查询中有效地获取。
 
-
-## 记录缓存和预取
-
-Odoo为记录的字段维护缓存，因此不是每个字段访问都会发出数据库请求，这对性能来说是很糟糕的。下面的示例仅为第一个语句查询数据库:
-
-```python
-record.name             # first access reads value from database
-record.name             # second access gets value from cache
-```
-
-为了避免一次读取一条记录上的一个字段，Odoo根据一些启发式方法预取记录和字段，以获得良好的性能。一旦必须读取给定记录上的字段，ORM就会在更大的记录集中读取该字段，并将返回的值存储在缓存中，供以后使用。预取的记录集通常是通过迭代获得记录的记录集。此外，所有简单的存储字段(boolean、integer、float、char、text、date、datetime、selection、many2one)都被同时获取;它们对应于模型表的列，并在同一个查询中有效地获取。
-
-考虑下面的例子，其中合作伙伴是由1000条记录组成的记录集。如果没有预取，循环将对数据库进行2000次查询。预取时，只进行一个查询:
+考虑下面的例子，其中`partners`是一个包含1000条记录的记录集。如果没有预取，循环将对数据库进行2000次查询。通过预取，只进行一个查询：
 
 ```python
 for partner in partners:
-    print partner.name          # first pass prefetches 'name' and 'lang'
-                                # (and other fields) on all 'partners'
+    print partner.name #第一遍在所有“partners”上预取“name”和“lang”（以及其他字段）
     print partner.lang
 ```
 
-预取也适用于辅助记录:当读取关系字段时，将订阅它们的值(即记录)，以便将来预取。访问其中一个辅助记录将从同一个模型中预先获取所有辅助记录。这使得下面的示例只生成两个查询，一个用于伙伴，一个用于国家:
+预取也适用于辅助记录：当读取关系字段时，它们的值（即记录）将被订阅以供将来预取。访问其中一个辅助记录会预取同一模型中的所有辅助记录。这使得以下示例仅生成两个查询，一个用于合作伙伴，一个用于国家：
 
 ```python
 countries = set()
 for partner in partners:
-    country = partner.country_id      # first pass prefetches all partners
-    countries.add(country.name)   	  # first pass prefetches all countries
+    country = partner.country_id        # 首次通过预取所有合作伙伴
+    countries.add(country.name)         # 首次通过预取所有国家
 ```
 
 
 
-## 集合操作
+### 集合操作
 
-记录集是不可变的，但是相同模型的集可以使用不同的集合操作组合，返回新的记录集。Set操作不保留顺序。
+记录集是不可变的，但是同一模型的集可以使用不同的集操作组合，从而返回新的记录集。集合操作不保留顺序。
 
-- record in set返回record(必须是一个1元素的记录集)是否存在于set中。record not in set是相反的操作
-
-- set1 <= set2 和 set1 < set2返回set1是否是set2的子集(resp. strict)
-
-- set1 >= set2 和 set1 > set2返回set1是否是set2的超集(resp. strict)
-
-- set1 | set2 返回两个记录集的并集，这是一个新的记录集，包含两个源中存在的所有记录
-
-- set1 & set2 返回两个记录集的交集，一个新的记录集只包含在两个源中出现的记录
-
-- set1 - set2 返回一个新的记录集，其中只包含不在set2中的set1的记录
+- `record in set `   返回`record`（必须是单记录记录集）是否在`set`中。`record not in set`是逆操作
+- `set1 <= set2`和`set1 < set2 `  返回`set1`是否是`set2`（resp. stric 严格模式）的子集
+- `set1 >= set2`和`set1 > set2`   返回`set1`是否是`set2`（resp. stric）的超集
+- `set1 | set2` 返回两个记录集的并集，一个包含所有源记录集记录的新记录集
+- `set1 & set2` 返回两个记录集的交集，一个仅包含两个源记录集中都存在的记录的新记录集
+- set1  -  set2   返回两个记录集的补集，一个仅包含`set1`中存在的记录`set2`中不存在的记录的新记录集
 
 
 
 ### 其他记录集操作
 
-记录集是可迭代的，因此常用的Python工具可用于转换(map()、sort()和迭代工具。然而，这些方法要么返回一个列表，要么返回一个迭代器，从而消除了对结果调用方法或使用set操作的能力。
+记录集是可迭代的，因此普通的Python工具可用于转换他们(`map()`, `sorted()`, `itertools.ifilter`, …), 但是这些操作返回的是一个 `list`  或一个迭代器，删除了对其结果调用记录集方法或使用set操作的能力。
 
-因此，记录集提供这些操作返回记录集本身(如果可能的话):
+因此，记录集提供这些返回记录集本身的操作（如果可能）： 
 
 **filtered()**
 
-返回一个记录集，其中只包含满足所提供谓词函数的记录。谓词也可以是一个字符串，通过字段为真或为假来过滤:
+返回只包含满足所提供谓词函数的记录的记录集。谓词也可以是一个字符串，通过一个为true或false的字段进行筛选：
 
 ```python
-# only keep records whose company is the current user's
+#仅保留其公司与当前用户公司相同的记录集
 records.filtered(lambda r: r.company_id == user.company_id)
-# only keep records whose partner is a company
+
+#仅保留其合作伙伴是公司的记录集
 records.filtered("partner_id.is_company")
 ```
 
 **sorted()**
 
-返回按提供的键函数排序的记录集。如果没有提供密钥，则使用模型的默认排序顺序:
+返回按提供的键函数排序的记录集。如果未提供键，使用模型的默认排序顺序：
 
 ```python
-# sort records by name
+# 按记录名称排序记录集
 records.sorted(key=lambda r: r.name)
 ```
 
@@ -151,28 +156,34 @@ records.sorted(key=lambda r: r.name)
 将提供的函数应用于记录集中的每个记录，如果结果是记录集，则返回一个记录集:
 
 ```python
-# returns a list of summing two fields for each record in the set
+# 返回集合中每条记录的两个字段之和的列表
 records.mapped(lambda r: r.field1 + r.field2)
 ```
 
-所提供的函数可以是一个字符串来获取字段值:
+提供的函数可以是获取字段值的字符串：
 
 ```python
-# returns a list of names
+# 返回记录名称列表
 records.mapped('name')
-# returns a recordset of partners
+#返回记录合作伙伴的记录集
 record.mapped('partner_id')
-# returns the union of all partner banks, with duplicates removed
+#返回所有合作伙伴的银行的删除重复记录的并集
 record.mapped('partner_id.bank_ids')
 ```
 
 
 
-## 环境
+## 环境Environment 
 
-环境存储ORM使用的各种上下文数据:数据库游标(用于数据库查询)、当前用户(用于访问权限检查)和当前上下文(存储任意元数据)。环境还存储缓存。
+`Environment` 存储 ORM 使用的各种上下文数据：
 
-所有记录集都有一个环境，该环境是不可变的，可以使用env访问，并允许访问当前用户(user)、游标(cr)或上下文(context):
+- 数据库光标（用于数据库查询）
+- 当前用户（用于访问权限检查）
+- 当前上下文（存储任意元数据）
+
+环境还存储缓存。
+
+所有记录集都有一个不可变的环境，可以使用`env`它来访问，并提供对当前用户（`user`），数据库光标（`cr`）或上下文（`context`）的访问：
 
 ```python
 >>> records.env
@@ -183,7 +194,7 @@ res.user(3)
 <Cursor object ...)
 ```
 
-当从其他记录集创建记录集时，环境将被继承。该环境可用于获取另一个模型中的空记录集，并查询该模型:
+从其他记录集创建记录集时，将继承环境。环境可用于获取其他模型中的空记录集，并查询该模型：
 
 ```python
 >>> self.env['res.partner']
@@ -191,6 +202,8 @@ res.partner
 >>> self.env['res.partner'].search([['is_company', '=', True], ['customer', '=', True]])
 res.partner(7, 18, 12, 14, 17, 19, 8, 31, 26, 16, 13, 20, 30, 22, 29, 15, 23, 28, 74)
 ```
+
+
 
 ### 改变环境
 
@@ -201,10 +214,10 @@ res.partner(7, 18, 12, 14, 17, 19, 8, 31, 26, 16, 13, 20, 30, 22, 29, 15, 23, 28
 使用提供的用户集创建一个新环境，如果没有提供，则使用管理员(在安全上下文中绕过访问权限/规则)，返回在使用新环境时调用的记录集的副本:
 
 ```python
-# create partner object as administrator
+# 以管理员身份创建合作伙伴
 env['res.partner'].sudo().create({'name': "A Partner"})
 
-# list partners visible by the "public" user
+# 列出“公共”用户可见的合作伙伴
 public = env.ref('base.public_user')
 env['res.partner'].sudo(public).search([])
 ```
@@ -216,8 +229,7 @@ env['res.partner'].sudo(public).search([])
 可以通过关键字获取任意数量的参数，这些参数可以添加到当前环境的上下文中，也可以添加到步骤1中设置的上下文中
 
 ```python
-# look for partner, or create one with specified timezone if none is
-# found
+# 查找指定时区的合作伙伴,如果找不到合作伙伴就创建指定时区的合作伙伴
 env['res.partner'].with_context(tz=a_tz).find_or_create(email_address)
 ```
 
@@ -227,25 +239,25 @@ env['res.partner'].with_context(tz=a_tz).find_or_create(email_address)
 
 
 
-## 常见的ORM方法
+## 常用ORM方法
 
 **search()**
 
-获取一个搜索域，返回一组匹配的记录。可以返回匹配记录子集(偏移量和限制参数)和被排序(顺序参数):
+通过搜索域，返回匹配记录的记录集。可以返回匹配记录的子集（`offset` 和`limit`参数）并排序（`order`参数）：
 
 ```python
->>> # searches the current model
+>>> # 搜索当前模型
 >>> self.search([('is_company', '=', True), ('customer', '=', True)])
 res.partner(7, 18, 12, 14, 17, 19, 8, 31, 26, 16, 13, 20, 30, 22, 29, 15, 23, 28, 74)
 >>> self.search([('is_company', '=', True)], limit=1).name
 'Agrolait'
 ```
 
-要检查是否有任何记录匹配域，或者计算匹配域的记录数量，可以使用search_count()
+> 只是要检查是否有任何记录与域匹配或计算匹配的记录数，请使用`search_count()`
 
 **create()**
 
-提供字段值字典或此类字典的列表，并返回包含已创建记录的记录集:
+获取字段值的字典或此类字典的列表，并返回包含创建的记录的记录集：
 
 ```python
 >>> self.create({'name': "Joe"})
@@ -256,7 +268,7 @@ res.partner(79, 80, 81)
 
 **write()**
 
-提供若干字段值，并将它们写入其记录集中的所有记录。不返回任何东西:
+获取多个字段值，并将其写入其记录集中的所有记录。不返回任何内容：
 
 ```python
 self.write({'name': "Newer Name"})
@@ -264,7 +276,7 @@ self.write({'name': "Newer Name"})
 
 **browse()**
 
-提供数据库id或id列表，并返回一个记录集，当从Odoo外部获取记录id(例如，通过外部系统的往返)或调用旧API中的方法时非常有用:
+获取数据库ID或ID列表并返回一个记录集，当从外部ODOO获取记录ID（例如通过外部系统往返）或调用旧API中的方法时非常有用：
 
 ```python
 >>> self.browse([7, 18, 12])
@@ -273,24 +285,24 @@ res.partner(7, 18, 12)
 
 **exists()**
 
-返回一个只包含数据库中存在的记录的新记录集。可用于检查记录(例如从外部取得的)是否仍然存在:
+返回一个新记录集，该记录集只包含数据库中存在的记录。可用于检查是否存在记录（例如外部获得）：
 
 ```python
 if not record.exists():
     raise Exception("The record has been deleted")
 ```
 
-或者在调用了一个可以删除一些记录的方法之后:
+或者在可能删除了一些记录的方法之后调用： 
 
 ```python
 records.may_remove_some()
-# only keep records which were not deleted
+# 仅保留未删除
 records = records.exists()
 ```
 
 **ref()**
 
-环境方法返回与提供的外部id匹配的记录:
+返回与提供的外部ID匹配的记录的环境方法：
 
 ```python
 >>> env.ref('base.group_public')
@@ -299,13 +311,15 @@ res.groups(2)
 
 **ensure_one()**
 
-检查记录集是否为单例(只包含一条记录)，否则会引发错误:
+检查记录集是否为单例（仅包含单个记录），否则会引发错误： 
 
 ```python
 records.ensure_one()
-# is equivalent to but clearer than:
+# 相当于但更清晰：
 assert len(records) == 1, "Expected singleton"
 ```
+
+
 
 
 
@@ -321,15 +335,17 @@ class AModel(models.Model):
     field1 = fields.Char()
 ```
 
-不能定义具有相同名称的字段和方法，它们将发生冲突
+>### Warning
+>
+>这意味着您无法定义具有相同名称的字段和方法，它们会发生冲突
 
-默认情况下，字段的标签(用户可见的名称)是字段名称的大写版本，这可以用字符串参数覆盖:
+默认情况下，字段的标签（用户可见名称）是字段名称的大写版本，可以使用以下`string`参数覆盖：
 
 ```python
 field2 = fields.Integer(string="an other field")
 ```
 
-默认值定义为字段上的参数，或者是一个值:
+默认值定义为字段上的参数，值可以是：
 
 ```python
 a_field = fields.Char(default="a value")
@@ -462,9 +478,11 @@ widget="reference" # 关联标签
 
 
 
-## 计算字段
+### 计算字段
 
-可以使用compute参数计算字段(而不是直接从数据库中读取)。它必须将计算值分配给字段。如果使用其他字段的值，则应该使用depends()指定这些字段:
+可以使用`compute`参数计算字段值（而不是直接从数据库中读取） 。**它必须将计算值分配给字段**。如果它使用其他*字段*的值，则应使用`depends()`
+
+以下命令指定这些字段 ：
 
 ```python
 from odoo import api
@@ -476,174 +494,196 @@ def _compute_total(self):
         record.total = record.value + record.value * record.tax
 ```
 
-依赖项可以在使用子字段时点状路径:
+- 使用子字段时，依赖项可以是点路径：
+
+  ```python
+  @api.depends('line_ids.value')
+  def _compute_total(self):
+      for record in self:
+          record.total = sum(line.value for line in record.line_ids)
+  ```
+
+- 默认情况下不会存储计算字段，它们会在请求时计算并返回。设置`store=True`会将它们存储在数据库中并自动启用搜索
+
+- 也可以通过设置 `search`参数启用对计算字段的搜索。值是返回域的方法名：
+
+  ```python
+  upper_name = field.Char(compute='_compute_upper', search='_search_upper')
+  
+  def _search_upper(self, operator, value):
+      if operator == 'like':
+          operator = 'ilike'
+      return [('name', operator, value)]
+  ```
+
+- 若要允许在计算字段上设置值，请使用`inverse`参数。它是反转计算并设置相关字段的函数的名称：
+
+  ```python
+  document = fields.Char(compute='_get_document', inverse='_set_document')
+  def _get_document(self):
+      for record in self:
+          with open(record.get_document_path) as f:
+              record.document = f.read()
+  def _set_document(self):
+      for record in self:
+          if not record.document: continue
+          with open(record.get_document_path()) as f:
+              f.write(record.document)
+  ```
+
+- 可以通过相同的方法同时计算多个字段，只需在所有字段上使用相同的方法并设置所有字段： 
+
+  ```python
+  discount_value = fields.Float(compute='_apply_discount')
+  total = fields.Float(compute='_apply_discount')
+  
+  @depends('value', 'discount')
+  def _apply_discount(self):
+      for record in self:
+          # 根据折扣百分比计算实际折扣
+          discount = record.value * record.discount
+          record.discount_value = discount
+          record.total = record.value - discount
+  ```
+
+  
+
+### 关联字段
+
+计算字段的一种特殊情况是相关（代理）字段，它提供当前记录上的子字段的值。它们是通过设置相关参数定义的，与常规计算字段一样，它们可以存储：
 
 ```python
-@api.depends('line_ids.value')
-def _compute_total(self):
-    for record in self:
-        record.total = sum(line.value for line in record.line_ids)
-```
-
-默认情况下不存储计算字段，而是在请求时计算并返回它们。设置store=True将把它们存储在数据库中，并自动启用搜索
-
-还可以通过设置搜索参数来启用对计算字段的搜索。值是返回域的方法名:
-
-```python
-upper_name = field.Char(compute='_compute_upper', search='_search_upper')
-def _search_upper(self, operator, value):
-    if operator == 'like':
-        operator = 'ilike'
-    return [('name', operator, value)]
-```
-
-若要允许在计算字段上设置值，请使用逆参数。它是反转计算并设置相关字段的函数名:
-
-```python
-document = fields.Char(compute='_get_document', inverse='_set_document')
-def _get_document(self):
-    for record in self:
-        with open(record.get_document_path) as f:
-            record.document = f.read()
-def _set_document(self):
-    for record in self:
-        if not record.document: continue
-        with open(record.get_document_path()) as f:
-            f.write(record.document)
-```
-
-多个字段可以用相同的方法同时计算，只需对所有字段使用相同的方法并设置所有字段:
-
-```python
-discount_value = fields.Float(compute='_apply_discount')
-total = fields.Float(compute='_apply_discount')
-
-@depends('value', 'discount')
-def _apply_discount(self):
-    for record in self:
-        # compute actual discount from discount percentage
-        discount = record.value * record.discount
-        record.discount_value = discount
-        record.total = record.value - discount
-```
-
-#### 相关领域
-
-计算字段的特殊情况是相关(代理)字段，它在当前记录上提供子字段的值。它们是通过设置相关参数来定义的，就像普通的计算字段一样，它们可以存储:
-
-```python
+user_id = fields.Many2one('res.user',ondelete='cascade')
 nickname = fields.Char(related='user_id.partner_id.name', store=True)
+statement_id = fields.Many2one('account.bank.statement',ondelete='cascade')
+journal_id = fields.Many2one('account.journal', related='statement_id.journal_id', string='Journal', store=True, readonly=True)
 ```
 
 
 
-### onchange:动态更新UI
+### onchange：动态更新UI
 
-当用户更改表单中某个字段的值(但尚未保存该表单)时，根据该值自动更新其他字段是很有用的，例如，在更改税收或添加新的发票行时更新最终的总额。
+当用户更改表单中字段的值（但尚未保存表单）时，可以根据该值自动更新其他字段，例如，在更改税款或添加新发票行时更新最终总额。
 
-计算字段会自动检查和重新计算，它们不需要onchange
+- 计算字段会自动检查并重新计算，它们不需要 `onchange`
 
-对于非计算字段，onchange()修饰符用于提供新的字段值:
+- 对于非计算字段，`onchange()`装饰器用于提供新的字段值：
 
-```python
-@api.onchange('field1', 'field2') # if these fields are changed, call method
-def check_change(self):
-    if self.field1 < self.field2:
-        self.field3 = True
-```
+  ```python
+  @api.onchange('field1', 'field2') #如果更改了这些字段，会调用该方法
+  def check_change(self):
+      if self.field1 < self.field2:
+          self.field3 = True
+  ```
 
-然后，将方法期间执行的更改发送到客户机程序，并对用户可见
+  然后，在方法期间执行的更改被发送到客户端程序，并对用户可见
 
-客户端自动调用computed字段和new-API onchanges，而无需在视图中添加它们
+  
 
-可以通过在视图中添加on_change="0"来抑制特定字段的触发器:
+- 客户端自动调用计算字段和new-API onchanges，而无需在视图中添加它们
 
-```xml
-<field name="name" on_change="0"/>
-```
+- 可以通过`on_change="0"`在视图中添加来禁止来自特定字段的触发器 ：
 
-当用户编辑字段时，不会触发任何接口更新，即使有函数字段或显式onchange依赖于该字段。
+  ```xml
+  <field name="name" on_change="0"/>
+  ```
 
-onchange方法对这些记录的虚拟记录进行赋值，而不是写入数据库，只是用来知道要将哪个值发送回客户机
+  当用户编辑字段时，将不会触发任何接口更新，即使存在依赖于该字段的函数字段或显式onchange。
 
-警告
+>`onchange` 方法对虚拟记录的工作分配这些记录不会写入数据库，只是用于知道要将哪个值发送回客户端
 
-one2many或many2many字段不可能通过onchange修改自身。这是一个webclient限制—请参见#2693。
+>### Warning
+>
+>`one2many`或`many2many`字段不可能通过`onchange`修改自身。这是一个Webclient限制-请参见2693。
 
 
 
-## 低级的SQL
+### 低级SQL
 
-环境上的cr属性是当前数据库事务的指针，允许直接执行SQL，无论是对于使用ORM难以表达的查询(例如复杂连接)，还是出于性能原因:
+`env` 的 `cr` 属性是当前数据库事务的光标，允许直接执行SQL，无论是对于使用ORM难以表达的查询（例如复杂连接），还是出于性能原因：
 
 ```python
 self.env.cr.execute("some_sql", param1, param2, param3)
 ```
 
-由于模型使用相同的游标，并且环境包含各种缓存，因此在原始SQL中修改数据库时必须使这些缓存失效，否则模型的进一步使用可能变得不一致。在SQL中使用CREATE、UPDATE或DELETE时需要清除缓存，而不是SELECT(它只读取数据库)。
+由于模型使用同一个游标，并且`env`保存各种缓存，因此在原始SQL中更改数据库时，这些缓存必须无效，否则模型的进一步使用可能会变得不连贯。在SQL中使用`create`、`update`或`delete`时，需要清除缓存，而不是select（它只是读取数据库）。
 
-清除缓存可以使用BaseModel对象的invalidate_cache()方法执行。
+清除缓存可以使用`BaseModel`对象的`invalidate_cache()`方法执行。
+
+
 
 ## 新API和旧API之间的兼容性
 
-Odoo目前正在从一个较老的(不太规范的)API过渡到另一个API，有必要手动地从一个API过渡到另一个API:
+ODOO目前正在从旧的（不太规则的）API转换，可能需要手动从一个到另一个桥接：
 
-RPC层(XML-RPC和JSON-RPC)都是用旧API表示的，纯用新API表示的方法在RPC上不可用
+- RPC层（XML-RPC和JSON-RPC)用旧API表示，纯用新API表示的方法在RPC上不可用
+- 可重写的方法可以从仍然用旧API风格编写的旧代码片段中调用。
 
-可覆盖方法可以从仍然使用旧API风格编写的旧代码段中调用
+新旧API的最大区别在于：
 
-新旧api的主要区别在于:
-
-​		环境的值(游标、用户id和上下文)被显式地传递给方法
-
-​		记录数据(id)显式地传递给方法，可能根本不传递
-
-​		方法倾向于处理id列表，而不是记录集
+- `env`的值（游标、用户id和上下文）被显式地传递给方法
+- 记录数据（`ids`）显式地传递给方法，可能根本不传递
+- 方法倾向于处理id列表而不是记录集
 
 默认情况下，假定方法使用新的API样式，并且不能从旧的API样式调用方法。
 
-从新API到旧API的调用被桥接
+>从新API 到旧API 的调用被桥接
+>
+>当使用新的API 样式时，对使用旧API 定义的方法的调用会动态自动转换，无需执行任何特殊操作：
+>
+>```python
+>>>> #旧api风格的方法
+>>>> def old_method(self, cr, uid, ids, context=None):
+>...    print ids
+>
+>>>> #新API样式的方法
+>>>> def new_method(self):
+>...     #系统自动推断如何从新样式方法调用旧样式方法
+>...     self.old_method()
+>
+>>>> env[model].browse([1, 2, 3, 4]).new_method()
+>[1, 2, 3, 4]
+>```
+>
+>
 
-当使用新的API样式时，对使用旧API定义的方法的调用会被动态自动转换，不需要做任何特殊的事情:
+两个装饰器可以向旧API公开一个新样式的方法：
 
-```python
->>> # method in the old API style
->>> def old_method(self, cr, uid, ids, context=None):
-...    print ids
+**model()**
 
->>> # method in the new API style
->>> def new_method(self):
-...     # system automatically infers how to call the old-style
-...     # method from the new-style method
-...     self.old_method()
-
->>> env[model].browse([1, 2, 3, 4]).new_method()
-[1, 2, 3, 4]
-```
-
-两个装饰器可以向旧API公开一个新风格的方法:
-
-model()
-
-该方法公开为不使用id，其记录集通常为空。它的“老API”签名是cr, uid， *参数，上下文:
+该方法公开为不使用id，其记录集通常为空。它的“old API"签名是`cr, uid, *arguments, context`：
 
 ```python
 @api.model
 def some_method(self, a_value):
     pass
-# can be called as
+#可以称为
 old_style_model.some_method(cr, uid, a_value, context=context)
 ```
 
-multi()
+请注意，用`model()`修饰的`create`方法将始终使用单个字典调用。用变体 `model_create_multi()`修饰的`create`方法将始终用一个字典列表调用。装饰器负责将参数转换为一种或另一种形式：
 
-该方法公开了一个id列表(可能是空的)，它的“老API”签名是cr, uid, id， *参数，上下文:
+```python
+@api.model
+def create(self, vals):
+    ...
+
+@api.model_create_multi
+def create(self, vals_list):
+    ...
+```
+
+
+
+**multi()**
+
+该方法公开了一个id列表(可能是空的)，它的“老 API”签名是 `cr, uid, ids, *arguments, context`
 
 ```python
 @api.multi
 def some_method(self, a_value):
     pass
-# can be called as
+# 可以称为
 old_style_model.some_method(cr, uid, [id1, id2], a_value, context=context)
 ```
 
@@ -661,11 +701,11 @@ def create(self, vals_list):
 
 因为新风格的api倾向于返回记录集，而旧风格的api倾向于返回id列表，所以也有一个装饰器来管理这个:
 
-returns()
+**returns()**
 
-假设函数返回一个记录集，第一个参数应该是记录集的模型名或self(对于当前模型)。
+假设函数返回一个记录集，第一个参数应该是记录集的模型名或 `self` （对于当前模型）。
 
-如果方法以新的API风格调用，则没有效果，但是当从旧的API风格调用时，将记录集转换为id列表:
+如果以新的API样式调用方法，但从旧的API样式调用时将记录集转换为ID列表，则不会产生任何效果：
 
 ```python
 >>> @api.multi
@@ -682,9 +722,9 @@ a.model(1, 2, 3)
 
 
 
-## 模型参考
+## 模型控制
 
-**class odoo.models.Model(*pool*, *cr*)**
+`class odoo.models.Model(pool, cr)`
 
 常规数据库持久化Odoo模型的主超类。
 
