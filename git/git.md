@@ -1,111 +1,4 @@
-
-
-
-
-
-
-
-
-
-
 [TOC]
-
-
-
-
-
-## 安装
-
-```shell
-$ yum install git-core
-#或
-sudo apt-get install git
-```
-
-
-
-## 环境配置
-
-配置工具   **git config**  用来配置或读取相应的工作环境变量, 而正是由这些环境变量，决定了 Git 在各个环节的具体工作方式和行为。
-
-这些变量可以存放在以下三个不同的地方：
-
-- **系统级别**    `/etc/gitconfig`文件：系统中对所有用户都普遍适用的配置。若使用 **git config** 时用 *–system* 选项，读写的就是这个文件。
-- **当前用户**  `~/.gitconfig` 文件：用户目录下的配置文件只适用于该用户。若使用 **git config** 时用 *–global* 选项，读写的就是这个文件。
-- **当前项目**   工作目录中的 `.git/config`  文件：这里的配置仅仅针对当前项目有效。在git项目文件夹中执行 **git config**
-
-在 Windows 系统上，Git 会找寻用户主目录下的 *.gitconfig* 文件。主目录即 *$HOME* 变量指定的目录，一般都是 *C:Documents and Settings$USER*。此外，Git 还会尝试找寻 */etc/gitconfig* 文件，只不过看当初 Git 装在什么目录，就以此作为根目录来定位。
-
-**适用规则**
-
-局域级别的配置都会覆盖上层的相同配置，所以 `.git/config` 里的配置会覆盖 `~/.gitconfig` 中的同名变量。
-
-
-
-### 常用配置命令
-
-**查看当前配置信息**
-
-```shell
-git config --list
-```
-**直接查阅某个环境变量的设定**    特定的名字跟在后面即可
-
-```shell
-git config user.name
-```
-
-有时候会看到重复的变量名，那就说明它们来自不同的配置文件（比如 /etc/gitconfig 和 ~/.gitconfig），不过最终 Git 实际采用的是最后一个。
-
-**配置用户名**
-
-```shell
-git config user.name Tedu
-```
-
-**配置邮箱**
-
-```shell
-git config user.email tarena@tedu.cn
-```
-
-**配置编辑器**
-
-```shell
-git config core.editor vscode
-```
-
-**配置免密推送**
-
-```shell
-git config credential.helper store
-```
-
-**差异分析工具 **     在解决合并冲突时使用哪种差异分析工具
-
-Git 可以理解 kdiff3，tkdiff，meld，xxdiff，emerge，vimdiff，gvimdiff，ecmerge，和 opendiff 等合并工具的输出信息。
-
-```shell
-git config merge.tool vimdiff
-```
-
-
-
-## 获取帮助
-
-想了解 Git 的各式工具该怎么用，可以阅读它们的使用帮助，方法有三:
-
-```shell
-git help <verb>
-git <verb> --help
-man git-<verb>
-```
-
-比如，要学习 config 命令可以怎么用，运行:
-
-```shell
-git help config
-```
 
 
 
@@ -119,7 +12,9 @@ git help config
 
 文件流转的三个工作区域：Git 的工作目录，暂存区域，以及本地仓库(远程仓库)。
 
-![../../_images/18333fig0106-tn.png](D:\notes\alpha\version_management\git.assets\18333fig0106-tn.png)
+![../../_images/18333fig0106-tn.png](D:\notes\git\git.assets\18333fig0106-tn.png)
+
+
 
 每个项目都有一个 Git 目录（译注：如果 git clone 出来的话，就是其中 .git 的目录；如果 git clone –bare 的话，新建的目录本身就是 Git 目录。），它是 Git 用来保存元数据和对象数据库的地方。该目录非常重要，每次克隆镜像仓库的时候，实际拷贝的就是这个目录里面的数据。
 
@@ -282,7 +177,7 @@ no changes added to commit (use "git add" and/or "git commit -a")
 - 已跟踪的文件 : 指本来就被纳入版本控制管理的文件
 - 未跟踪文件 : 它们既没有上次提交时的快照，也不在当前的暂存区域。初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。
 
-![](D:\notes\alpha\version_management\git.assets\18333fig0201-tn.png)
+![../../_images/18333fig0201-tn.png](D:\notes\git\git.assets\18333fig0201-tn-1572520704151.png)
 
 文件的状态变化周期
 
@@ -635,6 +530,37 @@ b0ad11e - pull: allow "git pull origin $something:$cur
 Git 项目有 20,000 多条提交，但我们给出搜索选项后，仅列出了其中满足条件的 6 条。
 ```
 
+
+
+查看操作日志    上面的最新
+    git reflog 
+    *获取到操作记录后可以根据commit_id去往较新的版本
+
+
+
+## 版本控制命令
+
+### 回到之前版本
+
+**回到上一个版本**
+
+```shell
+git reset --hard HEAD^
+#HEAD 后几个^ 表示回到之前的几个版本
+```
+
+**回到指定版本**
+
+```shell
+git reset --hard commit_id  #版本号
+```
+
+
+
+
+
+
+
 ## 使用图形化工具查阅提交历史
 
 有时候图形化工具更容易展示历史提交的变化，随 Git 一同发布的 gitk 就是这样一种工具。它是用 Tcl/Tk 写成的，基本上相当于 git log 命令的可视化版本，凡是 git log 可以用的选项也都能用在 gitk 上。在项目工作目录中输入 gitk 命令后，就会启动图 2-2 所示的界面。
@@ -645,203 +571,495 @@ Git 项目有 20,000 多条提交，但我们给出搜索选项后，仅列出�
 
 
 
+## 撤消操作
+
+### 修改最后一次提交
+
+撤消刚才的提交操作，可以使用 `–-amend `选项重新提交:
+
+```shell
+$ git commit --amend
+```
+
+此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命令的话，相当于有机会重新编辑提交说明，但将要提交的文件快照和之前的一样。
+
+启动文本编辑器后，会看到上次提交时的说明，编辑它确认没问题后保存退出，就会使用新的提交说明覆盖刚才失误的提交。
+
+如果刚才提交时忘了暂存某些修改，可以先补上暂存操作，然后再运行 –amend 提交:
+
+```shell
+$ git commit -m 'initial commit'
+$ git add forgotten_file
+$ git commit --amend
+```
+
+上面的三条命令最终只是产生一个提交，第二个提交命令修正了第一个的提交内容。
+
+### 取消已经暂存的文件
+
+用 `git add `暂存的文件。使用 `git reset HEAD <file>...`的方式取消暂存
+
+```shell
+$ git reset HEAD <file>...
+```
+
+
+
+### 取消对文件的修改
+
+放弃工作区的修改
+
+```shell
+$ git checkout -- <file>...
+```
+
+这条命令有些危险，所有对文件的修改都没有,并不可恢复
+
+**任何已经提交到 Git 的都可以被恢复。即便在已经删除的分支中的提交，或者用 –amend 重新改写的提交，都可以被恢复**
+
+
+
+## 远程仓库
+
+### 查看当前的远程库
+
+```shell
+$ git remote
+```
+
+也可以加上 -v 选项（译注::此为 –verbose 的简写，取首字母），显示对应的克隆地址:
+
+```shell
+$ git remote -v
+origin  git://github.com/schacon/ticgit.git
+```
+
+如果有多个远程仓库，此命令将全部列出
+
+```shell
+$ cd grit
+$ git remote -v
+bakkdoor  git://github.com/bakkdoor/grit.git
+cho45     git://github.com/cho45/grit.git
+defunkt   git://github.com/defunkt/grit.git
+koke      git://github.com/koke/grit.git
+origin    git@github.com:mojombo/grit.git
+```
+
+这样一来，我就可以非常轻松地从这些用户的仓库中，拉取他们的提交到本地。请注意，上面列出的地址只有 origin 用的是 SSH URL 链接，所以也只有这个仓库我能推送数据上去（我们会在第四章解释原因）。
+
+
+
+### 添加远程仓库
+
+`$ git remote add [shortname] [url]`
+
+```shell
+$ git remote
+origin
+$ git remote add pb git://github.com/paulboone/ticgit.git
+$ git remote -v
+origin  git://github.com/schacon/ticgit.git
+pb  git://github.com/paulboone/ticgit.git
+```
+
+
+
+### 从远程仓库抓取数据
+
+可以用下面的命令从远程仓库抓取数据到本地:
+
+```shell
+$ git fetch [remote-name]
+```
+
+此命令会到远程仓库中拉取所有你本地仓库中还没有的数据。
+
+如果是克隆了一个仓库，此命令会自动将远程仓库归于 origin 名下。所以，git fetch origin 会抓取从你上次克隆以来别人上传到此远程仓库中的所有更新（或是上次 fetch 以来别人提交的更新）。有一点很重要，需要记住，fetch 命令只是将远端的数据拉到本地仓库，并不自动合并到当前工作分支，只有当你确实准备好了，才能手工合并。
+
+如果设置了某个分支用于跟踪某个远端仓库的分支（参见下节及第三章的内容），可以使用 git pull 命令自动抓取数据下来，然后将远端分支自动合并到本地仓库中当前分支。在日常工作中我们经常这么用，既快且好。实际上，默认情况下 git clone 命令本质上就是自动创建了本地的 master 分支用于跟踪远程仓库中的 master 分支（假设远程仓库确实有 master 分支）。所以一般我们运行 git pull，目的都是要从原始克隆的远端仓库中抓取数据后，合并到工作目录中的当前分支。
+
+
+
+### 推送数据到远程仓库
+
+` git push [remote-name] [branch-name]`
+
+```shell
+$ git push origin master
+```
+
+克隆操作会自动使用默认的 master 和 origin 名字
+
+如果在你推数据前，已经有其他人推送了若干更新，那你的推送操作就会被驳回。你必须先把他们的更新抓取到本地，合并到自己的项目中，然后才可以再次推送。有
+
+
+
+### 查看远程仓库信息
+
+`git remote show [remote-name] `
+
+```shell
+$ git remote show origin
+* remote origin
+  URL: git@github.com:defunkt/github.git
+  Remote branch merged with 'git pull' while on branch issues#运行 git pull 时将自动合并哪些分支
+    issues
+  Remote branch merged with 'git pull' while on branch master
+    master
+  New remote branches (next fetch will store in remotes/origin)#有哪些远端分支还没有同步到本地
+    caching
+  Stale tracking branches (use 'git remote prune')#已同步到本地的远端分支在远端服务器上已被删除
+    libwalker
+    walker2
+  Tracked remote branches#所有处于跟踪状态中的远端分支
+    acl
+    apiv2
+    dashboard2
+    issues
+    master
+    postgres
+  Local branch pushed with 'git push'	#运行 git push 时缺省推送的分支
+    master:master
+```
+
+
+
+### 远程仓库重命名
+
+`git remote rename` 命令修改某个远程仓库在本地的简短名称
+
+```shell
+$ git remote rename pb paul
+$ git remote
+origin
+paul
+```
+
+
+
+### 删除远程仓库
+
+移除对应的远端仓库，可以运行 `git remote rm` 命令:
+
+```shell
+$ git remote rm paul
+$ git remote
+origin
+```
 
 
 
 
 
+## 标签管理
+
+https://git-reference.readthedocs.io/zh_CN/latest/Git-Basics/Tagging/
+
+什么是标签: 即在当前工作位置添加快照，保存项目的版本信息，一般用于项目版本的迭代
+
+**创建标签**
+
+```shell
+git tag v1.0 [-m '标签信息']
+```
+
+默认会在最新的commit_id处打标签
+
+**查看所有标签**
+
+```shell
+git tag
+```
+
+**查看标签具体信息** 
+
+```shell
+git show 标签号
+```
+
+**在某个指定commig_id处打标签**
+
+```shell
+git tag v0.9 [commit_id]
+```
+
+**回到某个标签的版本**
+
+```shell
+git reset --hard v0.9
+```
+
+**删除某个标签**
+
+```shell
+git tag -d 标签号 
+```
 
 
 
-    放弃工作区的修改
-        git checkout -- [file]
-    
-    恢复仓库文件到工作区
-        git checkout [file]
+## 分支管理
+
+### 查看所有本地分支`git branch`
+
+```shell
+$ git branch
+  iss53
+* master
+  testing
+```
+
+注意看 master 分支前的 * 字符::它表示当前所在的分支
+
+**查看各个分支最后一个提交对象的信息**
+
+```shell
+$ git branch -v
+  iss53   93b412c fix javascript issue
+* master  7a98805 Merge branch 'iss53'
+  testing 782fd34 add scott to the author list in the readmes
+```
+
+**查看与当前分支合并了的分支**
+
+```shell
+$ git branch --merged
+  iss53
+* master
+```
+
+合并分支列表中没有 * 的分支通常都可以用 git branch -d 来删掉。
+
+**查看尚未与当前分支合并的分支**
+
+```shell
+$ git branch --no-merged
+  testing
+```
+
+由于这些分支中还包含着尚未合并进来的工作成果，所以简单地用 git branch -d 删除该分支会提示错误，因为那样做会丢失数据
+
+不过，如果你确实想要删除该分支上的改动，可以用大写的删除选项 -D 强制执行
+
+### 新建分支
+
+新建分支是从当前分支创建
+
+```shell
+$ git branch [branch_name]
+```
+
+### 新建并切换分支
+
+```shell
+$ git checkout -b iss53
+Switched to a new branch "iss53"
+```
+
+### 切换分支
+
+```shell
+$ git checkout [branch_name]
+```
+
+### 分支的合并
+
+回到 master 分支，运行 git merge 命令指定要合并进来的分支:
+
+```shell
+$ git checkout master
+$ git merge iss53
+Merge made by recursive.
+ README |    1 +
+ 1 files changed, 1 insertions(+), 0 deletion(-)
+```
+
+### 删除分支
+
+```shell
+$ git branch -d hotfix	#删除合并了的分支
+Deleted branch hotfix (3a0874c).
+$ git branch -D hotfix #大写的删除选项 -D 强制删除未合并的分支
+```
 
 
 
-版本控制命令
-    回到之前版本
-        git reset --hard HEAD^  回到上一个版本
+### 遇到冲突时的分支合并
 
-        HEAD 后几个^ 表示回到之前的几个版本
-    
-    通过 commit_id 回到指定的版本
-        git reset --hard commit_id
-    
-    查看操作日志    上面的最新
-        git reflog 
-        *获取到操作记录后可以根据commit_id去往较新的版本
+`git merge`合并发生冲突时，它会停下来等你解决冲突。
 
-标签管理
-    什么是标签: 即在当前工作位置添加快照，保存项目的版本信息，
-                一般用于项目版本的迭代
+要看看哪些文件在合并时发生冲突，可以用 `git status` 查阅:
 
-    创建标签
-        git tag v1.0 [-m '标签信息']
-        默认会在最新的commit_id处打标签
-    
-    查看所有标签
-        git tag
-    
-    查看标签具体信息 
-        git show 标签号
-    
-    在某个指定commig_id处打标签
-        git tag v0.9 [commit_id]
-    
-    回到某个标签的版本
-        git reset --hard v0.9
-    
-    删除某个标签
-        git tag -d 标签号  
+```shell
+[master*]$ git status
+index.html: needs merge
+# On branch master
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#   unmerged:   index.html
+#
+```
 
-保存临时工作区
-    创建临时工作区
-        git stash
+任何包含未解决冲突的文件都会以未合并（`unmerged`）的状态列出。
 
-        *将工作区修改内容暂时封存，恢复到最近一个干净状态
-    
-    查看保存的工作区
-        git stash list
-    	>>>stash@{0}: WIP on dev: f52c633 add merge
-    	上面的最新
-    	
-    应用某一个工作区
-    	一是用	git stash apply	恢复上一个工作区，
-    		也可以指定某个工作区: git stash apply stash@{index}  
-    	
-    	但是恢复后，stash内容并不删除，你需要用git stash drop来删除
-    	
-    	二是应用上一个工作区，并删除当前的
-    		git stash pop
-    
-    删除工作区
-        git stash drop stash@{index}  删某一个
-        git stash clear   删所有
+有图形界面的工具来解决这些问题，不妨运行 `git mergetool`它会调用一个可视化的合并工具并引导你解决所有冲突:
 
-分支管理
-    分支即每个人在获取原有分支(master)代码的基础上，作为自己的工作环境，单独开发，
-    不会影响其他分支操作，开发完成后再统一合并到主线分支
+退出合并工具以后，Git 会询问你合并是否成功。如果回答是，它会为你把相关文件暂存起来，以表明状态为已解决。
 
-    好处：安全，不影响其他人工作，自己控制进度
-    问题：冲突，减低耦合度可以有效的减少冲突
+再运行一次 git status 来确认所有冲突都已解决:
 
-查看当前分支
-    git branch
-
-    前面带 * 代表当前正在工作的分支
-
-创建分支
-    git branch [branch_name]
-    分支是复制的本地仓库，如果工作区不干净，则分支与主分支不一样
-
-切换工作分支
-    git checkout [branch]
-
-    git checkout -b [branch] 创建并切换到新的分支 
-
-合并某分支到当前分支
-    git merge [branch_name]
-
-删除分支
-    git branch -d [branch]
-    普遍删除，只有分支合并后才能删
-
-    强制删除未合并分支
-    git branch -D [branch]
-
-查看分支提交情况
-	git log --graph --pretty=oneline --abbrev-commit
-
-远程仓库的
-    在远程主机上的仓库。
-    git 是分布式的，每一台主机上的git结构基本相同，只是把其它主机上
-       的git 仓库叫做远程仓库
-
-创建共享仓库:
-    1.创建目录
-        mkdir [dirname]
-    
-    2.设置仓库文件夹的属主
-        chown [yonghu:yonghuzu] [dirname]
-    
-    3.创建共享仓库
-        git init --bare [aid.git]
-    
-    4.设置git 项目文件夹属组
-        chow -R [yonghu:yonghuzu] [aid.git]
-
-添加远程仓库
-    在项目文件夹中执行
-	默认 库名 origin
-    git remote add origin [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
-	指定 库名 github
-	git remote add github git@github.com:michaelliao/learngit.git
-	
-查看远程库信息	
-	git remote -v
-
-向远程主机推送分支
-    git push -u origin [master]
-    输入对方密码
-
-从远程主机获取项目
-    在指定文件夹内(普通文件夹)
-	
-	默认clone 主分支
-	git clone [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
-	
-	clone 指定分支
-	git clone -b dev http://10.1.1.11/service/tmall-service.git
+如果觉得满意了，并且确认所有冲突都已解决，也就是进入了暂存区，就可以用 git commit 来完成这次合并提交。
 
 
-​	
-​	
-指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：
-​	$ git branch --set-upstream-to=origin/dev dev
-​	Branch 'dev' set up to track remote branch 'dev' from 'origin'.
 
-将代码同步到远程主机
-    git push 远程仓库名 分支名
+## 远程分支
 
-从远程仓库拉取代码到本地
-    git pull(直接合并到本地分支)
-    git fetch(创建新的分支,需要自己合并)
+### 拉取项目
 
-删除已有的远程仓库
-    git remote rm [origin]
+```shell
+默认clone 主分支
+git clone [tarena@127.0.0.1:/home/tarena/gitrepo/aid.git]
+
+clone 指定分支
+git clone -b dev http://10.1.1.11/service/tmall-service.git
+```
 
 
-github
-    开源的项目社区网站，提供丰富的开源项目，也为用户提供项目管理服务
 
-    git 是gitbub 唯一指定的代码管理工具
-    
-    网址 : https://github.com
-    
-    创建新的仓库 : 右上角 +    --》 new repository -->填写信息
-    
-    操作github：
-        1.git remote 连接远程仓库
-        2.通过 git push 上传代码
-        
-         * github 就是一个远程仓库
+远程分支（ *remote branch* ）是对远程仓库中的分支的索引。它们是一些无法移动的本地分支；只有在 Git 进行网络交互时才会更新。远程分支就像是书签，提醒着你上次连接远程仓库时上面各分支的位置。
+
+我们用 (远程仓库名)/(分支名) 这样的形式表示远程分支 : `origin/master `
+
+一次 Git 克隆会建立你自己的本地分支 master 和远程分支 `origin/master`，并且将它们都指向 origin 上的 master 分支。
+
+### 获取远程分支
+
+```shell
+git fetch origin
+```
+
+`fetch` 操作下载了新的远程分支[serverfix]时，你仍然无法在本地编辑该远程仓库中的分支。你不会有一个新的 serverfix 分支，有的只是一个你无法移动的 origin/serverfix 指针。
+
+**需要在本地创建分支**
+
+```shell
+$ git checkout -b serverfix origin/serverfix
+Branch serverfix set up to track remote branch refs/remotes/origin/serverfix.
+Switched to a new branch "serverfix"
+#其内容同远程分支 origin/serverfix 一致
+```
+
+### 向远程主机推送分支
+
+`git push [远程名] [本地分支]:[远程分支]`
+
+```shell
+git push origin [master]
+git push origin master:master#实现相同的效果
+#输入密码
+```
+
+可以把本地分支推送到某个命名不同的远程分支：
+
+```shell
+git push origin serverfix:awesomebranch
+```
+
+### 合并远程分支
+
+```shell
+git fetch origin	#创建新的分支,需要自己合并
+git merge origin/mester
+```
+
+### 拉取合并远程分支
+
+```shell
+git pull origin	#直接合并到本地分支
+```
 
 
-多人协作的工作模式通常是这样：
 
-	首先，可以试图用git push origin <branch-name>推送自己的修改；
-	
-	如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
-	
-	如果合并有冲突，则解决冲突，并在本地提交；
-	
-	没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
-	
-	如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，
-	用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。	
+### 跟踪远程分支
+
+从远程分支 checkout 出来的本地分支，称为跟踪分支(tracking branch)。
+
+跟踪分支是一种和某个远程分支有直接联系的本地分支。
+
+在跟踪分支里输入 git push，Git 会自行推断应该向哪个服务器的哪个分支推送数据。同样，在这些分支里运行 git pull 会获取所有远程索引，并把它们的数据都合并到本地分支中来。
+
+**设置跟踪分支**
+
+1. ```shell
+   git checkout -b [分支名] [远程名]/[分支名]
+   ```
+
+   要为本地分支设定不同于远程分支的名字，只需在第一个版本的命令里换个名字:
+
+   ```shell
+   $ git checkout -b sf origin/serverfix
+   Branch sf set up to track remote branch refs/remotes/origin/serverfix.
+   Switched to a new branch "sf"
+   ```
+
+2. ```shell
+   git checkout --track origin/serverfix
+   Branch serverfix set up to track remote branch refs/remotes/origin/serverfix.
+   Switched to a new branch "serverfix"
+   ```
+
+3. ```shell
+   $ git branch --set-upstream-to=origin/dev dev
+   Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+   ```
+
+### 删除远程分支
+
+`git push [远程名] :[分支名]`
+
+```shell
+$ git push origin :serverfix
+To git@github.com:schacon/simplegit.git
+ - [deleted]         serverfix
+```
+
+
+
+## 工作区
+
+### 创建临时工作区
+
+```shell
+git stash
+#将工作区修改内容暂时封存，恢复到最近一个干净状态
+```
+
+### 查看保存的工作区
+
+```shell
+git stash list
+>>>stash@{0}: WIP on dev: f52c633 add merge
+#上面的最新
+```
+
+### 应用某一个工作区
+
+```shell
+git stash apply	#恢复上一个工作区
+git stash apply stash@{index} #指定某个工作区
+git stash pop #应用上一个工作区，并删除当前的
+```
+
+### 删除工作区
+
+```shell
+git stash drop stash@{index}  #删除某个工作区
+git stash clear   #删除所有
+```
+
+
 
 
 ​    
