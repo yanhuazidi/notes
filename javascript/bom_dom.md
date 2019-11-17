@@ -75,7 +75,7 @@
 **方法**
 
 - `location.assign("http://www.w3cschool.cc")` 加载新的文档
-- `location.reloat([param])` : 重新载入页面(刷新)
+- `location.reload([param])` : 重新载入页面(刷新)
   参数 : 选填 
            `true` : 忽略缓存，从服务器端重新加载
            `false` : 默认值，从缓存中加载

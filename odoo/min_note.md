@@ -210,3 +210,50 @@ if  time.time() - time.mktime(purchase_order.quotation_datatime.timetuple()) < 6
 ```
 
 
+
+```js
+odoo.session_info = {
+      is_admin: <t t-esc="json.dumps(request.env.user._is_admin())"/>,
+      is_system: <t t-esc="json.dumps(request.env.user._is_system())"/>,
+      is_website_user: <t t-esc="json.dumps(request.env.user._is_public())"/>,
+      is_frontend: true,
+      translationURL: '/website/translations',
+      is_website_user: <t t-esc="json.dumps(request.env.user.id == request.website.user_id.id)" />,
+      user_id: <t t-esc="json.dumps(request.env.user.id)" />
+
+    
+    odoo.session_info.website_id = <t t-esc="json.dumps(request.website.id)" />;
+                    odoo.session_info.website_company_id = <t t-esc="json.dumps(request.website.company_id.id)" />;
+```
+
+
+
+## 当前公司
+
+```python
+current_company = self.env.user.company_id
+```
+
+## 当前用户身份
+
+```python
+'id':self.env.user.id,
+'name':self.env.user.name,
+'is_staff':self.env.user.has_group('hotel.group_hotel_user'),
+'is_manager':self.env.user.has_group('hotel.group_hotel_manager'),
+```
+
+## 当前网站
+
+```python
+request.website
+```
+
+
+
+
+
+
+
+
+
