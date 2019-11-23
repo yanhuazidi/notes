@@ -251,6 +251,13 @@ request.website
 
 
 
+## 图片加载
+
+```js
+$elm.children('img').attr(
+     'src',"/website/image/res.country/" + $elm.data('country_id') +"/image/30x20");
+```
+
 
 
 
