@@ -5,23 +5,51 @@
 
 
 **除了使用自定义代码手动管理访问外，Odoo还提供了两种主要的数据驱动机制来管理或限制对数据的访问。**
-**这两种机制都通过*组*链接到特定用户：用户属于任意数量的组，安全机制与组相关联，从而将安全机制应用于用户。**
+**这两种机制都通过组链接到特定用户：用户属于任意数量的组，安全机制与组相关联，从而将安全机制应用于用户。**
 
-Odoo的权限的核心是权限组（res_groups）。对每个权限组，可以设置权限组的菜单表示，对象表示，记录规则表示，字段表示。
+Odoo的权限的核心是权限组`res_groups`。对每个权限组，可以设置权限组的菜单表示，对象表示，记录规则表示，字段表示。
 
 **权限管理的四个层次**
-    菜单级别：不属于指定菜单所包含组的用户看不到该菜单，不安全，只是隐藏菜单，若知道菜单ID，
-						仍然可以通过指定URL访问
-    对象级别：对某个对象是否有'创建，读取，修改，删除'的权限，可以简单理解为表对象
-    记录级别：对对象表中的数据的访问权限，比如访问“客户”对象，业务员只能对自己创建
-              			的客户有访问权限，而经理可以访问其管辖的业务员所有的“客户”对象
-   字段级别：一个对象或表上的某些字段的访问权限，比如产品的成本字段只有经理有读权限
-       		 'name':fields.char('Name',size=128,required=True,select=True,write=['base.group_admin']
-               read=['base.group_admin'])
-       定义name字段只能超级用户组可读写
+
+- ​    菜单级别：不属于指定菜单所包含组的用户看不到该菜单，不安全，只是隐藏菜单，若知道菜单ID，
+  ​						仍然可以通过指定URL访问
+
+- ​    对象级别：对某个对象是否有'创建，读取，修改，删除'的权限，可以简单理解为表对象
+- ​    记录级别：对对象表中的数据的访问权限，比如访问“客户”对象，业务员只能对自己创建
+  ​              			的客户有访问权限，而经理可以访问其管辖的业务员所有的“客户”对象
+- ​    字段级别：一个对象或表上的某些字段的访问权限，比如产品的成本字段只有经理有读权限
+
+
+
+## 权限组
+
+```python
+name = fields.Char(required=True, translate=True)
+full_name = fields.Char(compute='_compute_full_name', string='Group Name', search='_search_full_name')
+#用户
+users = fields.Many2many('res.users', 'res_groups_users_rel', 'gid', 'uid')
+
+#模型权限
+model_access = fields.One2many('ir.model.access', 'group_id', string='Access Controls', copy=True)
+#记录权限
+rule_groups = fields.Many2many('ir.rule', 'rule_group_rel',
+        'group_id', 'rule_group_id', string='Rules', domain=[('global', '=', False)])
+#菜单权限
+menu_access = fields.Many2many('ir.ui.menu', 'ir_ui_menu_group_rel', 'gid', 'menu_id', string='Access Menu') 
+view_access = fields.Many2many('ir.ui.view', 'ir_ui_view_group_rel', 'group_id', 'view_id', string='Views')
+comment = fields.Text(translate=True)
+
+category_id = fields.Many2one('ir.module.category', string='Application', index=True)
+
+color = fields.Integer(string='Color Index')
+share = fields.Boolean(string='Share Group', help="为设置与某些用户共享数据的访问权限而创建的组.")
+```
+
+
 
 ### 建立权限组
-     这是我们常说的用户组，会通常放在“模块名_security.xml”这个文件中
+
+ 这是我们常说的用户组，会通常放在`模块名_security.xml`这个文件中
 
 ```xml
 <data noupdate="0">
@@ -42,7 +70,7 @@ Odoo的权限的核心是权限组（res_groups）。对每个权限组，可以
     
     <record id="base.group_hr_manager" model="res.groups">
         <field name="name">Manager</field>
-        <field name="comment">the user will have an access to the human resources configuration as well as statistic reports.</field>
+        <field name="comment">用户将有权访问人力资源配置和统计报告.</field>
         <field name="category_id" ref="base.module_category_human_resources"/>
         <field name="implied_ids" eval="[(4, ref('base.group_hr_user'))]"/>
         <field name="users" eval="[(4, ref('base.user_root'))]"/>
@@ -61,8 +89,7 @@ implied_ids 基于哪个用户组，这个层级关系
 <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
 ```
 
-是最基础的用户名，最初是基于这个，后面一层一层递增，像上面 base.group_hr_user 定义时就是基于最基础
-users 预设用户属于这个用户组
+`base.group_user`是最基础的用户名，最初是基于这个，后面一层一层递增，像上面 base.group_hr_user 定义时就是基于最基础 users 预设用户属于这个用户组
 
 
 
@@ -71,20 +98,22 @@ users 预设用户属于这个用户组
 
 **Menus:**
 ​        定义该权限组可以访问哪些菜单，若该权限组可以访问某父菜单，父菜单对应的子菜单会显示出来
-​        若不想显示其子菜单，可以把其子菜单加入 "Useablity/No One" 权限组。
+​        若不想显示其子菜单，可以把其子菜单加入 `Useablity/No One` 权限组。
 
- **Access Right:**
-​        定义该权限组可以访问哪些对象，以及拥有 增、查、改、删的哪个权限    (create,read,write,unlink)
+**Access Rule:**
+        定义该权限组可以访问哪些对象，以及拥有 增、查、改、删的哪个权限    (create,read,write,unlink)
 
 **​Record Rule:**
 ​        定义该权限组可以访问对象中的哪些记录，以及拥有 增、查、改、删的哪个权限，Access Right是
 ​        对对象中的所有记录赋权限，Record Rule 则通过定义domain过滤指定某些记录赋权限
-​        ['&',('department','=',user.context_department_id.id),('state','=','pr_draft')]
+​       ` ['&',('department','=',user.context_department_id.id),('state','=','pr_draft')]`
 ​        申购单的部门等于当前用户的部门，且申购单的状态是草稿状态
 
 
 
 ## 基于组的访问控制
+
+
 
 ### 视图中
 
@@ -96,8 +125,7 @@ users 预设用户属于这个用户组
     <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale.view_order_form" />
     <field name="group_id" eval="[(6,0,[ref('product.group.uos'),
-         							ref('product.group_stock_packaging'),
-         							ref('sale.group_mrp_properties')])]" />
+         	ref('product.group_stock_packaging'),ref('sale.group_mrp_properties')])]" />
     <field name="arch" type="xml">
         <xpath expr="//field[@name='order_line]/tree" position="before"
             <attribute name="editable" />
@@ -106,17 +134,46 @@ users 预设用户属于这个用户组
 </record>
 ```
 
-eval :  把eval的值通过作为python运算返回该属性
-    	ref:视图的方法，根据 module_name.xml_id 返回数据库id
-    	[(6,0,[xx,yy])]
-      	(0,_ ,{’field’: value}) 这将创建一个新的记录并连接它
-     	 (1,id,{’field’: value}): 这是更新一个已经连接了的记录的值
-      	(2,id,_) 这是删除或取消连接某个已经连接了的记录
-      	(3,id,_) 这是取消连接但不删除一个已经连接了的记录
-      	(4,id,_) 连接一个已经存在的记录
-      	(5,_,_) 取消连接但不删除所有已经连接了的记录
-      	(6,_,[ids]) 用给出的列表替换掉已经连接了的记录
-      		这里的下划线一般是0或False
+**ref**    ：  视图的方法，根据外部ID： `module_name.xml_id` 返回数据库id
+
+**eval**    ：    把eval的值通过作为python运算返回该属性
+
+**多对多关系**：
+
+- `(0,_ ,{'field': value})` 根据values里面的信息新建一个记录，并连接它
+
+- `(1,id,{'field': value})`   根据`id`更新记录（写入values里面的数据）,这是更新一个已经连接了的记录的值
+
+- `(2,id,_)`根据`id`删除或取消连接已经连接了的记录（调用unlink方法，删除数据以及整个主从数据链接关系）
+
+- `(3,id,_)` 根据`id`取消连接已经连接了的记录但不删除他，（删除主从链接关系，不删除数据）
+
+- `(4,id,_)`  根据`id`连接已经存在了的记录，添加主从链接关系。
+
+- `(5,_,_)` 删除所有的从数据的链接关系就是向所有的从数据调用(3,ID)，但不删除数据
+
+- `(6,_,[ids])` 用给出的`id`列表里面的记录替换原来已经连接了的记录,（就是先执行(5)再执行循环`id`列表执行(4,id,_)
+
+   例子`[(6, 0, [8, 5, 6, 4])] `设置 `many2many to ids [8, 5, 6, 4]`
+
+**一对多关系**：
+
+- `(0,_ ,{'field': value})` 根据values里面的信息新建一个记录，并连接它
+
+- `(1,id,{'field': value})`   根据`id`更新记录（写入values里面的数据）,这是更新一个已经连接了的记录的值
+
+- `(2,id,_)`根据`id`删除或取消连接已经连接了的记录（调用unlink方法，删除数据以及整个主从数据链接关系）
+
+  例子：
+
+  ```python
+  [(0,0,{'field_name':field_value_record1,...}),(0,0,{'field_name':field_value_record})]
+  ```
+
+**多对一关系**：
+直接填入已经存在的数据的`id`或者填入`False`删除原来的记录。
+
+
 
 **运用groups**
 
@@ -127,8 +184,13 @@ eval :  把eval的值通过作为python运算返回该属性
 <menuitem name="China Account" id="menu_china_account" parent="account.menu_finance" sequence="4" groups="account.group_account_user"/>
 ```
 
+只有在视图中有完整标签时，会用`group_id`,其它都用`groups`
+
+
 
 ### 在模型中
+
+**运用groups**
 
 ```python
 package_id = fields.Many2one(comodel_name='stock.quant.package', string='Package',
@@ -136,25 +198,37 @@ package_id = fields.Many2one(comodel_name='stock.quant.package', string='Package
 ```
 
 
-   要有多个用户组时，用户组之间用逗号隔开
-
-小结
-	只有在视图中有完整标签时，会用group_id,其它都用groups
+要有多个用户组时，用户组之间用逗号隔开
 
 
 
-##  访问权限管理：
-**对于其内的数据访问权限管理有两种机制:** 
+## 模型访问权限管理
 
-- 第一种是模型访问权限管理 (access rule)；
-- 第二种是记录规则管理 (record rule)。
+**Access Rule**
 
-record rule 是对access rule的细化 ，带条件，比如记录是什么状态的可以访问
-如果不为模块设置规则，默认只有Administator才能访问这个模型的数据
-record rule 对 Administator 用户是无效的，而access rule还是有效
+由`ir.model.access`模型管理，定义对整个模型的访问。
 
-### access rule
-  	权限对象模型是 ir.model.access.csv 一般是放在security 文件夹下的 ir.model.access.csv 文件来管理的
+```python
+name = fields.Char(required=True, index=True)
+active = fields.Boolean(default=True, help='If you uncheck the active field, it will disable the ACL without deleting it (if you delete a native ACL, it will be re-created when you reload the module).')
+model_id = fields.Many2one('ir.model', string='Object', required=True, domain=[('transient', '=', False)], index=True, ondelete='cascade')
+group_id = fields.Many2one('res.groups', string='Group', ondelete='cascade', index=True)
+perm_read = fields.Boolean(string='Read Access')
+perm_write = fields.Boolean(string='Write Access')
+perm_create = fields.Boolean(string='Create Access')
+perm_unlink = fields.Boolean(string='Delete Access')
+```
+
+每个模型访问控制都有一个授予权限的模型、授予的权限以及可选的组。
+
+访问控制是附加的权限，对于给定的模型，用户可以访问授予其任何组的所有权限：如果用户属于允许写入的组和允许删除的组，则他们可以同时写入和删除。
+
+如果未指定组，则访问控制将应用于所有用户，否则仅应用于给定组的成员。
+
+可用权限是创建（perm_create）、搜索和读取（perm_read）、更新现有记录（perm_write）和删除现有记录（perm_unlink）。
+
+一般是在security 文件夹下的` ir.model.access.csv` 文件中定义访问权限记录
+
 **文件表头如下：**
 
 ```python
@@ -165,11 +239,11 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
 ```
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-   access_payment_notice_account_user,payment.notice.account.user,model_payment_notice,account.group_account_user,1,1,1,1
+  access_payment_notice_account_user,payment.notice.account.user,model_payment_notice,account.group_account_user,1,1,1,1
    access_payment_notice_sale_user,payment.notice.sale.user,model_payment_notice,base.group_sale_salesman,1,1,0,0
 ```
 
-分析这个是针对 payment.notice 这个模型做访问权限设置
+分析这个是针对 `payment.notice` 这个模型做访问权限设置
 可以看一下对应模型定义的代码：
 
 ```python
@@ -188,10 +262,29 @@ class PaymentNotice(models.Model):
 `perm_unlink `        删除
        
 
+## 记录规则管理
+
 ###  record rule     
 
-     一般是放在security 文件夹下的 模块名_record_rules.xml 文件来管理的 
-     对于模型权限的补充
+由`ir.rule` 模型管理，存在`ir_rule` 表格中，定义对指定模型记录的访问条件
+
+```python
+name = fields.Char(index=True)
+active = fields.Boolean(default=True, help="If you uncheck the active field, it will disable the record rule without deleting it (if you delete a native record rule, it may be re-created when you reload the module).")
+model_id = fields.Many2one('ir.model', string='Object', index=True, required=True, ondelete="cascade")
+groups = fields.Many2many('res.groups', 'rule_group_rel', 'rule_group_id', 'group_id')
+domain_force = fields.Text(string='Domain')
+perm_read = fields.Boolean(string='Apply for Read', default=True)
+perm_write = fields.Boolean(string='Apply for Write', default=True)
+perm_create = fields.Boolean(string='Apply for Create', default=True)
+perm_unlink = fields.Boolean(string='Apply for Delete', default=True)
+```
+
+`record rule` 是对`access rule`的细化 ，是对于模型权限的补充，比如记录是什么状态的可以访问，如果不为模块设置规则，默认只有`Administator`才能访问这个模型的数据，`record rule` 对 `Administator` 用户是无效的，而`access rule`还是有效。
+
+记录规则是记录必须满足的条件，才能允许操作（创建、读取、更新或删除）。它是在应用访问控制后逐记录应用的。
+
+一般是放在`security` 文件夹下的 `模块名_record_rules.xml` 文件来管理的 
 
 ```xml
 <?xml version="1.0" encoding="utf-8”?>
@@ -216,15 +309,18 @@ class PaymentNotice(models.Model):
 </openerp>   
 ```
 
-​    record rule    记录是 ir.rule 模型， 存在public.ir_rule 表格中
-​    model_id 作用于哪个模型 值为 model_模型名
-​    domain_force 对该模型中所有记录进行某种过滤操作
-​    常用的 ['|',('user_id','=',user.id),('user_id','=',False)] 表示是自己的单 
-​    user_id是记录的字段，这个看实际情况改变， user.id 代表当前登录用户的id
-​    [(1,'=',1)] 表示所有的单
-​    noupdate 值为1 表示升级模块不会更新本数据
-​    base.group_user 是人力资源 / 雇员
-​    perm_read 这些后面，是对 前面模型权限组设定的覆盖
+- `model_id` 作用于哪个模型 值为 model_模型名
+
+- `domain_force` 对该模型中所有记录进行某种过滤操作
+
+  常用的：
+
+  - `['|',('user_id','=',user.id),('user_id','=',False)]` 表示是自己的单 user_id是记录的字段，这个看实际情况改变,`user.id` 代表当前登录用户
+  - ` [(1,'=',1)]`表示所有的记录
+
+- `perm_read` 这些后面，是对前面模型权限组设定的覆盖
+
+
 
 **来一个完整的例子解说：**
 
@@ -275,7 +371,7 @@ class PaymentNotice(models.Model):
      <field name="name">rule1</field>
      <field name="model_id" ref="model_model1"/>
      <field name="global" eval="True"/>
-     <field name="domain_force">[1,’=’,1]</field>
+     <field name="domain_force">[1,'=',1]</field>
      <field name="groups" eval="[(4,ref('A'))]"/>
 </record>
 ```
@@ -287,35 +383,9 @@ class PaymentNotice(models.Model):
 ​    @ groups 属于哪个组
 
 ​    这样A组的成员就可以取到model_model1的所有数据
-
-ir.model.access.csv
-​    @id 随便取
-​    @name 随便取
-​    @model_id:id 这个就是你所定义的对象了
-​    @group_id:哪个组
-​    @perm_read","perm_write","perm_create","perm_unlink" 增删改查权限了。1代表有权限
 ​ 
-Eval
 
-​    many2many
-​    (0,0,{values}) 根据values里面的信息新建一个记录。
-​    (1,ID,{values})更新id=ID的记录（写入values里面的数据）
-​    (2,ID) 删除id=ID的数据（调用unlink方法，删除数据以及整个主从数据链接关系）
-​    (3,ID) 切断主从数据的链接关系但是不删除这个数据
-​    (4,ID) 为id=ID的数据添加主从链接关系。
-​    (5) 删除所有的从数据的链接关系就是向所有的从数据调用(3,ID)
-​    (6,0,[IDs]) 用IDs里面的记录替换原来的记录（就是先执行(5)再执行循环IDs执行（4,ID））
-
-​    例子[(6, 0, [8, 5, 6, 4])] 设置 many2many to ids [8, 5, 6, 4]
-​    one2many
-​    (0, 0,{ values })根据values里面的信息新建一个记录。
-​    (1,ID,{values}) 更新id=ID的记录（对id=ID的执行write 写入values里面的数据）
-​    (2,ID) 删除id=ID的数据（调用unlink方法，删除数据以及整个主从数据链接关系）
-​    例子：
-​    [(0,0,{'field_name':field_value_record1,...}),(0,0,{'field_name':field_value_record})]
-​    many2one的字段比较简单，直接填入已经存在的数据的id或者填入False删除原来的记录。
-
-隐藏的常用技巧
+### 隐藏的常用技巧
 
 直接隐藏
 
@@ -424,7 +494,7 @@ perm_read、perm_write、perm_create、perm_unlink 增删改查权限。1 有权
 - 全局规则是减法的，它们*必须全部*匹配才能访问记录
 - 组规则是附加的，如果它们中的*任何*一个匹配（并且所有全局规则都匹配），则可以访问该记录
 
-这意味着第一个*组规则*限制访问，但任何进一步的 *组规则都会*扩展它，而*全局规则*只能限制访问（或不起作用）。
+这意味着第一个组规则限制访问，但任何进一步的 *组规则都会*扩展它，而*全局规则*只能限制访问（或不起作用）。
 
 ####警告
 
@@ -528,9 +598,7 @@ _columns = {
 
 
 
-## 现场访问
-
-7.0版中的新功能。
+## 字段访问
 
 ORM [`Field`](https://www.odoo.com/documentation/12.0/reference/orm.html#odoo.fields.Field)可以具有`groups`提供组列表的属性（作为逗号分隔的[外部标识符](https://www.odoo.com/documentation/12.0/glossary.html#term-external-identifiers)串 ）。
 
