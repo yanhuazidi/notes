@@ -2056,7 +2056,11 @@ Parameters
 - **comodel_name** – 目标模型的名称(字符串)
 - **domain** – an optional domain to set on candidate values on the client side (domain or string)
 - **context** – 可选域，用于在客户端(域或字符串)上设置候选值
-- **ondelete** – 删除所引用的记录时应怎样做;可能的值是: `'set null'`, `'restrict'`, `'cascade'`
+- **ondelete** – 删除所引用的记录时应怎样做;可能的值是:
+  -  `'set null'`  设置为空
+  -  `'restrict'`  限制其不容许删除
+  - `'cascade'`  同时删除
+
 - **auto_join** – 是否在搜索该字段时生成连接(boolean, by default `False`)
 - **delegate** – 将其设置为True，使目标模型的字段可以从当前模型访问(对应于_inherits)
 
