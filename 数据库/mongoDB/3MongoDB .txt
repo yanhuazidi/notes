@@ -1,0 +1,1223 @@
+
+
+MongoDB(芒果数据库)
+
+数据存储阶段
+    文件管理阶段(.txt  .doc  .xls)
+        优点：数据便于长期保存
+             数据可以大量存储
+             使用简单
+        缺点：数据的存储结构比较随意
+             数据的查找修改效率低
+             不方便扩展和程序调用
+    
+    数据库管理阶段
+        优点：数据格式化存储，便于操作
+             降低了冗余，提高了增删改查的效率
+             方便程序调用和扩展
+        缺点：使用上往往需要特定的语句或者操作，相对复杂
+
+几个概念：
+    数据：能够输入到计算机中并被识别处理的信息集合
+    数据结构：是研究一个数据集合中，数据之间关系的学科
+    数据库：按照数据结构，存储管理数据的仓储。数据库是在数据库管理
+            系统管理和控制下在一定介质上存储的数据结合。
+    数据库管理系统：数据库管理软件，用于维护建立数据库。
+    数据库系统，由数据库和数据库管理系统等开发工具组成的集合
+
+关系型数据库
+    采用关系模型来组织数据结构的数据库(二维表)
+         ：Oracle  DB2  SQLServer  Mysql  Sqlite
+    优点: 容易理解，逻辑类似常见的表格
+          使用方便，都使用sql语句进行数据操作，sql语句很成熟
+          数据的一致性高，冗余低，完整性好
+          技术成熟，可以使用表关联等复杂操作
+
+    缺点： 每次操作都需要sql解析，消耗较大
+          关系型数据库内部操作往往需要加锁，也影响了处理速度
+          不能很好的处理海量数据的高并发需求，读写能力差
+          由于数据的一致性等规定，灵活性不高
+
+非关系型数据库(NoSql--->Not Only SQL)
+    优点：并发能力强读写速度快，可以更好应对海量数据并发需求
+          普遍比较灵活，容易扩展，弱化了数据的一致性
+    缺点: 通用性差，没有像sql那样一致的语句操作
+          灵活性强会导致一定的操作混乱
+          技术成熟度比关系型数据库要差
+
+    比较：
+        非关系型数据库：不是关系模型构建的数据结构，不保证数据的一致性，结构更加灵活自由
+                      弥补了关系型数据库在处理高并发存储时读写效率低的问题
+                    种类多样，技术不如关系型数据库成熟，没有统一的操作语句，处于不断发展更新阶段
+
+Nosql   
+    使用情况
+    1.对数据一致性要求较低
+    2.应用数据高并发存储的可能性较低
+    3.比较容易建立非关系性数据库
+
+    分类
+    键值型数据库  Redis
+    列存储数据库  HBase
+    文档型数据库  MongoDB
+    图型数据库
+
+MongoDB数据库  (非关系型，文档型数据库)
+    特点:
+        1.由C++编写的数据库管理系统
+        2.支持丰富的增删改查操作
+        3.有丰富的存储类型，技术相对成熟
+        4.支持众多的编程语言操作
+        5.使用方便，便于扩展和部署
+
+MongoDB 安装
+    linux : sudo apt_get install mongodb
+        安装位置:/var/lib/mongodb
+        配置文件：/etc/mongodb.conf
+        命令集 ：/usr/bin
+
+        手动安装:1.www.mongodb.com  下载对应系统的安装包
+                2.将压缩包解压到一个目录下/usr/local
+                3.进入解压后的目录，里面的bin目录即命令集所在目录
+                    将这个目录(bin)路径加入到环境变量
+
+                e.g 加入路径到环境变量
+                      PATH=$PATH:/opt/mongodb/bin
+                      export PATH
+                      将以上两句写入主目录下的 .bashrc中(隐藏文件)
+
+
+MongoDB 命令
+    (命令集命令。终端运行)
+    设置数据库的存储位置： mongod --dbpath 目录
+        eg.将database 目录设置为存储目录  
+            mongod --dbpath database
+
+    设置数据库连接端口：    mongod --port port   默认为27017
+
+    启动MongoDB 操作界面 (mongo shell) : mongo
+        MongoDB shell version v3.4.10
+        connecting to: mongodb://127.0.0.1:27017
+        MongoDB server version: 3.4.10
+        >
+
+    退出该界面 ctrl-c   或者  quit()  exit
+        > exit
+        bye 
+
+mongodb 数据库结构
+    键值对 --> 文档 --> 集合  -->  数据库
+
+    Mysql           mongodb           含义
+
+    database       database           数据库
+    table          collection         表/集合
+    column         field              字段/域
+    row            document           记录/文档
+    index          index              索引
+
+mongoDB 语法知识
+    全局变量  db  ：db 变量代表当前正在使用的数据库
+        * 如果不选择任何数据库  db 为 test
+            > db
+            test
+
+    mongodb 中函数遵循小驼峰命名规则，严格区分大小写
+
+数据库监控命令
+    mongostat 查看数据库运行状态
+
+        insert query update delete ：每秒执行增查改删的次数
+        getmore command              每秒执行mongo命令次数
+        dirty used flushes           和磁盘交互情况
+        vsize   res                  使用虚拟内存和物理内存情况
+        qrw arw net_in net_out conn                
+        time                          运行时间
+
+    mongotop   检测每个数据库中数据表的读写情况
+
+                    数据集合   总时长   读时长   写时长
+                      ns      total    read    write    2018-10-25T14:32:09+08:00
+                aaaaa.class     0ms     0ms      0ms                             
+        admin.system.roles      0ms     0ms      0ms                             
+        admin.system.version    0ms     0ms      0ms                             
+        local.startup_log       0ms     0ms      0ms                             
+        local.system.replset    0ms     0ms      0ms                             
+                stu.class       0ms     0ms      0ms                             
+                test.class      0ms     0ms      0ms 
+
+数据库的备份和恢复
+    备份数据库： mongodump -h dbhost -d dbname -o dir
+    eg.
+        mongodump -h 127.0.0.1 -d stu -o .
+
+    数据库文件恢复: mongorestore -h dbhost:port -d dbname path
+
+        mongorestore -h 127.0.0.1:27017 -d aaaaa ./stu
+
+库的管理
+    创建数据库: use database
+        eg.
+            > use stu
+            switched to db stu
+
+        *use 实际是选择使用那个数据库，当这个数据库不存在时会自动创建
+            这个数据库
+        *use 使用use创建数据库，并不会马上建立起来(用 show dbs 查不到)，
+            而是需要真正插入数据时才会产生
+
+        数据库命名规则:
+            1.使用utf-8字符
+            2.不能含有  空格  .   /   \   '\0'  字符
+            3.长度不超过64字节
+            4.不要和系统数据库重名
+
+    查看数据库： show dbs
+        eg.
+            > show dbs
+            admin  0.000GB  系统库
+            local  0.000GB  系统库
+
+    删除数据库：db.dropDatabase() 
+        eg.
+            > db.dropDatabase()
+            { "ok" : 1 }
+
+集合管理
+    创建集合
+        方法1: db.createCollection(collection)
+            eg.
+                > use stu
+                switched to db stu
+                > db.createCollection('class1')
+                { "ok" : 1 }
+
+        方法2: 当插入数据时，需要指定集合，此时如果集合不存在则自动创建
+            eg.
+                >db.class2.insert({'name':'哈哈','age':35,'sex':'m'})
+                WriteResult({ "nInserted" : 1 })
+
+        集合的命名规则：
+            1.使用utf-8字符
+            2.不能含有\0字符
+            3.不要以 system. 开头。这是系统集合默认开头
+            4.不要和关键字重复
+
+    查看数据库中集合:
+            show collections
+            show tables
+
+    删除集合:  db.collection.drop()
+            eg.
+                > db.class.drop()
+                true
+
+    集合重命名: db.collection.renameCollection('new_name')
+            eg.
+                > db.class1.renameCollection('class0')
+                { "ok" : 1 }
+
+    获取集合对象
+        db.getCollection(collection_name)
+        功能：获取到集合对象，等同于db.collection
+            > db.class0
+            stu.class0
+            > db.getCollection('class0')
+            stu.class0
+
+文档知识与数据类型
+        文档是mongodb数据库中的基本的数据组成形式，类似字典
+        文档由键值对构成，每个键值对表达一个数据项
+        mongodb文档属于bson类型数据
+        文档中的键值对是有序的
+
+    集合中的文档
+        1.每个集合中的文档格式可以不同
+        2.一个集合中存储的数据尽量体现相同的内容
+        3.文档的表达尽量每次不要太多
+        4.一个集合中插入的文档是有序的
+
+    键：即文档的域，表达值是什么内容
+
+       键的命名规则:
+            1.使用utf-8字符串
+            2.不能使用\0
+            3.一个文档中的键不能重复
+            4.键名的定界符可以省略(不加引号)
+
+    值：即数据库存储的数据
+        类型                值
+        数字类型           整型  小数
+        布尔类型           true  false
+        Array             数组
+        Data              日期时间
+        timestamp         时间戳
+        String            字符串
+        Binary data       二进制字符串
+        Null              空  null
+        Object            内部文档(对象)
+        regex             正则表达式
+        code              代码
+        ObjectId          ObjectId字串
+
+    ObjectId类型
+         "_id" : ObjectId("5bd165e86d9160e3527b6f16")
+
+        _id: 当插入mongodb文档时会自动生成_id域作为主键id
+            值：ObjectId数据，为了和其它的值不重复
+                24位编码16进制编码
+                其中是包含  8位的文档创建时间
+                           6位的机器ID
+                           4位的进程ID
+                           6位的计数器
+        也可以人为的定义_id域，但_id 的值不能重复
+            db.class0.insertOne({_id:1,name:'Jame',age:18})
+
+            { "_id" : ObjectId("5bd17b066d9160e3527b6f19"), "name" : "Tom", "age" : 17, "sex" : "m" }
+            { "_id" : 1, "name" : "Jame", "age" : 18 }
+
+    时间类型: 
+        1.new Date() 自动生成当前时间,为国际标准时间，比北京时间早8小时
+            > db.class1.insert({python:"入门",date:new Date()})
+
+        2.ISODate()  自动获取当前时间，为国际标准时间，比北京时间早8小时
+            > db.class1.insert({python:"精通",date:ISODate()})
+
+        3.Date()   获取系统时间生成时间字符串
+            > db.class1.insert({python:"疯狂",date:Date()})
+        
+        获取任意时间:
+            ISODate()
+            功能 : 将制定的时间转换为MongoDB的存储时间类型
+            参数 : 指定的时间
+                '2018-01-01  11:11:11'
+                '20180101 11:11:11'
+                '20180101'
+        
+            > db.class1.insert({python:"崩溃",date:ISODate('20180101 11:11:11')})
+
+        时间戳
+            valueof() :将标准时间转换为时间戳
+                当前时间秒数，保留到微秒
+                    > db.class1.insert({python:"涅磐",date:ISODate().valueOf()})
+
+    Null数据类型
+        值 : null
+
+        1.表示某个域的值为空
+        eg. price域的值设为空
+            > db.class1.insert({python:"放生",price:null})
+        2.表示某个域不存在
+            查找gender域不存在的文档或者gender域值为null的。
+            > db.class0.find({gender:null},{_id:0})
+   
+插入文档
+    插入单个文档:
+    db.collection.insertOne({要插入的文档})
+        eg.
+            > db.class0.insertOne({'name':'Lucy','age':17,'sex':'w'})
+            {
+                "acknowledged" : true,
+                "insertedId" : ObjectId("5bd17a0e6d9160e3527b6f17")
+            }
+
+    插入多个文档：
+    db.collection.insertMany([{1},{2},{3}....])
+        eg.
+            > db.class2.insertMany([{name:'啊啊',age:22,sex:'w'},{name:'呵呵',age:44,sex:'m'}])
+            {
+                "acknowledged" : true,
+                "insertedIds" : [
+                    ObjectId("5bd17df06d9160e3527b6f1a"),
+                    ObjectId("5bd17df06d9160e3527b6f1b")
+                ]
+            }
+    
+    插入文档：
+    db.collection.insert()    功能：等于 insertOne + insertMany
+        eg.
+            > db.class0.insert({name:'Ales',age:16,sex:'m'})
+            WriteResult({ "nInserted" : 1 })
+
+            > db.class0.insert([{name:'Emma',age:22,sex:'w'},{name:'Abby',age:44,sex:'m'}])
+            BulkWriteResult({
+                "writeErrors" : [ ],
+                "writeConcernErrors" : [ ],
+                "nInserted" : 2,
+                "nUpserted" : 0,
+                "nMatched" : 0,
+                "nModified" : 0,
+                "nRemoved" : 0,
+                "upserted" : [ ]
+            })
+        插入多条文档时不加[]只会加入第一条
+
+    save 插入文档
+        功能: 插入文档 用法同insert
+        参数与insert相同，可以插入一条或多条文档
+        eg.
+            >db.class1.save({name:'小红',age:22,sex:'m'})
+            >db.class1.save([{name:'小明',age:22,sex:'m'},{name:'小刚',age:44,sex:'m'}])
+        如果要插入的文档_id已经存在则会替代掉原有文档内容 ，insert()则会报错   
+            > db.class0.save({_id:1,name:'小明',age:22,sex:'m'})
+                            发现                             修改
+            WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+查找文档：
+    db.collection.find(query，field)
+    查找所有符合条件的文档
+        参数：query 表示筛选条件，是一个键值对文档，默认表示查找所有内容
+                    eg.  > db.class0.find({age:16})
+
+             field 表示查找的域，是一个键值对文档，
+                    值 0 表示不查找某域，其它查找
+                    值 1 表示查找某域，其它不查找
+                   eg.  > db.class0.find({},{sex:0})
+                        > db.class0.find({},{name:1,age:1})
+
+                * 普通域中 1 和 0 不能同时存在(_id为特殊域)
+                * _id 域比较特殊，会一直显示，除非 _id:0   
+                    eg.  > db.class0.find({},{_id:0,name:1,age:1})
+    
+            db.collection.find() 等同于 select * from table
+
+    db.collection.findOne(query,field)
+    查找第一条符合条件的文档
+        参数 ：使用同find
+        eg.
+           > db.class0.findOne({},{_id:0,name:1,age:1})
+   
+  query 的筛选功能
+        操作符： 使用$符号注明的一个有特殊意义的字符串，用以表达丰富的含义。
+
+    比较操作符:
+        $eq  等于 ==
+
+                > db.class0.find({age:{$eq:17}},{_id:0})
+
+        $lt  小于  <
+
+                > db.class0.find({age:{$lt:17}},{_id:0})
+                > db.class0.find({name:{$lt:'Tom'}},{_id:0}) #按ASCII编码排序
+
+        $gt  大于  >
+
+                > db.class0.find({age:{$gt:17}},{_id:0})
+				> db.class0.find({age:{$gt:17,$lt:30}},{_id:0})    , 连接表示 and 关系
+        
+        $lte  小于等于  <=
+
+        $gte  大于等于  >=
+ 
+        $ne   不等于    !=
+
+        $in   包含   用数组表示   表示或等于  
+                > db.class0.find({age:{$in:[17,22,30]}},{_id:0})
+
+        $nin  不包含  用数组表示   表示或不等于
+                > db.class0.find({age:{$nin:[17,22,30]}},{_id:0})
+
+    逻辑操作符
+        $and           
+            1.在query文档中逗号隔开的多个键值对即表示与关系
+                > db.class0.find({age:{$in:[17,22,30]},sex:'w'},{_id:0})
+
+            2.$and   表示逻辑与
+                > db.class0.find({$and:[{age:{$in:[17,22,30]},sex:'w'}]},{_id:0})
+
+        $or
+                > db.class0.find({$or:[{age:{$lt:17}},{sex:'w'}]},{_id:0})
+        
+
+        $not
+                > db.class0.find({sex:{$not:{$eq:'m'}}},{_id:0})
+
+        $nor   :  not(A or B)  或 (not A)  and  (not B)  
+            表示逻辑 既不也不   
+                
+                > db.class0.find({$nor:[{sex:'m'},{age:{$gt:18}}]},{_id:0})
+
+        eg.
+        年龄小于17或大于18的女生
+        > db.class0.find({$or:[{age:{$lt:17}},{age:{$gt:18}}],sex:'w'},{_id:0})
+
+    数组类型查找
+        数组: 一组数据的有序集合，使用[]表示
+            * 有序的
+            * 数据类型可以不相同
+
+            查找数组中包含90的文档
+                > db.class3.find({score:90},{_id:0})
+                { "name" : "小明", "score" : [ 78, 85, 90 ] }
+
+        $all   查找数组中包含多项
+                > db.class3.find({score:{$all:[83,88]}},{_id:0})
+
+        $size  根据数组项数查找
+                > db.class3.find({score:{$size:3}},{_id:0})
+
+        $slice  选择数组的查询部分  用于field参数   用法和切片一样
+                    显示前两项
+                > db.class3.find({score:{$size:3}},{_id:0,score:{$slice:2}})
+                    跳过一项显示1项
+                > db.class3.find({score:{$size:3}},{_id:0,score:{$slice:[1,1]}})
+                    显示倒数两项
+                > db.class3.find({score:{$size:3}},{_id:0,score:{$slice:-2}})
+
+        通过数组下标直接引用数组项
+        *在使用数组时，可以通过数组域，数组下标的方式选中数组中具体某一项进行操作。
+
+            > db.class3.update({name:"小明"},{$set:{"score.0":100}})
+            > db.class3.find({'score.0':{$gt:88}},{_id:0})
+
+    其他查找操作符
+
+        $exists   判断一个域是否存在  值为 bool  false表示不存在，ture表示存在
+        
+                >db.class3.find({sex:{$exists:false}},{_id:0})
+
+        $mod    通过除数余数筛选文档
+                eg. 筛选出年龄除 2 余为 1 的文档
+                > db.class0.find({age:{$mod:[2,1]}},{_id:0})
+
+        $type   根据数据类型筛选
+                > db.class0.find({age:{$type:1}},{_id:0}) 查找数据类型为1的文档
+
+                1 为数字，2为字符，3为Object , 4为Array ,13为json ....等
+                
+                > db.class3.find({score:{$type:1}},{_id:0}) 表示数组里面包含什么类型
+
+
+数据处理函数
+	db.collection.distinct(field)
+	功能: 获取集合中某个域的取值范围
+		eg.
+			> db.class0.distinct('age')
+			[ 17, 22, 16, 44 ]
+
+	pretty()
+	功能：将find 查找结果格式化显示
+			> db.class0.find().pretty()
+			{
+			"_id" : ObjectId("5bd17adc6d9160e3527b6f18"),
+			"name" : "Lucy",
+			"age" : 17
+			}
+
+	limit(n)
+	功能: 限制显示前n条文档
+			> db.class0.find().limit(3)
+
+	skip(n)
+	功能: 跳过前 n 条文档，显示后面的文档
+			> db.class0.find().skip(3)
+		
+	count()
+	功能: 查找结果计数统计(使用count,query参数要写筛选条件)
+			> db.class0.find({age:17},{_id:0}).count()
+	
+	sort({field:1/-1})
+	功能: 对查找结果按照指定的域排序显示(1 表示升序，-1 表示降序)
+			> db.class0.find({},{_id:0}).sort({age:1})
+
+	    *复合排序: 对多个域进行排序，当第一排序项相同时，参考第二排序项排序，依次类推
+			> db.class0.find({},{_id:0}).sort({age:1,name:1})
+				当年龄相同时按照姓名排序
+
+	函数可以连续调用
+		当一个函数的返回结果仍然是文档集合，可以继续调用函数
+
+			> db.class0.find({},{_id:0}).sort({age:1}).limit(3)
+
+		对筛选的文档集合，可以使用索引序号取某一项文档
+			> db.class0.find()[1]  通过序列号1 取到筛选结果的第2项
+			> db.class0.find({},{_id:0}).sort({age:1,name:1})[0]
+
+删除文档
+	db.collection.deleteOne(query)
+	删除符合条件的第一个文档
+        参数 : 筛选条件 用法同find query
+                > db.class1.deleteOne({sex:'m'})
+
+	db.collection.deleteMany(query)
+	删除所有符合条件的文档
+        参数 ： 同 find query
+                > db.class2.deleteMany({sex:'m'})
+
+	    db.collection.deleteMany({})
+	    删除集合中所有文档
+
+	
+	db.collection.remove(query,justOne)
+	删除文档
+        参数 : query   筛选条件  用法同 find 
+              justOne  默认为false  此时用法同 deleteMany
+                        设置为true   此时用法同 deleteOne
+                > db.class2.remove({age:17},true)
+
+	db.collection.findOneAandDelete(query)
+	查找某个文档并删除
+        参数 : query
+        返回 : 显示查找到的文档
+                > db.class0.findOneAndDelete({sex:{$exists:false}})
+                {
+                    "_id" : ObjectId("5bd17adc6d9160e3527b6f18"),
+                    "name" : "Lucy",
+                    "age" : 17
+                }
+
+e.g
+    1.创建数据库 ，name grade
+    2.在数据库中创建集合 class
+    3.在集合中插入数据8条左右  格式如下
+        {name:xxx,age:10,sex:'m',hobby:['draw','dabce']}
+        年龄  7-14
+        hobby : draw  dance  running  sing  football  basketball   computer
+
+    4.查找练习
+        查看班级所有人信息
+            > db.class.find({},{_id:0})
+        查看班级中年龄为8岁的人员信息
+            > db.class.find({age:8},{_id:0})
+        查看年龄大于10岁的学生信息
+            > db.class.find({age:{$gt:10}},{_id:0})
+        查看年龄在8-12岁的学生信息
+            > db.class.find({$and:[{age:{$gt:8}},{age:{$lt:12}}]},{_id:0})
+        查看年龄为9且喜欢画画的女生
+            > db.class.find({age:9,hobby:'draw',sex:'w'},{_id:0})
+        查看年龄小于8岁或者大于12岁的信息
+            > db.class.find({$or:[{age:{$lt:8}},{age:{$gt:12}}]},{_id:0})
+        找到年龄为9岁或者11岁的学生
+            > db.class.find({$or:[{age:9},{age:11}]},{_id:0})
+        有两种兴趣爱好的学生
+            > db.class.find({hobby:{$size:2}},{_id:0})
+        找到兴趣爱好中有计算机的学生
+            > db.class.find({hobby:'computer'},{_id:0})
+        找到即喜欢画画又喜欢跳舞的学生
+            > db.class.find({hobby:{$all:['draw','dance']}},{_id:0})
+        计算兴趣爱好有三项的学生人数
+            > db.class.find({hobby:{$size:3}},{_id:0}).count()
+        找到本班年龄第二大的学生
+            >db.class.find().socr({age:-1}).kip(1)
+        查看本班学生兴趣爱好的涵盖范围
+            >db.class.distinct('hoppy')
+        找到本班年龄最小的三个学生
+            >db.class.find().sort({age:1}).limit(3)
+        删除所有年龄大于12或者小于8岁的学生
+            >db.class.deleteMany({$or:[{age:{$lt:8}},{age:{$gt:12}}]})
+
+修改文档
+	db.collection.updataOne(query,updata,upsert)
+	修改第一个符合条件的文档
+        参数 : query  筛选条件 同find用法
+            updata   要修改的数据项，需要和修改操作符(修改器)一同使用
+                            *不加修改器为替换原文档 等同db.collection.findOneAandReplace()
+            upsert   bool值  默认false 表示如果query没有筛选到文档，则不做任何操作
+                                如果设置为true 则如果没有筛选到文档会根据query updata 
+                                    插入新的文档
+            eg.  将年龄17的修改为18
+                > db.class0.updateOne({age:17},{$set:{age:18}})
+                { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+            eg.  如果query 内容不存在，则会插入新文档
+                > db.class0.updateOne({name:'aaaa'},{$set:{age:18}},{upsert:true})
+                {
+                    "acknowledged" : true,
+                    "matchedCount" : 0,
+                    "modifiedCount" : 0,
+                    "upsertedId" : ObjectId("5bd2d4d43a630b1647becb26")
+                }
+
+	db.collection.updataMany(query.updata,upsert)
+	修改所有符合条件的文档
+        参数 : query  筛选条件 同find用法
+            updata   要修改的数据项，需要和修改操作符一同使用
+            upsert   bool值  默认false 表示如果query没有筛选到文档，则不做任何操作
+                                如果设置为true 则如果没有筛选到文档会根据query updata 
+                                    插入新的文档
+        eg.
+            > db.class0.updateMany({age:17},{$set:{age:100}})
+            { "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+	db.collection.updata(query.updata,upsert,multi)
+	修改筛选文档
+        参数 : query     筛选条件 同find用法
+            updata   要修改的数据项，需要和修改操作符一同使用
+            upsert   bool值  默认false 表示如果query没有筛选到文档，则不做任何操作
+                                如果设置为true 则如果没有筛选到文档会根据query updata 
+                                        插入新的文档
+            multi    默认为false 表示只能修改一条文档
+                        设置为true 表示可以修改多条文档
+
+            > db.class0.update({sex:{$exists:false}},{$set:{age:20}},false,true)
+
+	db.collection.findOneAndUpdate(query,updata)
+	查找一个文档并修改
+        参数 : query 查找条件
+            updata  修改内容
+        返回 : 修改前的文档内容
+            eg.
+                > db.class0.findOneAndUpdate({name:'aaaa'},{$set:{age:100}})
+                {
+                    "_id" : ObjectId("5bd2d4d43a630b1647becb26"),
+                    "name" : "aaaa",
+                    "age" : 18
+                }
+
+	db.collection.findOneAandReplace(query,docu)
+	查找并替换一个文档
+        参数 : query
+            document  替换文档
+        返回 : 返回原有内容
+                db.class.findOneAandReplace({adb:232},{name:'Lily',age:33})
+
+  修改器的使用  
+        可以同时使用多个修改器
+
+        $set  : 修稿一个域的值，或者增加一个域
+            ge. 添加一个域，文档没有sex域，自动添加
+                > db.class0.update({name:'aaaa'},{$set:{sex:'m'}})
+
+        $unset : 删除一个域
+            ge.删除sex域，写空字串
+                > db.class0.update({name:'Emma'},{$unset:{sex:''}})
+
+        $rename : 修改一个域的域名
+            ge.把sex域修改为women域
+                > db.class0.updateMany({},{$rename:{sex:'women'}})
+
+        $setOnInsert() :当updata插入文档时，作为补充插入内容
+            ge.插入文档时，附加加入women:'w'
+                > db.class0.update({name:'LLLL'},{$set:{age:20},$setOnInsert:{women:'w'}},true)
+
+        $inc: 加法修改器，加负数为减法，可以加小数，整数，负数，正数
+            ge.所有人的年龄加100
+                > db.class0.updateMany({},{$inc:{age:100}})
+
+        $mul：乘法修改器 ， 乘小数为除法 ，可以乘小数，整数，负数，正数
+            ge.所有人的年龄乘100
+                > db.class0.updateMany({},{$mul:{age:100}})
+
+        $max ：指定某个域的值基准，小于的修改为基准值，大于的则不变
+            ge.在所有人中age低于150的，修改为150，高于的不改动
+                > db.class0.updateMany({},{$max:{age:150}})
+
+        $min ：指定某个域的值基准，大于的修改为基准值，小于的则不变
+            ge.在所有人中age高于150的，修改为150，小于的不改动
+                > db.class0.updateMany({},{$min:{age:150}})
+
+
+    数组修改器
+        
+        $push : 向数组中添加一项
+            ge.向小明的成绩中添加一项
+                > db.class3.update({name:'小明'},{$push:{score:150}})
+
+        $pushAll : 向数组中添加多项
+            ge.向小红的成绩中添加两项
+                > db.class3.update({name:'小红'},{$pushAll:{score:[150,200]}})
+
+        $pull : 从数组中删除某一个值(如果有重复就都删除)
+            ge.把小明成绩数组中为150的值删除
+                > db.class3.update({name:'小明'},{$pull:{score:150}})
+
+        $pullAll : 同时删除数组中多值
+            ge.把小红成绩中为150和200的值删除
+                > db.class3.update({name:'小红'},{$pullAll:{score:[150,200]}})
+
+        $pop : 弹出数组中一项，只能操作两边的项，1为结尾项，-1为首项
+            ge.删除小红成绩中的最后一项
+                > db.class3.update({name:'小红'},{$pop:{score:1}})  
+
+        $addToSet : 向数组中添加一项，但是不能是数组中已有数值
+            eg.向小红的成绩中添加一项
+                > db.class3.update({name:'小红'},{$addToSet:{score:0}})
+
+        $each : 对多个值进行逐一操作，与其它操作符配合
+            eg.向小红的成绩中逐一添加数据中的数据
+                > db.class3.update({name:'小红'},{$push:{score:{$each:[1,2]}}})
+
+        $position : 指定位置插入数值，搭配each使用，超过数组下标后加入结尾
+            eg.向成绩数组1号位置后插入数据
+                > db.class3.update({name:'小红'},{$push:{score:{$each:[3,4],$position:1}}})
+            
+        $sort : 给数组排序 1为升序，-1为降序  配合each使用
+            eg.
+                > db.class3.update({name:'小红'},{$push:{score:{$each:[],$sort:1}}})
+
+内部文档  (Object)
+    当文档中某个域还是一个文档则这个文档为内部文档
+    {"name" : "鲁迅", "book" : { "title" : "狂人日记", "price" : 36.8, "publication" : "人民教育出版社" } }
+
+    *当使用内部文档某个域的值的时候，需要用‘外部文档域.内部文档域’的方法引用，此时需要加引号
+    > db.class2.find({'book.title':'狂人日记'},{_id:0})
+
+    > db.class2.update({"book.title":"骆驼祥子"},{$set:{"book.price":56.5}})
+
+e.g
+    1.将小红的年龄改为8岁，兴趣爱好变为跳舞画画
+        update({name:'小红'},{$set:{age:8,hobby:['dance','draw']}})
+    2.追加小明兴趣爱好 唱歌
+        update({name:'小明'},{$push:{hobby:'sing'}})
+    3.小王多了兴趣爱好 吹牛 大篮球
+        update({name:'小王'},{$pushAll:{hobby:['吹牛','baskerball']}})
+    4.小李兴趣爱好要增加跑步，唱歌，但是不要和之前的兴趣重复
+        update({name:'小李'},{$addToSet:{hobby:{$esch:['running','sing']}}})
+    5.该班所有同学年龄加1
+        updateMany({},{$inc:{age:1}})
+    6.删除小明的sex属性
+        update({name:'小明'},{$unset:{set:''}})
+    7.删除小李兴趣爱好中第一个
+        update({name:'小李'},{$pop:{hobby:-1}})
+    8.删除小红的兴趣画画唱歌
+        update({name:'小红'},{$pullAll:{hobby:['draw','sing']}})
+    9.为小王增加一个域 备注:{民族:'回族'，习俗：‘不吃猪肉’}
+        update({name:'小王'},{$set:{备注:{民族:'回族',习俗:'不吃猪肉'}}})
+    10.在小王的备注中增加一项  宗教:'伊斯兰教'
+
+
+索引
+    什么是索引：索引是建立文档所在位置的查找清单，使用索引可以方便进行快速查找
+            减少遍历次数，提高查找效率
+
+    索引约束
+        1.索引本身也占有数据空间，所以当数据量很小的时候这种消耗是没有必要的
+        2.索引表需要根据数据的修改及时的修改，否则索引就会不和内容配套，也就失去意义
+            因此如果数据库操作是频繁的修改操作而不是查找操作则不适合创建索引
+
+    索引类型
+        复合索引：根据多个域创建一个索引
+            db.collection.createIndex({name:1,age:-1})
+                eg.以名字和年龄为一个索引
+                    > db.class0.createIndex({name:1,age:-1})
+
+        子文档和数组索引:(索引特征)
+            如果对某个域创建索引，该域的值为数组或子文档，则对数
+            组中某一项或者子文档中某个域的查找也是索引查找
+            
+        唯一索引 : 要求创建索引的域不能有重复的值，也不能插入重复的值
+
+            db.collection.createIndex({索引键},{unique:true})
+        
+        稀疏索引: 会在创建索引是忽略没有指定域的文档
+
+            db.collection.createIndex({索引键},{sparse:true})
+
+索引管理
+    创建索引
+        db.collection.createIndex()
+        功能 : 创建索引
+        参数 : 索引域和索引选项
+
+            设置name为索引
+                > db.class0.createIndex({name:1})
+            * _id域会由系统自动创建索引
+            * 1表示正向索引，-1表示逆向索引
+
+            索引选项，设置索引名为'ageIndex'
+                > db.class0.createIndex({age:1},{name:'ageIndex'})
+
+        其它方法：
+            ensureIndex() 和createIndex用法一致
+            功能：创建索引
+            参数：同createIndex()
+
+        创建多个索引
+        db.createIndexes([{},{}...])
+        功能：同时创建多个索引
+        参数：数组中存入索引键值对
+
+    查看所有索引
+        db.collection.getIndexes()
+
+    删除索引
+        db.collection.dropIndex()
+        功能：删除一个索引
+        参数：索引名称或索引键值对
+            ge.通过索引名
+                > db.class0.dropIndex('name_1')
+            ge.通过键值对
+                > db.class0.dropIndex({age:1})
+
+        db.collection.dropIndexes()
+        功能：删除集合中的所有索引  (不会删除_id索引)
+        无参
+
+聚合操作
+    对文档进行数据整理和统计
+
+    db.collection.aggregate()
+    功能 ：完成聚合操作
+    参数 ：聚合条件，需要配合聚合操作符使用
+
+    $group :分组聚合 需要配合一定的统计操作符来完成
+
+        统计求和：$ sum
+        eg.按照women域的值分组，统计结果叫num，方法为加1
+           > db.class0.aggregate({$group:{_id:'$women',num:{$sum:1}}})
+        eg.按性别分组，年龄值加和
+           > db.class0.aggregate({$group:{_id:'$women',num:{$sum:'$age'}}})
+        
+        统计平均数 : $avg
+        eg.按性别分组，求平均年龄
+           > db.class0.aggregate({$group:{_id:'$women',num:{$avg:'$age'}}})
+
+        求最大值 : $max
+        eg. 按性别分组，求最大值
+            > db.class0.aggregate({$group:{_id:'$women',num:{$max:'$age'}}})
+        
+        求最小值 : $min
+        求第一个数 ：$first
+        求最后一个数: $last
+
+    $project : 用于格式化的显示文档内容
+        *值的用法同find中的field参数相同
+            按照值的名称显示文档内容
+            > db.class0.aggregate({$project:{_id:0,name:1,age:1}})
+            把显示值的名称修改
+            > db.class0.aggregate({$project:{_id:0,Name:'$name',Age:'$age'}})
+
+    $match : 筛选数据
+        *match 值的写法同find中的query参数相同    
+        > db.class0.aggregate({$match:{age:{$gt:19}}})
+
+    $limit 显示前几条文档
+            > db.class0.aggregate({$limit:3})
+
+    $skip 跳过多少条，显示后面的内容
+            > db.class0.aggregate({$skip:3})
+
+    $sort 对所选的域排序   1 为正序，-1 为降序
+            > db.class0.aggregate({$sort:{age:1}})
+
+    聚合管道  : 将多个聚合操作合并到一起完成，即将上一个聚合的结果作为下
+            一个聚合的操作对象继续完成
+        
+        db.collection.aggregate([{聚合1},{聚合2}......])
+        e.g
+            > db.class0.aggregate([{$sort:{age:1}},{$project:{_id:0}}])
+           
+固定集合
+    指的是mongoDB中创建的固定大小的集合，称之为固定集合
+
+    特点:  能够淘汰早期的数据
+           可以控制集合的大小
+           插入，查找速度较快
+
+    使用：日志使用，临时缓冲
+
+    创建 : db.createCollection('collection',{capped:true,size:10000,max:1000})
+        集合名打引号
+        capped：true   创建固定集合
+        size  : 10000  固定集合大小  字节
+        max   : 1000   最多存放多少文档
+    eg.创建固定集合
+        > db.createCollection('log',{capped:true,size:1000,max:3})
+    
+文件存储
+    文件存储数据库的方式
+
+    1.存储路径 : 将本地文件所在的路径以字符串存储到数据库
+          优点 : 节省数据库
+          缺点 : 当数据库或者文件发生移动时必须要修改数据库内容
+
+    2.存储文件本身 : 将文件转换为二进制存储到数据库
+          优点 : 文件随数据库移动，数据库在文件在
+          缺点 : 占用数据库空间大，存储效率低
+
+  GridFS 文件存储方案
+        目的 ：更好的存储MongoDB中超过16M的大文件
+
+        方案解释：在mongoDB数据库中，创建两个集合共同存储文件，一个存储
+                 文件信息，一个存储文件内容，两个相互配合。
+
+                 fs.files : 存储文件信息 (文件名，大小等)
+                 fs.chunks: 以mongoDB二进制格式存储文件内容
+
+        存储方法 : mongofiles -d dbname put file
+                    dbname  数据库名，不存在会自动创建
+                    file   要存储的文件
+
+        提取方法 : mongofiles -d 存储的库名 get 库中文件名
+
+        优缺点：优点：存储方便，提供了较好的命令，方便数据库移动
+               缺点：读写效率较低，不不建议用来存储小文件
+
+mongo shell 对javascript支持
+    在mongo shell下可以直接运行基本的js代码
+
+    游标: 获取数据库操作结果集合的量
+
+            > use stu
+            switched to db stu
+            > var cursor = db.class0.find()
+            > cursor.next()
+
+python 交互
+    
+    pymongo  第三方模块
+
+        安装 : sudo pip3 install pymongo
+
+    操作步骤: 1.创建mongoDB数据库连接对象
+
+                conn = pymongo.MonggoClient('localhost',27017)
+
+             2.生成要操作的数据库对象 (__getitem__ __setitem__)
+
+                db = conn.dbname  或  db.conn['dbname']
+
+             3.生成操作的集合对象
+
+                myset = db.collection  或 db['collection']
+
+             4.通过集合对象调用函数进行数据库操作
+                myset.insert_many([{'name':'张铁林','king':'乾隆'},
+                                    {'name':'张国立','king':'康熙'}])
+
+             5.关闭数据库连接
+                conn.close()
+
+    插入操作 
+        insert()  插入一条或多条文档
+        insert_many()  插入多条
+        insert_one()  插入一条
+        save()   插入一条或多条，当有_id域时_id域重复会替换原文档
+                    pymongo中save参数是字典不能为列表
+
+    查找操作
+        find()  查找所有文档
+            参数: 同mongo shell 中find
+            返回: 游标对象变量(可迭代对象)
+
+            *pymongo 操作数据库时，所有的操作符均使用引号引起来当做字符串传入
+            *mongoDB 中true false 使用python的 True False  
+                    null  使用 None 
+
+        游标对象属性函数
+            next()  获取下一个文档
+            limit()  显示前几条文档
+            skip()   跳过前几条显示后面内容
+            count()  统计计数
+            sort()   排序   在pymongo中   sort([('age',1),('name',-1)])
+                            在mongo shell中  sort({age:1,name:-1})
+
+            *当使用游标对象调用limit skip sort等函数时，要求游标对象必须为
+            初始游标，即没有被for 或 next取值过。
+
+        find_one()  查找一条文档
+            参数 :  同find
+            返回 :  返回一个字典
+
+    修改操作
+        update()
+
+        update_one()
+
+        update_many()
+
+    删除操作
+        remove(query,multi=True)
+            也是默认删除多个，当multi设置为False时只删除一个
+        delete_one()
+        delete_many()
+
+    索引聚合操作
+
+        createIndex()  创建索引
+        参数：域名   则默认对该域创建正向索引
+            或列表  每个二维元组代表一个索引项
+            e.g
+                index_name = myset.create_index('name')
+                index_name = myset.create_index([('age',-1)])
+        创建唯一索引和稀疏索引
+            index_name = myset.create_index('name',unique=True,sparse=True)
+
+        list_indexes()  查看索引
+            e.g
+                for i in myset.list_indexes():
+                    print(i)
+
+        drop_index()   删除一个索引
+            e.g
+                myset.drop_index('name_1')
+
+        drop_indexes()  删除多个索引
+            e.g
+                myset.drop_indexes()
+            
+    聚合操作
+        aggregate([])
+        参数: 同mongo shell中的聚合
+        返回值 : 返回游标对象
+
+数据库文件操作
+
+    GridFS文件提取
+  
+       import gridfs
+  
+       1.连接数据库,生成数据库对象
+       2.生成gridfs对象
+          fs = gridfs.GridFS(db)
+       3.通过fs获取存储的文件集合
+          files = fd.find()
+       4.挑选想获取的文件进行读取
+            #filename属性获取文件名称
+             print(file.filename)
+
+    GridFS文件存储
+
+        import gridfs
+
+        1.连接数据库,生成数据库对象
+        2.生成gridfs对象
+            fs = gridfs.GridFS(db)
+        3.通过fs.put()函数将读取出来的文件内容存入数据库
+            fs.put(data,filename)
+            参数 ： data 要存入的二进制内容
+                    filename  文件存入的名称
+
+    存取小文件
+      import bson.binary
+        1.连接数据库，生成数据库对象和集合对象
+        2.选择要存储的文件使用 rb方式读出
+        3.将读取的内容转换为mongoDB的二进制存储格式
+            bson.binary.Binary(data)
+            功能 ：将bytes字串转换为mongoDB二进制存储
+            参数 ：要转换的bytes字串
+            返回值 ：转换后的待存储数据
+
+            读取文件会自动转换为python二进制。
+        4.将内容写入文档，插入数据库
+
+=============================================
+脚本一
+    from pymongo import MongoClient
+
+    conn = MongoClient('localhost',27017)
+
+    db = conn.stu
+
+    myset = db['class4']
+
+    print(dir(myset))
+    myset.insert_many([{'name':'张铁林','king':'乾隆'},
+                    {'name':'张国立','king':'康熙'}])
+    myset.insert_one({'name':'任贤齐','role':'令狐冲'})
+    myset.insert({'name':'古天乐','role':'杨过'})
+    myset.insert({'name':'李若彤','role':'小龙女'})
+    myset.insert({'name':'刘亦菲','role':'王语嫣'})
+    myset.save({'_id':1,'role':'郭靖','name':'李亚鹏'})
+
+    cursor = myset.find({'role':{'$exists':True}},{'_id':0})
+    for i in cursor:
+        print(i)
+    print(cursor.next())
+    for i in cursor.skip(1).limit(2):
+        print(i)
+    for i in cursor.sort([('name',1),('role',-1)]):
+        print(i)
+
+    d = myset.find_one({'$or':[{'role':{'$exists':False}},{'name':"古天乐"}]})
+    print(d)
+
+    myset.update_one({'king':{'$exists':True}},\
+                {'$set':{'name':'陈小春','king':'韦小宝'}})
+    myset.update_many({'king':{'$exists':True}},{'$rename':{'king':'role'}})
+    myset.update({'name':'张国立'},{'$set':{'name':'张卫健','role':'张三丰'}})
+    myset.update({'name':'高圆圆'},{'$set':{'role':'周子若'}},upsert=True)
+
+    myset.delete_one({'name':'高圆圆'})
+    myset.delete_many({'role':'韦小宝'})
+    myset.remove({'name':'张卫健'})
+
+    print(myset.find_one_and_update({'role':'萧峰'},{'$set':{'name':'黄日华'}}))
+
+
+    conn.close()
+
+==================================================
+脚本二
+
+    from pymongo import MongoClient 
+
+    conn = MongoClient('localhost',27017)
+    db = conn.stu 
+    myset = db.class0 
+
+    创建索引
+    index_name = myset.create_index('name')
+    print(index_name)
+    index_name = myset.create_index([('age',-1)])
+
+    查看索引　
+    for i in myset.list_indexes():
+        print(i)
+
+    删除索引
+    myset.drop_index('name_1')
+
+    删除所有索引
+    myset.drop_indexes()
+
+    其他索引类型
+    index = myset.create_index('name',\
+    unique=True,sparse=True)
+
+    聚合操作
+
+    l=[
+    {'$group':{'_id':'$gender','num':{'$sum':1}}},
+    ]
+
+    cursor = myset.aggregate(l)
+
+    for i in cursor:
+        print(i)
+
+    conn.close()
+
+====================================
+脚本三  从数据库文件
+    from pymongo import MongoClient
+    import gridfs 
+
+    #获取数据库对象
+    conn = MongoClient('localhost',27017)
+    db = conn.grid
+
+    #获取文件集合对象
+    fs = gridfs.GridFS(db)
+
+    #获取文件集
+    files = fs.find()
+
+    for file in files:
+        #filename属性获取文件名称
+        print(file.filename)
+        if file.filename == './img.jpg':
+            with open(file.filename,'wb') as f:
+                #从数据库读取
+                data = file.read()
+                #写入本地
+                f.write(data)
+    conn.close()
+
+=========================================
+脚本四  写入文件到数据库
+    from pymongo import MongoClient
+    import gridfs 
+
+    #获取数据库对象
+    conn = MongoClient('localhost',27017)
+    db = conn.grid
+
+    #获取文件集合对象
+    fs = gridfs.GridFS(db)
+
+    #将本地文件读取出来写入到数据库中
+    with open('img_5.jpg','rb') as f:
+        fs.put(f.read(),filename='mm.jpg')
+
+    conn.close()

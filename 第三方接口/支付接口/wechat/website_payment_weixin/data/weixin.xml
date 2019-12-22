@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="payment_icon_cc_weixin" model="payment.icon">
+            <field name="name">weixin</field>
+            <field name="image" type="base64" file="website_payment_weixin/static/src/img/icon.png"/>
+        </record>
+
+        <record id="payment_acquirer_weixin" model="payment.acquirer">
+            <field name="name">weixin</field>
+            <field name="image" type="base64" file="website_payment_weixin/static/src/img/icon.png"/>
+            <field name="provider">weixin</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="view_template_id" ref="weixin_acquirer_button"/>
+            <field name="environment">test</field>
+            <field name="auto_confirm">confirm_so</field>
+            <field name="pre_msg"><![CDATA[
+<p>You will be redirected to the weixin website after clicking on the payment button.</p>]]></field>
+            <field name="weixin_appid">wx426b3015555a46be</field>
+            <field name="weixin_mch_id">1225312702</field>
+            <field name="weixin_key">e10adc3949ba59abbe56e057f20f883e</field>
+            <field name="weixin_secret">01c6d59a3f9024db6336662ac95c8e74</field>
+            <field name="ip_address">dummy</field>
+            <field name="payment_icon_ids" eval="[(6,0,[ref('website_payment_weixin.payment_icon_cc_weixin')])]"/>
+        </record>
+
+
+    </data>
+</openerp>

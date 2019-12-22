@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <!--<record model="ir.ui.view" id="website_payment_return_list_weixin">-->
+            <!--<field name="name">website_payment_return_list_weixin</field>-->
+            <!--<field name="model">payment.transaction</field>-->
+            <!--<field name="inherit_id" ref="payment.transaction_form"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr="//button[@name='action_void']" position="after">-->
+                    <!--<button type="object" name="weixin_action_returns_commit" string="退款"-->
+                            <!--attrs="{'invisible': [('state', '!=', 'refunding'),-->
+                            <!--('acquirer_id','!=',%(website_payment_weixin.payment_acquirer_weixin)d)]}"-->
+                            <!--class="oe_highlight"/>-->
+                <!--</xpath>-->
+            <!--</field>-->
+        <!--</record>-->
+
+
+        <record id="acquirer_form_weixin" model="ir.ui.view">
+            <field name="name">acquirer.form.weixin</field>
+            <field name="model">payment.acquirer</field>
+            <field name="inherit_id" ref="payment.acquirer_form"/>
+            <field name="arch" type="xml">
+                <xpath expr='//group[@name="acquirer_base"]' position='after'>
+                    <group attrs="{'invisible': [('provider', '!=', 'weixin')]}">
+                        <group>
+                            <field name="weixin_appid"/>
+                            <field name="weixin_mch_id"/>
+                            <field name="weixin_key"/>
+                            <field name="weixin_secret"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!--<record id="transaction_form_weixin" model="ir.ui.view">-->
+        <!--<field name="name">acquirer.transaction.form.weixin</field>-->
+        <!--<field name="model">payment.transaction</field>-->
+        <!--<field name="inherit_id" ref="payment.transaction_form"/>-->
+        <!--<field name="arch" type="xml">-->
+        <!--<field name="state_message" position="after">-->
+        <!--<group string="微信支付凭证">-->
+        <!--<field name="weixin_txn_id"-->
+        <!--attrs="{'invisible':[('acquirer_id','!=',%(website_payment_weixin.payment_acquirer_weixin)d)]}"/>-->
+        <!--<field name="weixin_txn_type"-->
+        <!--attrs="{'invisible':[('acquirer_id','!=',%(website_payment_weixin.payment_acquirer_weixin)d)]}"/>-->
+        <!--</group>-->
+        <!--</field>-->
+        <!--</field>-->
+        <!--</record>-->
+
+    </data>
+</openerp>

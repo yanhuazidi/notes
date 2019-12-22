@@ -1,0 +1,56 @@
+很多情况下，默认的套节字缓冲区大小可能不够用。因此我们可以想办法去修改默认缓存区大小，改成一个合适的值。
+
+我们使用的方法是利用套节字对象的setsocketopt( )的方法修改默认的套节字缓冲区大小。
+
+首先我们定义两个常量：SEND_BUF_SIZE和RECV_BUF_SIZE。然后在一个函数中调用套节字的实例setsocketopt( )方法。以下是具体代码：
+
+SEND_BUF_SIZE = 4096
+RECV_BUF_SIZE = 4096
+
+def modify_buff_size():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    bufsize = sock.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF)
+
+    print "Buffer size [Before] :%d" %bufsize
+
+    sock.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
+
+    sock.setsockopt(
+        socket.SOL_SOCKET,
+        socket.SO_SNDBUF,
+        SEND_BUF_SIZE
+    )
+    sock.setsockopt(
+        socket.SOL_SOCKET,
+        socket.SO_RCVBUF,
+        RECV_BUF_SIZE
+    )
+
+    bufsize = sock.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF)
+    print "Buffer size [After] :%d" %bufsize
+
+if __name__ == '__main__':
+    modify_buff_size()
+
+运行结果：
+
+
+
+原理分析：
+
+在套节字对象可调用方法getsocketopt( )和setsocketopt( )分别获取和修改套节字对象属性。 
+setsocketopt( )方法接收三个参数：level、optname和value。其中optname是选项名、value是该选项的值、level代表选项所在的协议层，以下列出了level常用的符号常量（so_*等）的意义。
+
+选项	意义
+SO_BROADCAST	允许套接口传送广播信息
+SO_DEBUG	记录调试信息
+SO_DONTLINER	不要因为数据未发送就阻塞关闭操作
+SO_DONTROUTE	禁止选径；直接传送
+SO_KEEPALⅣE	发送“保持活动”包
+SO_LINGER struct linger	FAR* 如关闭时有未发送数据，则逗留
+SO_OOBINLINE	在常规数据流中接收带外数据
+SO_RCVBUF	为接收确定缓冲区大小
+SO_REUSEADDR	允许套接口和一个已在使用中的地址捆绑（参见bind（）)
+SO_SNDBUF	指定发送缓冲区大小
+TCP_NODELAY	禁止发送合并的Nagle算法

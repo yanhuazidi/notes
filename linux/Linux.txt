@@ -1,0 +1,147 @@
+﻿
+
+
+终端查看进程和占用端口
+    netstat -lptu  
+    查看 PID
+杀死进程
+    sudo kill -9 进程PID
+
+
+linux shell
+    $:pip3 list  查看python3 中已安装的包
+    安装命令:sudo pip3 install 包名
+
+Linux重启网络服务
+	sudo /etc/init.d/networking restart 
+
+Ubuntu中防火墙(ufw)基本操作
+    sudo ufw status 查看状态
+    1. 打开 :   sudo ufw enable
+    2. 关闭防火墙 :  sudo ufw disable
+    3. 添加规则 : sudo ufw allow 端口
+
+
+cat  path
+	终端打印文件
+
+echo 'str '
+	在终端打印文本
+	echo  'str' > parh  重定向到文件
+
+Linux 常用命令
+    windows shell 清屏命令: cls
+    网址输入 IP 会自动以 80 为端口,服务器软件的默认端口
+
+    1. ifconfig : 查看IP地址和MAC地址
+        # windows  : ipconfig
+    
+    2. ping : 测试网络的连通性，Linux会一直ping，windows 4次结束
+    
+        ping 127.0.0.1 -c 2
+        -c 2 表示ping 2次
+    
+    3. nslookup : 解析域名对应的IP地址(不一定准确)
+        nslookup www.baidu.com
+        
+    4. top : Linux下任务管理器，动态显示当前进程CPU及内存使用率
+        top
+        按 sheift + > 或者 < 进行翻页
+        按 q 退出
+        
+    5. ps -aux : 显示进程号 PID
+        ps -aux | grep 'mysql'  对查询结果进行筛选
+        
+    6. kill : 杀死进程 
+        kill PID
+        sudo kill PID
+        sudo kill [-9] PID
+        
+    7. df -h  : 查看磁盘使用情况
+        df -h
+        
+    8. ls -lh : h表示提供易读单位
+        ls -lh 文件名  : 表示指定文件的信息
+        
+    9. chmod : 修改文件权限
+        查看权限 : ls -l
+        chmod +x test.py
+        chmod 644 文件名
+        
+        r(4) w(2) x(1)
+
+
+​        
+    10. whereis 程序名  :查看程序位置
+        # windows : where 程序名
+        
+    11. wc -l : 统计一个文件中文件的行数
+        wc -l /etc/passwd
+        不加 -l 会有单词数等信息
+        
+    12. sort : 对文件中的内容进行排序 , 只改变显示顺序，不改变文件
+    	sort 文件名
+    	sort	-r  倒序
+    	sort	-n 按数字排列
+    	sort	-n	 -k 1  根据第一列的字符排列
+    	
+    	可以 sort -rnk 1  ‘k'要在最后
+        
+    13. uniq -c 
+        去除重复行(只能是排一起的) ，-c  并统计每行出现的次数，和sort配合使用
+    
+        sort 文件名 | uniq -c  排序去重并统计重复行的重复数
+        
+    14. 管道命令 对其他命令进行提取
+        格式 : 其它命令 | 管道命令
+    	
+    	sort  排序
+    	
+    	awk 		文本提取
+    				1. 语法格式 : awk 选项 '动作' 文件列表
+    				2.  用法 : Linux命令 | awk 选项 '动作'
+        
+        uniq -c 同13
+        
+        head 从头显示行数  
+            head -2 表示前2行
+        
+        tail 从尾显示行数  
+            tail -1 表示倒数第一行
+
+
+​        
+    15. ssh : 远程连接到服务器 默认端口 22
+        格式 : ssh 用户名@IP地址
+              ssh tarena@172.12.43.111
+            要设置防火墙规则
+            
+    16. scp
+        远程复制文件/目录
+        
+        scp 文件名 用户名@IP地址:绝对路径
+    	
+    17. 程序名 -v
+    		查看版本号(Windows 和 Linux 一样)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

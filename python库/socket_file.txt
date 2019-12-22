@@ -1,0 +1,220 @@
+from socket import *
+import struct
+import json
+import os
+
+tcp_server = socket(AF_INET, SOCK_STREAM)
+ip_port = (('127.0.0.1', 8080))
+buffsize = 1024
+
+#   端口的重复利用
+tcp_server.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+tcp_server.bind(ip_port)
+tcp_server.listen(5)
+print('还没有人链接')
+while True:
+    '''链接循环'''
+    conn, addr = tcp_server.accept()
+
+    print('链接人的信息:', addr)
+    while True:
+        if not conn:
+            print('客户端链接中断')
+            break
+        '''通信循环'''
+        filemesg = input('请输入要传送的文件名加后缀>>>').strip()
+
+        filesize_bytes = os.path.getsize(filemesg) # 得到文件的大小,字节
+        filename = 'new' + filemesg
+        dirc = {
+            'filename': filename,
+            'filesize_bytes': filesize_bytes,
+        }
+        head_info = json.dumps(dirc)  # 将字典转换成字符串
+        head_info_len = struct.pack('i', len(head_info)) #  将字符串的长度打包
+        #   先将报头转换成字符串(json.dumps), 再将字符串的长度打包
+        #   发送报头长度,发送报头内容,最后放真是内容
+        #   报头内容包括文件名,文件信息,报头
+        #   接收时:先接收4个字节的报头长度,
+        #   将报头长度解压,得到头部信息的大小,在接收头部信息, 反序列化(json.loads)
+        #   最后接收真实文件
+        conn.send(head_info_len)  # 发送head_info的长度
+        conn.send(head_info.encode('utf-8'))
+
+        #   发送真是信息
+        with open(filemesg, 'rb') as f:
+            data = f.read()
+            conn.sendall(data)
+
+        print('发送成功')
+
+
+from socket import *
+import struct
+import json
+import os
+import sys
+import time
+from 进度条 import process_bar
+
+tcp_client = socket(AF_INET, SOCK_STREAM)
+ip_port = (('127.0.0.1', 8080))
+buffsize = 1024
+tcp_client.connect_ex(ip_port)
+print('等待链接服务端')
+while True:
+    head_struct = tcp_client.recv(4)  # 接收报头的长度,
+    if head_struct:
+        print('已连接服务端,等待接收数据')
+    head_len = struct.unpack('i', head_struct)[0]  # 解析出报头的字符串大小
+    data = tcp_client.recv(head_len)  # 接收长度为head_len的报头内容的信息 (包含文件大小,文件名的内容)
+
+    head_dir = json.loads(data.decode('utf-8'))
+    filesize_b = head_dir['filesize_bytes']
+    filename = head_dir['filename']
+
+    #   接受真的文件内容
+    recv_len = 0
+    recv_mesg = b''
+    old = time.time()
+    f = open(filename, 'wb')
+    while recv_len < filesize_b:
+        percent = recv_len / filesize_b
+
+        process_bar(percent)
+        if filesize_b - recv_len > buffsize:
+
+            recv_mesg = tcp_client.recv(buffsize)
+            f.write(recv_mesg)
+            recv_len += len(recv_mesg)
+        else:
+            recv_mesg = tcp_client.recv(filesize_b - recv_len)
+            recv_len += len(recv_mesg)
+            f.write(recv_mesg)
+
+    print(recv_len, filesize_b)
+    now = time.time()
+    stamp = int(now - old)
+    print('总共用时%ds' % stamp)
+    f.close()
+
+
+
+import sys
+import time
+def process_bar(precent, width=50):
+    use_num = int(precent*width)
+    space_num = int(width-use_num)
+    precent = precent*100
+    #   第一个和最后一个一样梯形显示, 中间两个正确,但是在python2中报错
+    #
+    # print('[%s%s]%d%%'%(use_num*'#', space_num*' ',precent))
+    # print('[%s%s]%d%%'%(use_num*'#', space_num*' ',precent), end='\r')
+    print('[%s%s]%d%%'%(use_num*'#', space_num*' ',precent),file=sys.stdout,flush=True, end='\r')
+    # print('[%s%s]%d%%'%(use_num*'#', space_num*' ',precent),file=sys.stdout,flush=True)
+
+# for i in range(21):
+#     precent = i/20
+#     process_bar(precent)
+#     time.sleep(0.2)
+
+
+import socketserver
+import struct
+
+import os
+import json
+import struct
+
+
+def sendRealFile(conn, filename):
+    '''发送真是文件'''
+    with open(filename, 'rb')as f:
+        conn.sendall(f.read())
+
+    print('发送成功')
+
+
+def operafile(filename):
+    '''对报头进行打包'''
+    filesize_bytes = os.path.getsize(filename)
+    head_dir = {
+        'filename': 'new' + filename,
+        'filesize_bytes': filesize_bytes,
+    }
+    head_info = json.dumps(head_dir)
+    head_info_len = struct.pack('i', len(head_info))
+    return head_info_len, head_info
+
+class MyServer(socketserver.BaseRequestHandler):
+    buffsize = 1024
+    def handle(self):
+        # self.request
+        print('连接人的信息')
+        print('conn是', self.request)  # conn
+        print('addr是', self.client_address)  # addr
+
+        while True:
+            '''收发消息'''
+            filename = input('请输入要发送的文件名加上后缀>>>').strip()
+            #   判断文件是否存在
+
+            head_info_len, head_info = operafile(filename)
+            self.request.send(head_info_len)  # 这里是4个字节
+            self.request.send(head_info.encode('utf-8'))  # 发送报头的内容
+            sendRealFile(self.request, filename)
+
+
+if __name__ == '__main__':
+    # pass
+    print('还没有人连接')
+    s = socketserver.ThreadingTCPServer(('127.0.0.1', 8080), MyServer)  # 多线程
+    #   服务器一直开着
+    s.serve_forever()
+
+
+
+from socket import *
+import os
+import sys
+import json
+import struct
+
+tcp_client = socket(AF_INET, SOCK_STREAM)
+ip_port = (('127.0.0.1', 8080))
+buffsize = 1024
+tcp_client.connect_ex(ip_port)
+print('等待服务端发送信息')
+
+
+def recv_file(head_dir, tcp_client):
+    filename = head_dir['filename']
+    filesize_b = head_dir['filesize_bytes']
+    recv_len = 0
+    recv_mesg = b''
+    f = open(filename, 'wb')
+    while recv_len < filesize_b:
+        if filesize_b - recv_len > buffsize:
+            recv_mesg = tcp_client.recv(buffsize)
+            recv_len += len(recv_mesg)
+            f.write(recv_mesg)
+        else:
+            recv_mesg = tcp_client.recv(filesize_b - recv_len)
+            recv_len += len(recv_mesg)
+            f.write(recv_mesg)
+
+    f.close()
+    print('文件传输完成')
+
+while True:
+    '''收发循环'''
+    struct_len = tcp_client.recv(4)  #  接受报头的长度
+    struct_info_len = struct.unpack('i',struct_len)[0]  #   解析得到报头信息的长度
+    head_info = tcp_client.recv(struct_info_len)   #    接受报头的内容
+    head_dir = json.loads(head_info.decode('utf-8'))              #   将报头的内容反序列化
+    # #   文件信息
+    # filename = head_dir['filename']
+    # filesize = head_dir['filesize_bytes']
+    recv_file(head_dir, tcp_client)
+
+    #   接受文件

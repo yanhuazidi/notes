@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_wexin" name="payment weixin assets" inherit_id="website.assets_frontend">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" href="/website_payment_weixin/static/src/less/weixin_style.css"/>
+        </xpath>
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/website_payment_weixin/static/src/js/weixin_payment.js"/>
+        </xpath>
+    </template>
+
+
+    <template id="action_confirm_button" name="Do action confirm">
+        <t t-call="website.layout">
+
+            <t t-if="client_type=='PC'">
+                <div class="container">
+                    <div class="wx">
+                        <div class="clearfix order o-init">
+                            <div class="o-left">
+                                <h3 class="o-title" t-esc="'订单提交成功，请尽快付款！订单号：%s' % (out_trade_no)"/>
+                            </div>
+
+                            <div class="o-right">
+                                <div class="o-price">
+                                    <em>应付金额</em>
+                                    <strong t-esc="total"/>
+                                    <em>元</em>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment">
+                            <!-- WeChat payment -->
+                            <div class="pay-wx">
+                                <div class="p-wx-hd">微信支付</div>
+                                <div class="p-wx-bd" style="position:relative">
+
+                                    <div class="j_weixinInfo"
+                                         style="position:absolute; top: -36px; left: 150px; color:red;">当二维码显示过期时,请
+                                        <span style="color:#67a4ff;">刷新</span>
+                                        页面重新获取二维码。
+                                    </div>
+
+                                    <div class="p-wx-box">
+                                        <div class="pw-box-hd">
+                                            <img id="weixinImageUrl" style="outline: white dashed 1px;"
+                                                 t-attf-src="/report/barcode/?type=QR&amp;value={{qrcode}}&amp;width=300&amp;height=300"/>
+                                        </div>
+
+                                        <div class="pw-box-ft">
+                                            <p>请使用微信扫一扫</p>
+                                            <p>扫描二维码支付</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-wx-phone"/>
+                                </div>
+
+                                <div class="text-center payment-pc" style="margin-top:50px">
+                                    <a class="btn btn-info" name="done_payment"
+                                       t-att-href="'/shop/payment/checkout?order_id=%s'% (out_trade_no)">支付完成
+                                    </a>
+                                    <a class="btn btn-info" name="Cancel_payment"
+                                       t-att-href="'/shop/payment/cancel?order_id=%s' % (out_trade_no)">取消支付
+                                    </a>
+                                </div>
+
+                            </div>
+                            <!-- WeChat payment end -->
+
+                            <!-- payment change-->
+                            <div class="payment-change">
+                                <a class="pc-wrap" onclick="window.history.go(-1)">
+                                    <i class="pc-wx-left">&lt;</i>
+                                    <strong>选择其他</strong>
+                                </a>
+                            </div>
+                            <!-- payment change end -->
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <t t-else="">
+                <div class="course">
+                    <div class="course_in">
+                        <!--<h1 class="title">订单支付</h1>-->
+                        <div class="clearfix course_box html">
+                            <div class="course_box_l">
+                                <h1>订单已提交成功,请您尽快付款。</h1>
+                            </div>
+                            <div class="course_box_r">
+                                <h1>订单编号</h1>
+                                <ul>
+                                    <li>
+                                        <span t-esc="out_trade_no"/>
+                                    </li>
+                                </ul>
+                                <h1>付款金额(元)</h1>
+                                <ul>
+                                    <li>
+                                        <span t-esc="total"/>
+                                    </li>
+                                </ul>
+                                <h1>收款方</h1>
+                                <ul>
+                                    <li>
+                                        <span>上海志行合力网络技术有限公司</span>
+                                    </li>
+                                </ul>
+                                <div class="f-box">
+                                    <a t-attf-href="#{url}">前去支付</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="action_confirm_jsapi" name="Do action confirm jsapi">
+        <script type="text/javascript">
+            function jsApiCall() {
+            var out_trade_no = document.getElementById("out_trade_no").value
+            var appId = document.getElementById("appId").value
+            var timeStamp = document.getElementById("timeStamp").value
+            var nonceStr = document.getElementById("nonceStr").value
+            var package = document.getElementById("package").value
+            var paySign = document.getElementById("paySign").value
+            alert(out_trade_no)
+            WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+            "appId": appId, //公众号名称，由商户传入
+            "timeStamp": timeStamp, //时间戳，自1970年以来的秒数
+            "nonceStr": nonceStr, //随机串
+            "package": "prepay_id=" + prepay_id + "",
+            "signType": "MD5", //微信签名方式：
+            "paySign": paySign//微信签名
+            },
+            function (res) {
+            if (res.err_msg == "get_brand_wcpay_request:ok") {
+            // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回 ok，但并不保证它绝对可靠。
+            window.location = '/shop/payment/checkout?order_id=%s' % (out_trade_no);
+
+            }
+            }
+            );
+            }
+
+            function callpay() {
+            if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+            document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+            } else {
+            jsApiCall();
+            }
+            }
+            callpay()
+        </script>
+        <t t-call="web.layout">
+            <t t-call="web.layout">
+                <!--<h2 class="col-md-12">微信支付</h2>-->
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="container" style="height:150px; width: 150; margin-top: 120px;margin-left: 70px;
+                background-image: url('/website_payment_weixin/static/src/img/lode.jpg');">
+                    <div class="row weixin_container">
+                        <input type="hidden" id='out_trade_no' name="out_trade_no" t-att-value="out_trade_no"/>
+                        <input type="hidden" id='appId' name="appId" t-att-value="appId"/>
+                        <input type="hidden" id='timeStamp' name="timeStamp" t-att-value="timeStamp"/>
+                        <input type="hidden" id='nonceStr' name="nonceStr" t-att-value="nonceStr"/>
+                        <input type="hidden" id='package' name="package" t-att-value="package"/>
+                        <input type="hidden" id='paySign' name="paySign" t-att-value="paySign"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="action_h5_payment" name="h5 pay done">
+        <t t-call="web.layout">
+            <t t-call="website.layout">
+                <div class="course">
+                    <div class="course_in">
+                        <!--<h1 class="title">订单支付</h1>-->
+                        <div class="clearfix course_box html" style="height:auto;">
+                            <div class="course_box_l">
+                                <h1>请确认微信支付是否已完成！</h1>
+                            </div>
+                            <div class="course_box_r text-center" style="height:auto;">
+                                <dl class="h-problem text-overflow">
+                                    <a t-att-href="'/shop/payment'">
+                                        支付遇到问题?点击重新支付。
+                                    </a>
+                                </dl>
+
+                                <dl class="h-done text-overflow">
+                                    <a class="btn btn-success"
+                                       t-att-href="'/shop/payment/checkout?order_id=%s'% (out_trade_no)">
+                                        支付完成
+                                    </a>
+                                </dl>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

@@ -1135,7 +1135,7 @@ self.mapped('line_ids').unlink()
 
 
 
-### with_context(*[context][, **overrides]*) → records
+### `with_context([context][, **overrides])` → records
 
 返回附加到扩展上下文的此记录集的新版本。
 
