@@ -35,7 +35,7 @@ sudo apt-get install openssh-server
 
 
 
-### 运行
+### 运行服务
 
 ```shell
 sshd [-46DdeiqTt] [-C connection_spec] [-c host_certificate_file] [-E log_file] [-f config_file] [-g login_grace_time] [-h host_key_file][-o option] [-p port] [-u len]
@@ -449,7 +449,7 @@ sshd从 `/etc/ssh/sshd_config`（或-f在命令行中指定的文件）读取配
 ```shell
 AddressFamily any  #指定 sshd 应当使用哪种地址族。取值范围是："any"(默认)、"inet"(仅IPv4)、"inet6"(仅IPv6)。 any表示二者均有。
 
-AuthorizedKeysFile  .ssh/authorized_keys   #指定包含用于用户身份验证的公钥的文件 
+AuthorizedKeysFile  .ssh/authorized_keys   # 指定包含用于用户身份验证的公钥的文件 
 
 AllowGroups   #这个指令后面跟着一串用空格分隔的组名列表(其中可以使用"*"和"?"通配符)。默认允许所有组登录。如果使用了这个指令，那么将仅允许这些组中的成员登录，而拒绝其它所有组。这里的"组"是指"主组"(primary group)，也就是/etc/passwd文件中指定的组。这里只允许使用组的名字而不允许使用GID。相关的 allow/deny 指令按照下列顺序处理：DenyUsers, AllowUsers, DenyGroups, AllowGroups
 
@@ -535,9 +535,9 @@ SyslogFacility AUTH　　　#配置sshd发送到syslog所使用的日志类型�
 
 SyslogFacility AUTHPRIV     #默认日志类型为AUTHPRIV
 
-StrictModes yes　　　　　     #指定是否要求 sshd在接受连接请求前对用户主目录和相关的配置文件进行宿主和权限检查。 强烈建议使用默认值"yes"来预防可能出现的低级错误。
+StrictModes yes　　　　#指定是否要求 sshd在接受连接请求前对用户主目录和相关的配置文件进行宿主和权限检查。 强烈建议使用默认值"yes"来预防可能出现的低级错误。
 
-UserLogin no　　　　　　　    #在 SSH 底下本来就不接受 login 这个程序的登入！
+UserLogin no　　　#在 SSH 底下本来就不接受 login 这个程序的登入！
 
 UsePrivilegeSeparation yes  #是否让 sshd 通过创建非特权子进程处理接入请求的方法来进行权限分离。默认值是"yes"。认证成功后，将以该认证用户的身份创建另一个子进程。这样做的目的是为了防止通过有缺陷的子进程提升权限，从而使系统更加安全。
 
@@ -568,7 +568,7 @@ X11UseLocalhost   #sshd 是否应当将X11转发服务器绑定到本地loopback
  
  -B     # 显示指定的公钥/私钥文件的 bubblebabble 摘要。
  
- -b bits   #指定密钥长度。对于RSA密钥，最小要求768位，默认是2048位。DSA密钥必须恰好是1024位(FIPS 186-2 标准的要求)。
+ -b bits  #指定密钥长度。对于RSA密钥，最小要求768位，默认是2048位。DSA密钥必须恰好是1024位(FIPS 186-2 标准的要求)。
  
  -C comment #提供一个新注释
  
@@ -576,40 +576,32 @@ X11UseLocalhost   #sshd 是否应当将X11转发服务器绑定到本地loopback
  
  -D reader  #下载存储在智能卡 reader 里的 RSA 公钥。
  
- -e      # 读取OpenSSH的私钥或公钥文件，并以 RFC 4716 SSH 公钥文件格式在 stdout 上显示出来。
-         该选项能够为多种商业版本的 SSH 输出密钥。
+ -e      # 读取OpenSSH的私钥或公钥文件，并以 RFC 4716 SSH 公钥文件格式在 stdout 上显示出来。该选项能够为多种商业版本的 SSH 输出密钥。
  
- -F hostname
-         在 known_hosts 文件中搜索指定的 hostname ，并列出所有的匹配项。
-         这个选项主要用于查找散列过的主机名/ip地址，还可以和 -H 选项联用打印找到的公钥的散列值。
+ -F hostname  #在 known_hosts 文件中搜索指定的 hostname ，并列出所有的匹配项。这个选项主要用于查找散列过的主机名/ip地址，还可以和 -H 选项联用打印找到的公钥的散列值。
  
- -f filename # 指定密钥文件名。
+ -f filename # 指定密钥文件名
  
- -G output_file
-         为 DH-GEX 产生候选素数。这些素数必须在使用之前使用 -T 选项进行安全筛选。
+ -l    # 显示公钥文件的指纹数据。它也支持 RSA1 的私钥。对于RSA和DSA密钥，将会寻找对应的公钥文件，然后显示其指纹数据。
+ 
+ -G output_file   # 为 DH-GEX 产生候选素数。这些素数必须在使用之前使用 -T 选项进行安全筛选。
  
  -g     #在使用 -r 打印指纹资源记录的时候使用通用的 DNS 格式。
  
- -H      对 known_hosts 文件进行散列计算。这将把文件中的所有主机名/ip地址替换为相应的散列值。
-         原来文件的内容将会添加一个".old"后缀后保存。这些散列值只能被 ssh 和 sshd 使用。
-         这个选项不会修改已经经过散列的主机名/ip地址，因此可以在部分公钥已经散列过的文件上安全使用。
+ -H     #对 known_hosts 文件进行散列计算。这将把文件中的所有主机名/ip地址替换为相应的散列值。原来文件的内容将会添加一个".old"后缀后保存。这些散列值只能被 ssh 和 sshd 使用。这个选项不会修改已经经过散列的主机名/ip地址，因此可以在部分公钥已经散列过的文件上安全使用。
  
- -i      读取未加密的SSH-2兼容的私钥/公钥文件，然后在 stdout 显示OpenSSH兼容的私钥/公钥。
-         该选项主要用于从多种商业版本的SSH中导入密钥。
+ -i      # 读取未加密的SSH-2兼容的私钥/公钥文件，然后在 stdout 显示OpenSSH兼容的私钥/公钥。该选项主要用于从多种商业版本的SSH中导入密钥。
  
- -l      # 显示公钥文件的指纹数据。它也支持 RSA1 的私钥。对于RSA和DSA密钥，将会寻找对应的公钥文件，然后显示其指纹数据。
  
  -M memory  # 指定在生成 DH-GEXS 候选素数的时候最大内存用量(MB)。
  
- -N new_passphrase
-         提供一个新的密语。
+ -N new_passphrase  # 提供一个新的密码
  
- -P passphrase
-         提供(旧)密语。
+ -P passphrase   # 提供(旧)密码。
  
- -p      要求改变某私钥文件的密语而不重建私钥。程序将提示输入私钥文件名、原来的密语、以及两次输入新密语。
+ -p      #要求改变某私钥文件的密码而不重建私钥。程序将提示输入私钥文件名、原来的密语、以及两次输入新密语。
  
- -q      安静模式。用于在 /etc/rc 中创建新密钥的时候。
+ -q      # 安静模式。用于在 /etc/rc 中创建新密钥的时候
  
  -R hostname  # 从 known_hosts 文件中删除所有属于 hostname 的密钥。这个选项主要用于删除经过散列的主机(参见 -H 选项)的密钥。
  
@@ -619,19 +611,15 @@ X11UseLocalhost   #sshd 是否应当将X11转发服务器绑定到本地loopback
  
  -T output_file # 测试 Diffie-Hellman group exchange 候选素数(由 -G 选项生成)的安全性。
  
- -t type
-         指定要创建的密钥类型。可以使用："rsa1"(SSH-1) "rsa"(SSH-2) "dsa"(SSH-2)
+ -t type # 指定要创建的密钥类型。可以使用："rsa1"(SSH-1) "rsa"(SSH-2) "dsa"(SSH-2)
  
- -U reader
-         把现存的RSA私钥上传到智能卡 reader
+ -U reader   # 把现存的RSA私钥上传到智能卡 reader
  
- -v      详细模式。ssh-keygen 将会输出处理过程的详细调试信息。常用于调试模数的产生过程。
-         重复使用多个 -v 选项将会增加信息的详细程度(最大3次)。
+ -v     #详细模式。ssh-keygen 将会输出处理过程的详细调试信息。常用于调试模数的产生过程。重复使用多个 -v 选项将会增加信息的详细程度(最大3次)。
  
- -W generator
-         指定在为 DH-GEX 测试候选模数时想要使用的 generator
+ -W generator  #指定在为 DH-GEX 测试候选模数时想要使用的 generator
  
- -y      读取OpenSSH专有格式的公钥文件，并将OpenSSH公钥显示在 stdout 上。
+ -y      #读取OpenSSH专有格式的公钥文件，并将OpenSSH公钥显示在 stdout 上。
 ```
 
 
@@ -641,8 +629,8 @@ X11UseLocalhost   #sshd 是否应当将X11转发服务器绑定到本地loopback
 -i # 指定密钥文件
 -p # 指定端口，默认端口号是22
 -o <ssh -o options> user@]hostname #用户名@主机名
--f: force mode -- 复制密钥而不尝试检查它们是否已安装
--n: dry run    -- 实际上没有密钥被复制
+-f  #强制模式   复制密钥而不尝试检查它们是否已安装
+-n  #试运行   实际上没有密钥被复制
 ```
 
 
